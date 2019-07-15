@@ -1,0 +1,19 @@
+.image {
+  margin: 10px 10px 10px 10px;
+}
+
+.main-block {
+  margin-top: 80px!important;
+  margin-bottom: 30px!important;
+}
+
+.icons-sub-logo{
+  margin-top: 20px;
+  text-align: center;
+}
+
+.icon{
+  font-size: 25px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
