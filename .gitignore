@@ -5,4 +5,4 @@
 .DS_Store
 /www/vendor
 /.idea
-/www/test.php
+test.php

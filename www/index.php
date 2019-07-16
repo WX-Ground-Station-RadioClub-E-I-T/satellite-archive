@@ -1,65 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LAMP STACK</title>
-  <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/lib/modal-triggers.js"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.9.0/js/all.js"></script>
-
+    <?php include './assets/partials/head.php' ?>
 </head>
 <body>
-  <?php include './lib/conf.php' ?>
-  <?php include './lib/CesarDatabase.php' ?>
-  <?php include './lib/CesarImage.php' ?>
-  <?php include './lib/CesarMetadata.php' ?>
-  <?php include './lib/CesarObservatory.php' ?>
-
   <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#">Start Bootstrap</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
-          </li>
-          <li>
-
-
-
-            <form class="form-inline">
-              <i class="fas fa-search" style="color:#00a9e0"></i>
-              <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search...">
-            </form>
-            <small class="form-text text-muted">
-              Or <a href="./search.php">advanced search</a>
-            </small>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <?php include './assets/partials/navbar.php'?>
 
   <!-- Page Content -->
   <div class="container">
@@ -90,11 +36,7 @@ END;
   </div>
   <!-- /.container -->
   <!-- Footer -->
-  <footer class="py-5 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
-    </div>
-  </footer>
+  <?php include './assets/partials/footer.php'?>
 
   <!-- Modal -->
   <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

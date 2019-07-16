@@ -21,10 +21,10 @@ $ docker compose up
 
 
 
+### Frontend Dependencies
+Frontend dependencies are download automatically by Docker, [see Dockerfile](./bin/webserver/Dockerfile), and stored (on the Docker) in `/var/www/node_components`. Apache is configured for serving these dependecies in `localhost/dep/`, see [apache conf](./config/vhosts/default.conf).
 
-
-
-
+If you want to download a new dependency with *npm* or *bower*, put it on the [Dockerfile](./bin/webserver/Dockerfile), and then setup the machine for serving on a path, with Apache. This [Dockerfile](./bin/webserver/Dockerfile) is a good example.
 
 ## How works?
 
