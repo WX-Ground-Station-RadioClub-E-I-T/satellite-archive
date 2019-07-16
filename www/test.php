@@ -4,13 +4,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap 4 DatePicker</title>
 
-    <script type="text/javascript" src="/node_modules/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="/node_modules/moment/min/moment.min.js"></script>
-<script type="text/javascript" src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/node_modules/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"></script>
-<link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" />
-<link rel="stylesheet" href="/node_modules/tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css" />
-  <script defer src="https://use.fontawesome.com/releases/v5.9.0/js/all.js"></script>
+    <script type="text/javascript" src="/dep/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/dep/@fortawesome/fontawesome-free/js/all.js"></script>
+    <script type="text/javascript" src="/dep/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/dep/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/dep/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="/dep/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/dep/tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css" />
+
   <!-- include your less or built css files  -->
   <!--
   bootstrap-datetimepicker-build.less will pull in "../bootstrap/variables.less" and "bootstrap-datetimepicker.less";

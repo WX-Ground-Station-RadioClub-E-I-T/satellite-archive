@@ -57,10 +57,20 @@ RUN apt-get install -y nodejs
 # Install bower
 RUN npm install -g bower
 
-
 # Install dependencies
-RUN bower install tempusdominus-bootstrap-4 --save --allow-root
-RUN bower install jquery --save --allow-root
-RUN bower install moment --save --allow-root
-RUN bower install bootstrap --save --allow-root
-RUN bower install popper.js --save --allow-root
+WORKDIR /var/www
+
+RUN npm install jquery@3.4.1
+RUN npm install tempusdominus-bootstrap-4@5.1.2
+RUN npm install tempusdominus-core@5.0.3
+RUN npm install bootstrap@4.3.1
+RUN npm install moment@2.24.0
+RUN npm install moment-timezone@0.5.26
+RUN npm install popper.js@1.15.0
+RUN npm install --save-dev @fortawesome/fontawesome-free@5.9.0
+
+#RUN bower install tempusdominus-bootstrap-4 --save --allow-root
+#RUN bower install jquery --save --allow-root
+#RUN bower install moment --save --allow-root
+#RUN bower install bootstrap --save --allow-root
+#RUN bower install popper.js --save --allow-root

@@ -1,6 +1,0 @@
-{
-  "require": {
-      "twbs/bootstrap": "^4.3",
-    "ext-json": "^1.5"
-  }
-}
