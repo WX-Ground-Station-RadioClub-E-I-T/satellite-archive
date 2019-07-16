@@ -43,8 +43,8 @@
             <div class="form-group col-md-4">
               <label for="inputSource">Source</label>
               <select id="inputsource" class="form-control" name="inputSource">
-                <option value="">Whatever</option>
-                <option>Sun</option>
+                <option value="" <?php if($_GET["inputSource"] == NULL) echo "selected" ?>>Whatever</option>
+                <option <?php if($_GET["inputSource"] == "Sun") echo "selected" ?>>Sun</option>
               </select>
             </div>
             <div class="form-group col-md-4">
@@ -53,9 +53,11 @@
                 <option value="">Whatever</option>
                 <?php
                 foreach($observatoryNames as $observatory){
-                  echo <<<END
-                  <option>{$observatory}</option>
-END;
+                  if($observatory == $_GET["inputObs"]){
+                    echo "<option selected>" . $observatory . "</option>";
+                  } else{
+                    echo "<option>" . $observatory . "</option>";
+                  }
                 }
                 ?>
               </select>
@@ -63,9 +65,9 @@ END;
             <div class="form-group col-md-4">
               <label for="inputFilter">Filter</label>
               <select id="inputFilter" class="form-control" name="inputFilter">
-                <option value="">Whatever</option>
-                <option>halpha</option>
-                <option>visible</option>
+                <option value="" <?php if($_GET["inputFilter"] == NULL) echo "selected" ?>>Whatever</option>
+                <option <?php if($_GET["inputFilter"] == "halpha") echo "selected" ?>>halpha</option>
+                <option <?php if($_GET["inputFilter"] == "visible") echo "selected" ?>>visible</option>
               </select>
             </div>
           </div>
