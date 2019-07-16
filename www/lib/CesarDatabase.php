@@ -79,7 +79,7 @@ class CesarDatabase{
   public function &getObservatoryById($observatoryId){
     $res = NULL;
 
-    $sql = " SELECT `id`, `name`, `shortdescription`, `sectionurl`, `datecreated`, `dateupdated`, `iduserupdate`, 
+    $sql = " SELECT `id`, `name`, `shortdescription`, `sectionurl`, `datecreated`, `dateupdated`, `iduserupdate`,
             `loginuserupdate` FROM `cesar-archive-observatories` WHERE `id` = " . $observatoryId;
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
@@ -165,13 +165,23 @@ class CesarDatabase{
     return $res;
   }
 
-  public function advanceSearch($source, $obsId, $filter, $amount){      // Return the requested image ID's
+  public function advanceSearch($source, $obsId, $filter, $since, $until, $order, $amount){      // Return the requested image ID's
     $res = array();
+    $since = str_replace('/', '-', $since);    // Format date, SRC: https://bit.ly/2YRdKAw
+    $until = str_replace('/', '-', $until);
+
+    // Ensure that if some parameters are NULL, there is not in the query
+    $sqlSource = ($source != NULL) ? "WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "') ":"";
+    $sqlFilterBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
+    $sqlFilter = ($filter != NULL) ? (($source != NULL) ? "AND " . $sqlFilterBase :  "WHERE " . $sqlFilterBase) : "";
+    $sqlLimit = ($amount != NULL) ? "LIMIT " . $amount : "LIMIT 12";
 
     // First, filter by metadata
     $ids = array();
-    $sql = "SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "') AND `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE
- (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) LIMIT " . $amount;
+
+    // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
+    $sql = "SELECT DISTINCT `image_id` FROM `cesar-archive-images-metadata` " . $sqlSource .$sqlFilter . $sqlLimit;
+
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
@@ -185,9 +195,26 @@ class CesarDatabase{
       return NULL;
     }
 
+    $sqlMeta = "WHERE `id` IN (" . implode(',', $ids) . ") ";
+    $sqlObs = ($obsId != NULL) ? "AND `observatory_id` = " . $obsId . " ": "";
+    $sqlOrder = ($order != NULL) ? "ORDER BY `date_obs` DESC " : "";
+
     // Then filter by observatory
-    $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated` FROM `cesar-archive-images` WHERE `id` IN (" . implode(',', $ids) . ") AND `observatory_id` = " . $obsId . " ORDER BY `date_obs` DESC LIMIT " . $amount;
+    if($since == NULL && $until == NULL){
+      $sqlDate = "";
+    } elseif ($since == NULL && $until != NULL) {
+      $sqlDate = "AND `date_obs` < '" . date( 'Y-m-d H:i:s', strtotime($until)) ."' ";
+    } elseif ($since != NULL && $until == NULL) {
+      $sqlDate = "AND `date_obs` > '" . date( 'Y-m-d H:i:s', strtotime($since)) . "' ";
+    } else {
+      $sqlDate = "AND `date_obs` BETWEEN '" . date( 'Y-m-d H:i:s', strtotime($since)) .
+      "' AND '" .  date( 'Y-m-d H:i:s', strtotime($until)) . "' ";
+    }
+
+    $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`,
+      `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
+      `date_upload`, `date_updated` FROM `cesar-archive-images` " . $sqlMeta . $sqlObs . $sqlDate . $sqlOrder . $sqlLimit;
+
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;

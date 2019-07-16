@@ -20,6 +20,8 @@
   });
 
   $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, {
+    viewMode: 'days',
+    format:'DD/MM/YYYY',
     icons: {
       time: 'far fa-clock',
       date: 'far fa-calendar',
