@@ -114,9 +114,13 @@ END;
   <!-- Datepicker scripts -->
   <script type="text/javascript">
       $(function () {
-          $('#datetimepicker7').datetimepicker();
+          $('#datetimepicker7').datetimepicker({
+              <?php if($_GET["inputSince"] != NULL){ echo "defaultDate: moment('" . $_GET["inputSince"]. "', 'DD/MM/YYYY')"; } ?>
+
+          });
           $('#datetimepicker8').datetimepicker({
-              useCurrent: false
+              useCurrent: false,
+            <?php if($_GET["inputUntil"] != NULL){ echo "defaultDate: moment('" . $_GET["inputUntil"]. "', 'DD/MM/YYYY')"; } ?>
           });
           $("#datetimepicker7").on("change.datetimepicker", function (e) {
               $('#datetimepicker8').datetimepicker('minDate', e.date);
