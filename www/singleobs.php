@@ -2,6 +2,10 @@
 <html>
 <head>
     <?php include './assets/partials/head.php' ?>
+    <script type="text/javascript" src="/dep/hammerjs/hammer.min.js"></script>
+    <script type="text/javascript" src="/dep/xzoom/src/xzoom.js"></script>
+    <script type="text/javascript" src="/dep/foundation-sites/dist/js/foundation.min.js"></script>
+    <script type="text/javascript" src="/lib/zoom.js"></script>
 </head>
 <body>
 
@@ -22,9 +26,16 @@
 
 
     <div class="col-6">
+      <!--
       <img class="card-img-top"
            src="<?php echo $pic->getExtSrc(); ?>"
            alt="">
+        -->
+
+      <div class="xzoom-container">
+        <img class="xzoom card-img-top" id="xzoom-default" src="<?php echo $pic->getExtSrc(); ?>" xoriginal="<?php echo $pic->getExtSrc(); ?>" />
+      </div>
+
 
       <div class="card bg-secondary icons-sub-logo">
         <div class="card-header">

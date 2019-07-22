@@ -68,6 +68,10 @@ RUN npm install moment@2.24.0
 RUN npm install moment-timezone@0.5.26
 RUN npm install popper.js@1.15.0
 RUN npm install --save-dev @fortawesome/fontawesome-free@5.9.0
+RUN npm install xzoom@1.0.14
+RUN npm install hammerjs@2.0.8
+RUN npm install foundation-sites@6.5.3
+
 
 #RUN bower install tempusdominus-bootstrap-4 --save --allow-root
 #RUN bower install jquery --save --allow-root
