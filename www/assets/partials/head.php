@@ -10,6 +10,7 @@
 <script type="text/javascript" src="/dep/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="/dep/@fortawesome/fontawesome-free/js/all.js"></script>
 <script type="text/javascript" src="/dep/moment/min/moment.min.js"></script>
+<script type="text/javascript" src="/dep/popper.js/dist/umd/popper.min.js"></script>
 <script type="text/javascript" src="/dep/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/dep/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"></script>
 <script type="text/javascript" src="/lib/modal-triggers.js"></script>

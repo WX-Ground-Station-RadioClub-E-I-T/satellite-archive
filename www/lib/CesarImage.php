@@ -130,6 +130,20 @@ class CesarImage implements JsonSerializable{
     /**
      * @return mixed
      */
+    public function getExtSrcLarge(){
+        return ARCHIVE_ENDPOINT . $this->path . $this->filename_final;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExtSrcBitmap(){
+        return ARCHIVE_ENDPOINT . $this->path . $this->filename_original;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getFilenameThumb()
     {
         return $this->filename_thumb;
