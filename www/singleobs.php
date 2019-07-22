@@ -58,6 +58,7 @@
       <div class="col-sm">
         <ul class="list-group list-group-flush">
           <li class="list-group-item list-group-item-primary"><b class="float-left">Observatory Name:</b> <a class="float-right" id="alt"><?php echo $pic->getObservatory()->getName(); ?></a></li>
+          <li class="list-group-item list-group-item-primary"><b class="float-left">Source:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getSource(); ?></a></li>
           <li class="list-group-item list-group-item-primary"><b class="float-left">Short description:</b> <a class="float-right" id="alt"><?php echo $pic->getObservatory()->getShortDescription(); ?></a></li>
           <li class="list-group-item list-group-item-primary"><b class="float-left">Since:</b> <a class="float-right" id="alt"><?php echo $pic->getObservatory()->getDateCreated(); ?></a></li>
           <li class="list-group-item list-group-item-primary" data-toggle="tooltip" data-placement="top" title="Organisation responsible for data"><b class="float-left">Organization</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getOrigin(); ?></a></li>
@@ -89,6 +90,12 @@
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Diameter of the Sun in pixels"><b class="float-left">EPH-SUN-DIAM-PX</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getEphSunDiamPx(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Shape of the original (BMP) image array"><b class="float-left">ORIGINAL-SHAPE</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getOriginalShape(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Color adjustment gamma"><b class="float-left">COLOR-GAMMA</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getColorGamma(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Unsharp gamma"><b class="float-left">UNSHARP-GAMMA</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getUnsharpGamma(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Filter type / Wavelength"><b class="float-left">FILTER</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getFilter(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Pipeline configuration mode"><b class="float-left">PIPELINE-CONFIG-MODE</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getPipelineConfigMode(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Unsharp flag"><b class="float-left">UNSHARP-FLAG</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getUnsharpFlag(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Lower value for mask of the Sun"><b class="float-left">MASK-LOW</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getMaskLow(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Stretching parameters"><b class="float-left">STRETCH-INPUT</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getStretchInput(); ?></a></li>
         </ul>
       </div>
     </div>

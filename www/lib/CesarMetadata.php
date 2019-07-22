@@ -393,6 +393,31 @@ class CesarMetadata{
         break;
       case 26:
         $this->color_gamma = $value;
+        break;
+      case 27:
+        $this->unsharp_gamma = $value;
+        break;
+      case 28:
+        $this->filter = $value;
+        break;
+      case 29:
+        $this->pipeline_config_mode = $value;
+        break;
+      case 30:
+        $this->unsharp_flag = $value;
+        break;
+      case 31:
+        $this->mask_low = $value;
+        break;
+      case 32:
+        $this->stretch_input = $value;
+        break;
+      case 33:
+        $this->unsharp_flag = $value;
+        break;
+      case 34:
+        $this->source = $value;
+        break;
     }
   }
 }
