@@ -165,39 +165,25 @@ class CesarDatabase{
     return $res;
   }
 
-  public function advanceSearch($source, $obsId, $filter, $since, $until, $order, $amount){      // Return the requested image ID's
-    $res = array();
+  public function advanceSearch($source, $obsId, $filter, $since, $until, $order, $amount, $offset){      // Return the requested image ID's
+    $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
     $since = str_replace('/', '-', $since);    // Format date, SRC: https://bit.ly/2YRdKAw
     $until = str_replace('/', '-', $until);
 
     // Ensure that if some parameters are NULL, there is not in the query
-    $sqlSource = ($source != NULL) ? "WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "') ":"";
-    $sqlFilterBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
-    $sqlFilter = ($filter != NULL) ? (($source != NULL) ? "AND " . $sqlFilterBase :  "WHERE " . $sqlFilterBase) : "";
-    $sqlLimit = ($amount != NULL) ? "LIMIT " . $amount : "LIMIT 12";
-
-    // First, filter by metadata
-    $ids = array();
-
     // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
-    $sql = "SELECT DISTINCT `image_id` FROM `cesar-archive-images-metadata` " . $sqlSource .$sqlFilter . $sqlLimit;
+    $sqlMeta = "SELECT DISTINCT `image_id` FROM `cesar-archive-images-metadata` ";
+    $sqlMeta .= ($source != NULL) ? "WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "') ":"";
+    $sqlMetaFilterBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
+    $sqlMeta .= ($filter != NULL) ? (($source != NULL) ? "AND " . $sqlMetaFilterBase :  "WHERE " . $sqlMetaFilterBase) : "";
 
-    if (!$resultado = $this->conn->query($sql)) {
-      error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
-      exit;
-    }
-    if ($resultado->num_rows > 0) {
-      while($row = $resultado->fetch_assoc()) {
-        array_push($ids, $row["image_id"]);
-      }
-    } else {
-      error_log("Ninguna coincidencia", 0);
-      return NULL;
-    }
+    if(DEBUG){ echo $sqlMeta; }
 
-    $sqlMeta = "WHERE `id` IN (" . implode(',', $ids) . ") ";
+    $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
+      `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
+      `date_upload`, `date_updated` FROM `cesar-archive-images` ";
+    $sqlWhe = "WHERE `id` IN (" . $sqlMeta . ") ";
     $sqlObs = ($obsId != NULL) ? "AND `observatory_id` = " . $obsId . " ": "";
-    $sqlOrder = ($order != NULL) ? "ORDER BY `date_obs` DESC " : "";
 
     // Then filter by observatory
     if($since == NULL && $until == NULL){
@@ -211,9 +197,13 @@ class CesarDatabase{
       "' AND '" .  date( 'Y-m-d H:i:s', strtotime($until)) . "' ";
     }
 
-    $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`,
-      `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
-      `date_upload`, `date_updated` FROM `cesar-archive-images` " . $sqlMeta . $sqlObs . $sqlDate . $sqlOrder . $sqlLimit;
+    $sqlOrd = ($order != NULL) ? "ORDER BY `date_obs` DESC " : "";
+    $sqlLimit = ($amount != NULL) ? "LIMIT " . $amount . " " : "LIMIT 12";
+    $sqlOffset = ($offset != NULL) ? "OFFSET " . $offset : "";
+
+    $sql = $sqlSel . $sqlWhe . $sqlObs . $sqlDate . $sqlOrd . $sqlLimit . $sqlOffset;
+
+    if(DEBUG){ echo $sql; }
 
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
@@ -229,7 +219,26 @@ class CesarDatabase{
         $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
 
         $obj->setObservatory($this->getObservatoryById($row["observatory_id"]));
-        array_push($res, $obj);
+        array_push($res[0], $obj);
+      }
+    } else {
+      error_log("Ninguna coincidencia", 0);
+      return NULL;
+    }
+
+    $sqlSel = "SELECT COUNT(*) FROM `cesar-archive-images` ";
+    // Then we have to count the results, the same query with a counter and without the limit
+    $sql = $sqlSel . $sqlWhe . $sqlObs . $sqlDate;
+
+    if(DEBUG){ echo $sql; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+      error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+      exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $res[1] = $row["COUNT(*)"];
       }
     } else {
       error_log("Ninguna coincidencia", 0);
