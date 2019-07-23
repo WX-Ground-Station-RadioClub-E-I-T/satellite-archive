@@ -21,12 +21,6 @@ services:
       - MYSQL_CESAR_USER=root
       - MYSQL_CESAR_PASSWORD=tiger
       - ARCHIVE_ENDPOINT=http://cesar.esa.int/sun_monitor/archive/
-  composer:
-    restart: 'no'
-    image: composer/composer:php7
-    command: install
-    volumes:
-      - ${DOCUMENT_ROOT-./www}:/app
   mysql:
     build: ./bin/mysql
     container_name: 'png-mysql'
