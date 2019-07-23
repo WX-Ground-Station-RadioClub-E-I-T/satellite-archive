@@ -78,14 +78,48 @@
 
     <div class="card mt-2 mb-5">
       <div class="card-body">
+
+        <?php
+
+        // Current oder
+        $dateOrd = ($_GET["dateOrd"] == NULL)? "desc": $_GET["dateOrd"];
+
+        // Order By Date desc Button
+        $query = $_GET;
+        $query['dateOrd'] = "desc";
+        $dateDesc = "?" . http_build_query($query);
+
+        // Order by Date asc button
+        $query = $_GET;
+        $query['dateOrd'] = "asc";
+        $dateAsc = "?" . http_build_query($query);
+        ?>
+
+        <div class="float-right">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Order by Date <?php echo ($dateOrd == "desc")? "DESC" : "ASC";?>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="<?php echo $dateDesc; ?>">Date DESC</a>
+              <a class="dropdown-item" href="<?php echo $dateAsc; ?>">Date ASC</a>
+            </div>
+          </div>
+        </div><br><br>
+
+        <script>
+        $('.dropdown-toggle').dropdown()
+        </script>
+
         <div class="row text-center">
+
           <?php
 
           $pg = ($_GET["pg"] == NULL)? 0: $_GET["pg"];
 
           $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
           $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
-          $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], "DESC",12, 12 * $pg);
+          $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $dateOrd ,12, 12 * $pg);
           $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
           $data = $res[0];
           if($res != NULL){

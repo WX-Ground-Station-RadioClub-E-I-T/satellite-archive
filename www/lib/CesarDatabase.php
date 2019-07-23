@@ -197,7 +197,7 @@ class CesarDatabase{
       "' AND '" .  date( 'Y-m-d H:i:s', strtotime($until)) . "' ";
     }
 
-    $sqlOrd = ($order != NULL) ? "ORDER BY `date_obs` DESC " : "";
+    $sqlOrd = ($order != NULL) ? (($order == "asc")? "ORDER BY `date_obs` ASC ": "ORDER BY `date_obs` DESC "): "";
     $sqlLimit = ($amount != NULL) ? "LIMIT " . $amount . " " : "LIMIT 12";
     $sqlOffset = ($offset != NULL) ? "OFFSET " . $offset : "";
 
