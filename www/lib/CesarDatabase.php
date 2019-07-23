@@ -165,7 +165,7 @@ class CesarDatabase{
     return $res;
   }
 
-  public function advanceSearch($source, $obsId, $filter, $since, $until, $order, $amount, $offset){      // Return the requested image ID's
+  public function advanceSearch($source, $obsId, $filter, $since, $until, $discardDark, $order, $amount, $offset){      // Return the requested image ID's
     $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
     $since = str_replace('/', '-', $since);    // Format date, SRC: https://bit.ly/2YRdKAw
     $until = str_replace('/', '-', $until);
@@ -173,9 +173,11 @@ class CesarDatabase{
     // Ensure that if some parameters are NULL, there is not in the query
     // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
     $sqlMeta = "SELECT DISTINCT `image_id` FROM `cesar-archive-images-metadata` ";
-    $sqlMeta .= ($source != NULL) ? "WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "') ":"";
+    $sqlMeta .= ($discardDark)? "WHERE (`metadata_id` = 23 AND `value` = 'False') ":"" ;
+    $sqlMetaSourceBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "')) ";
+    $sqlMeta .= ($source != NULL) ? (($discardDark) ? "AND " . $sqlMetaSourceBase :  "WHERE " . $sqlMetaSourceBase) : "";
     $sqlMetaFilterBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
-    $sqlMeta .= ($filter != NULL) ? (($source != NULL) ? "AND " . $sqlMetaFilterBase :  "WHERE " . $sqlMetaFilterBase) : "";
+    $sqlMeta .= ($filter != NULL) ? (($source != NULL || $discardDark) ? "AND " . $sqlMetaFilterBase :  "WHERE " . $sqlMetaFilterBase) : "";
 
     if(DEBUG){ echo $sqlMeta; }
 
