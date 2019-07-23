@@ -138,7 +138,7 @@
               <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
               data-date-updated="{$pic->getDateUpdated()}" data-observatory="{$pic->getObservatory()->getName()}" data-observatory-lat="{$pic->getMetadata()->getLatitude()}"
               data-observatory-long="{$pic->getMetadata()->getLongitud()}" data-observatory-alt="{$pic->getMetadata()->getAltitude()}" data-telecop="{$pic->getMetadata()->getTelescop()}" data-instrume="{$pic->getMetadata()->getInstrume()}"
-              data-exposure="{$pic->getMetadata()->getExposure()}">
+              data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}">
               <div class="image">
               <img class="card-img-top" src=" {$pic->getExtSrc()} " alt="">
               </div>
@@ -259,6 +259,7 @@ END;
               <ul class="list-group list-group-flush">
                 <li class="list-group-item"><b>Date uploaded: </b> <a id="date-uploaded"></a></li>
                 <li class="list-group-item"><b>Telecope:</b> <a id="telescope"></a> </li>
+                <li class="list-group-item"><b>Filter:</b> <a id="filter"></a> </li>
                 <li class="list-group-item"><b>Camera:</b> <a id="instrume"></a></li>
                 <li class="list-group-item"><b>Time exposure:</b> <a id="exposure"></a></li>
                 <li class="list-group-item"><b>Latitude:</b> <a id="lat"></a></li>
