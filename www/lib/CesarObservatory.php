@@ -92,7 +92,8 @@ class CesarObservatory{
    * @return mixed
    */
   public function getDateCreated(){
-    return $this->datecreated;
+    $date = strtotime($this->datecreated);
+    return date('d-m-Y H:i:s', $date);
   }
 
   /**
@@ -106,7 +107,8 @@ class CesarObservatory{
    * @return mixed
    */
   public function getDateUpdated(){
-    return $this->dateupdated;
+    $date = strtotime($this->dateupdated);
+    return date('d-m-Y H:i:s', $date);
   }
 
   /**
