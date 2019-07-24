@@ -172,14 +172,14 @@ class CesarDatabase{
 
     // Ensure that if some parameters are NULL, there is not in the query
     // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
-    $sqlMeta = "SELECT DISTINCT `image_id` FROM `cesar-archive-images-metadata` ";
+    $sqlMeta = "SELECT `image_id` FROM `cesar-archive-images-metadata` ";
     $sqlMeta .= ($discardDark)? "WHERE (`metadata_id` = 23 AND `value` = 'False') ":"" ;
     $sqlMetaSourceBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "')) ";
     $sqlMeta .= ($source != NULL) ? (($discardDark) ? "AND " . $sqlMetaSourceBase :  "WHERE " . $sqlMetaSourceBase) : "";
     $sqlMetaFilterBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
     $sqlMeta .= ($filter != NULL) ? (($source != NULL || $discardDark) ? "AND " . $sqlMetaFilterBase :  "WHERE " . $sqlMetaFilterBase) : "";
 
-    if(DEBUG){ echo $sqlMeta; }
+    if(DEBUG){ echo "<p>" . $sqlMeta . "</p>"; }
 
     $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
       `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
@@ -205,7 +205,7 @@ class CesarDatabase{
 
     $sql = $sqlSel . $sqlWhe . $sqlObs . $sqlDate . $sqlOrd . $sqlLimit . $sqlOffset;
 
-    if(DEBUG){ echo $sql; }
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
@@ -232,7 +232,7 @@ class CesarDatabase{
     // Then we have to count the results, the same query with a counter and without the limit
     $sql = $sqlSel . $sqlWhe . $sqlObs . $sqlDate;
 
-    if(DEBUG){ echo $sql; }
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
