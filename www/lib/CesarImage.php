@@ -162,7 +162,8 @@ class CesarImage implements JsonSerializable{
      */
     public function getDateObs()
     {
-        return $this->date_obs;
+        $date = strtotime($this->date_obs);
+        return date('d-m-Y H:i:s', $date);
     }
 
     /**
@@ -194,7 +195,8 @@ class CesarImage implements JsonSerializable{
      */
     public function getDateUpdated()
     {
-        return $this->date_updated;
+      $date = strtotime($this->date_updated);
+      return date('d-m-Y H:i:s', $date);
     }
 
     /**
@@ -283,7 +285,8 @@ class CesarImage implements JsonSerializable{
    * @return mixed
    */
   public function getDateUpload(){
-    return $this->date_upload;
+    $date = strtotime($this->date_upload);
+    return date('d-m-Y H:i:s', $date);
   }
 
   /**
