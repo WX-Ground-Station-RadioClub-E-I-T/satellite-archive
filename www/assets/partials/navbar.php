@@ -1,11 +1,56 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="/">Start Bootstrap</a>
+    <a href="/">
+      <img src="/assets/images/logo.png" height="70" alt="" href="/">
+    </a>
+
+
+    <!-- Responsive button for tongle menu -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav mr-auto ">
+
+        <li class="nav-item ml-3">
+          <div class="menu_top_main text-left">
+            <a class="nav-link active pb-0 pt-3" href="/">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </div>
+          <div class="menu_top_second">
+            Home
+          </div>
+        </li>
+
+        <li class="nav-item ml-3">
+          <div class="menu_top_main text-left">
+            <a class="nav-link pb-0 pt-3" href="#">About</a>
+          </div>
+          <div class="menu_top_second">
+            Communications
+          </div>
+        </li>
+
+        <li class="nav-item ml-3">
+          <div class="menu_top_main text-left">
+            <a class="nav-link pb-0 pt-3" href="#">Services</a>
+          </div>
+          <div class="menu_top_second">
+            Communications
+          </div>
+        </li>
+
+        <li class="nav-item ml-3">
+          <div class="menu_top_main text-left">
+            <a class="nav-link pb-0 pt-3" href="#">Contact</a>
+          </div>
+          <div class="menu_top_second">
+            Communications
+          </div>
+        </li>
+<!--
         <li class="nav-item active">
           <a class="nav-link" href="#">Home
             <span class="sr-only">(current)</span>
@@ -20,16 +65,17 @@
         <li class="nav-item">
           <a class="nav-link" href="#">Contact</a>
         </li>
-        <li>
-          <form class="form-inline">
-            <i class="fas fa-search" style="color:#00a9e0"></i>
-            <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search...">
-          </form>
-          <small class="form-text text-muted">
-            Or <a href="./search.php">advanced search</a>
-          </small>
-        </li>
-      </ul>
+      -->
+    </ul>
+
+      <form class="form-inline my-2 my-lg-0 pt-3 float-right">
+        <i class="fas fa-search" style="color:#00a9e0"></i>
+        <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search...">
+        <small class="form-text text-muted">
+          Or <a href="./search.php">advanced search</a>
+        </small>
+      </form>
+
     </div>
   </div>
 </nav>

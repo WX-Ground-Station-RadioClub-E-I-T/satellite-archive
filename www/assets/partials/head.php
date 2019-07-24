@@ -3,6 +3,8 @@
 
 <title>LAMP STACK</title>
 
+<link href="http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700" rel="stylesheet" type="text/css">
+
 <link rel="stylesheet" href="/assets/css/style.css">
 <link rel="stylesheet" href="/dep/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="/dep/tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css" />

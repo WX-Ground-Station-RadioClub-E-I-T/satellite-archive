@@ -1,10 +1,40 @@
-.image {
-  margin: 10px 10px 10px 10px;
+body {
+  padding-top: 110px;
 }
 
-.main-block {
-  margin-top: 80px!important;
-  margin-bottom: 30px!important;
+footer {
+  margin-top: 3rem;
+}
+
+a {
+  color: #81a7c1!important;
+  text-decoration: none;
+}
+
+* {
+  font-family: 'Roboto Slab', serif;
+}
+
+.menu_top_main {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.active {
+  color: #54778f!important;
+}
+
+.menu_top_second {
+  font-size: 12px;
+  color: #aaaaaa;
+  display: block;
+  padding-left: .5rem;
+  padding-right: .5rem
+}
+
+.image {
+  margin: 10px 10px 10px 10px;
 }
 
 .icons-sub-logo{
@@ -16,6 +46,18 @@
   font-size: 25px;
   margin-right: 5px;
   margin-left: 5px;
+}
+
+.footer_table{
+  border: 0px;
+  border-spacing: 0;
+  padding: 2px;
+  width: 100%;
+  color: #ffffff;
+}
+
+.footer_secondary {
+  font-size: 11px;
 }
 
 /* Compatibility styles for frameworks like bootstrap, foundation e.t.c */
