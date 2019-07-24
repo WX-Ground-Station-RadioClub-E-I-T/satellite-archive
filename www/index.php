@@ -12,29 +12,97 @@
     <!-- Page Features -->
     <div class="row text-center main-block">
       <?php
-      $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
-      $res = $obj->getLastImages(10);
 
-      foreach($res as $pic){
-        echo <<<END
-        <div class="col-lg-3 col-md-6">
-          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
-              data-date-updated="{$pic->getDateUpdated()}" data-observatory="{$pic->getObservatory()->getName()}" data-observatory-lat="{$pic->getMetadata()->getLatitude()}"
-              data-observatory-long="{$pic->getMetadata()->getLongitud()}" data-observatory-alt="{$pic->getMetadata()->getAltitude()}" data-telecop="{$pic->getMetadata()->getTelescop()}" data-instrume="{$pic->getMetadata()->getInstrume()}"
-              data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}">
-          <div class="card" style="width: 15rem;">
-            <img class="card-img-top" src="{$pic->getExtSrc()}" alt="Card image cap">
-            <div class="card-body">
-              <p class="card-text"> {$pic->getMetadata()->getSource()} - {$pic->getDateObs()}</p>
+      $pg = ($_GET["pg"] == NULL)? 0: $_GET["pg"];
+
+      $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+      $res = $obj->getImages(12, 12 * $pg);
+      $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
+      $data = $res[0];
+      if($res != NULL){
+        foreach($data as $pic){
+          echo <<<END
+          <div class="col-lg-3 col-md-6">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
+                data-date-updated="{$pic->getDateUpdated()}" data-observatory="{$pic->getObservatory()->getName()}" data-observatory-lat="{$pic->getMetadata()->getLatitude()}"
+                data-observatory-long="{$pic->getMetadata()->getLongitud()}" data-observatory-alt="{$pic->getMetadata()->getAltitude()}" data-telecop="{$pic->getMetadata()->getTelescop()}" data-instrume="{$pic->getMetadata()->getInstrume()}"
+                data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}">
+            <div class="card" style="width: 15rem;">
+              <img class="card-img-top" src="{$pic->getExtSrc()}" alt="Card image cap">
+              <div class="card-body">
+                <p class="card-text"> {$pic->getMetadata()->getSource()} - {$pic->getDateObs()}</p>
+              </div>
             </div>
+          </button>
           </div>
-        </button>
-        </div>
 END;
+        }
       }
       ?>
     </div>
     <!-- /.row -->
+
+
+        <?php   // Pagination scripts
+
+        // Next Button
+        $query = $_GET;
+        $query['pg'] = $pg + 1;
+        $nextPg = "?" . http_build_query($query);
+
+
+        // Previous Button
+        $query = $_GET;
+        $query['pg'] = $pg - 1;
+        $prevPg = "?" . http_build_query($query);
+        ?>
+
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item <? if($pg == 0){ echo "disabled"; } ?>">
+              <a class="page-link" href="<?php echo $prevPg ?>" tabindex="-1" <? if($pg == 0){ echo "aria-disabled=\"true\""; } ?>>Previous</a>
+            </li>
+
+            <?php
+
+            // With count put the number above
+
+            $pgCounter = ($pg < 5)? 0: $pg - 5;
+            $maxCounter = ceil($count/12) - 1;
+
+            for(; $pgCounter <= $maxCounter ; $pgCounter++){
+              $query = $_GET;
+              $query['pg'] = $pgCounter;
+              $link = "?" . http_build_query($query);
+
+              //If there are a lot of results then put a button and exit
+              if($pgCounter > $pg + 5){
+                echo <<<END
+                <li class="page-item"><a class="page-link" href="{$link}">...</a></li>
+END;
+                break;
+              }
+
+              if($pg == $pgCounter){
+                echo <<<END
+                <li class="page-item active"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
+END;
+              } else {
+                echo <<<END
+                <li class="page-item"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
+END;
+              }
+
+
+            }
+
+            ?>
+
+            <li class="page-item <? if($pg == $maxCounter){ echo "disabled"; } ?>">
+              <a class="page-link" href="<?php echo $nextPg ?>">Next</a>
+            </li>
+          </ul>
+        </nav>
 
   </div>
   <!-- /.container -->
