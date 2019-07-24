@@ -6,6 +6,10 @@ footer {
   margin-top: 3rem;
 }
 
+.btn-primary {
+  color: #fff!important;
+}
+
 a {
   color: #81a7c1!important;
   text-decoration: none;

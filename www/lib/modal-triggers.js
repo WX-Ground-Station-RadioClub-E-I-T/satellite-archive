@@ -13,11 +13,12 @@ $(document).ready(function(){
     var id = button.data('image-id');
     var src = button.data('image-src');
     var filter = button.data('filter');
+    var source = button.data('source')
 
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
     var modal = $(this);
-    modal.find('.modal-title').text('Sun observation from ' + observatory);
+    modal.find('.modal-title').text(source + ' observation from ' + observatory);
     $("#date-uploaded").text(dateObs);
     $("#telescope").text(telescop);
     $("#instrume").text(instrume);

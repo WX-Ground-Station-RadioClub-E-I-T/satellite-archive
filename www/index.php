@@ -21,11 +21,14 @@
           <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
               data-date-updated="{$pic->getDateUpdated()}" data-observatory="{$pic->getObservatory()->getName()}" data-observatory-lat="{$pic->getMetadata()->getLatitude()}"
               data-observatory-long="{$pic->getMetadata()->getLongitud()}" data-observatory-alt="{$pic->getMetadata()->getAltitude()}" data-telecop="{$pic->getMetadata()->getTelescop()}" data-instrume="{$pic->getMetadata()->getInstrume()}"
-              data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}">
-            <div class="image">
-              <img class="card-img-top" src=" {$pic->getExtSrc()} " alt="">
+              data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}">
+          <div class="card" style="width: 15rem;">
+            <img class="card-img-top" src="{$pic->getExtSrc()}" alt="Card image cap">
+            <div class="card-body">
+              <p class="card-text"> {$pic->getMetadata()->getSource()} - {$pic->getDateObs()}</p>
             </div>
-          </button>
+          </div>
+        </button>
         </div>
 END;
       }
