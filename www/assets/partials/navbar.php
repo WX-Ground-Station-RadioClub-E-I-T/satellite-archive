@@ -20,19 +20,20 @@
             </a>
           </div>
           <div class="menu_top_second">
-            Home
+            Last observations
           </div>
         </li>
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="#">About</a>
+            <a class="nav-link pb-0 pt-3" href="/about.php">About</a>
           </div>
           <div class="menu_top_second">
-            Communications
+            Helios observatory
           </div>
         </li>
 
+        <!--
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
             <a class="nav-link pb-0 pt-3" href="#">Services</a>
@@ -41,13 +42,14 @@
             Communications
           </div>
         </li>
+      -->
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="#">Contact</a>
+            <a class="nav-link pb-0 pt-3" href="http://cesar.esa.int/index.php?Section=Contact">Contact</a>
           </div>
           <div class="menu_top_second">
-            Communications
+            Contact us
           </div>
         </li>
 <!--
