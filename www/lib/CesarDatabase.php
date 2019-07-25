@@ -219,7 +219,7 @@ class CesarDatabase{
     return $res;
   }
 
-  public function advanceSearch($source, $obsId, $filter, $since, $until, $discardDark, $order, $amount, $offset){      // Return the requested image ID's
+  public function advanceSearch($source, $obsId, $filter, $since, $until, $discardDark, $onlyFeatured, $order, $amount, $offset){      // Return the requested image ID's
     $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
     $since = str_replace('/', '-', $since);    // Format date, SRC: https://bit.ly/2YRdKAw
     $until = str_replace('/', '-', $until);
@@ -238,7 +238,9 @@ class CesarDatabase{
     $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
       `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
       `date_upload`, `date_updated` FROM `cesar-archive-images` ";
-    $sqlWhe = "WHERE `id` IN (" . $sqlMeta . ") ";
+    $filterFeatured = ($onlyFeatured)? "WHERE `featured` = true ": "";
+    $sqlWheBase = "`id` IN (" . $sqlMeta . ") ";
+    $sqlWhe = ($onlyFeatured)? "AND " . $sqlWheBase : "WHERE " . $sqlWheBase ;
     $sqlObs = ($obsId != NULL) ? "AND `observatory_id` = " . $obsId . " ": "";
 
     // Then filter by observatory
@@ -257,7 +259,7 @@ class CesarDatabase{
     $sqlLimit = ($amount != NULL) ? "LIMIT " . $amount . " " : "LIMIT 12";
     $sqlOffset = ($offset != NULL) ? "OFFSET " . $offset : "";
 
-    $sql = $sqlSel . $sqlWhe . $sqlObs . $sqlDate . $sqlOrd . $sqlLimit . $sqlOffset;
+    $sql = $sqlSel . $filterFeatured . $sqlWhe . $sqlObs . $sqlDate . $sqlOrd . $sqlLimit . $sqlOffset;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -284,7 +286,7 @@ class CesarDatabase{
 
     $sqlSel = "SELECT COUNT(*) FROM `cesar-archive-images` ";
     // Then we have to count the results, the same query with a counter and without the limit
-    $sql = $sqlSel . $sqlWhe . $sqlObs . $sqlDate;
+    $sql = $sqlSel . $filterFeatured . $sqlWhe . $sqlObs . $sqlDate;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 

@@ -72,17 +72,21 @@
             </div>
           </div>
           <div class="form-row">
-          <div class="form-group col-md-2">
-            <button type="submit" class="btn btn-primary">Search</button>
-          </div>
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="inputDark" name="inputDark" <?php if($_GET["inputDark"] == "on") echo "checked" ?>>
-            <label class="form-check-label" for="exampleCheck1" >Discard dark pictures</label>
+            <div class="form-group col-md-2">
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <div class="form-group col-md-3 form-check">
+              <input type="checkbox" class="form-check-input" id="inputDark" name="inputDark" <?php if($_GET["inputDark"] == "on") echo "checked" ?>>
+              <label class="form-check-label" for="exampleCheck1" >Discard dark pictures</label>
+            </div>
+            <div class="form-group col-md-3 form-check">
+              <input type="checkbox" class="form-check-input" id="inputFeat" name="inputFeat" <?php if($_GET["inputFeat"] == "on") echo "checked" ?>>
+              <label class="form-check-label" for="exampleCheck1" >Only featured images</label>
+            </div>
           </div>
         </form>
       </div>
     </div>
-  </div>
 
     <div class="card mt-2 mb-5">
       <div class="card-body">
@@ -128,7 +132,8 @@
           $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
           $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
           $discardDark = ($_GET["inputDark"] == "on")? True: False;
-          $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $dateOrd ,12, 12 * $pg);
+          $onlyFeatured = ($_GET["inputFeat"] == "on")? True: False;
+          $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $dateOrd ,12, 12 * $pg);
           $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
           $data = $res[0];
           if($res != NULL){
