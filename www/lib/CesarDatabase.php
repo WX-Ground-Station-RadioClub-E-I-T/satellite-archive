@@ -56,12 +56,14 @@ class CesarDatabase{
 
     }
 
-    public function getImages($amount, $offset){
+    public function getImages($onlyFeatured ,$amount, $offset){
       $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
 
+      $filterFeatured = ($onlyFeatured)? "WHERE `featured` = true ": "";
+
       $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated` FROM `cesar-archive-images`
- WHERE `id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata`
+ `filesize_processed`, `date_upload`, `date_updated` FROM `cesar-archive-images` " . $filterFeatured .
+ "AND `id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata`
    WHERE (`metadata_id` = 23 AND `value` = 'False') ) ORDER BY `date_obs` DESC LIMIT " . $amount .
  " OFFSET " . $offset;
 

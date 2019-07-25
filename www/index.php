@@ -16,7 +16,7 @@
       $pg = ($_GET["pg"] == NULL)? 0: $_GET["pg"];
 
       $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
-      $res = $obj->getImages(12, 12 * $pg);
+      $res = $obj->getImages(True, 12, 12 * $pg);
       $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
       $data = $res[0];
       if($res != NULL){
