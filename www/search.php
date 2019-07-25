@@ -127,7 +127,7 @@
 
           <?php
 
-          $pg = ($_GET["pg"] == NULL)? 0: $_GET["pg"];
+          $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
 
           $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
           $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
@@ -178,7 +178,7 @@ END;
 
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
-        <li class="page-item <? if($pg == 0){ echo "disabled"; } ?>">
+        <li class="page-item <? if($pg == 1){ echo "disabled"; } ?>">
           <a class="page-link" href="<?php echo $prevPg ?>" tabindex="-1" <? if($pg == 0){ echo "aria-disabled=\"true\""; } ?>>Previous</a>
         </li>
 
@@ -186,18 +186,32 @@ END;
 
         // With count put the number above
 
-        $pgCounter = ($pg < 5)? 0: $pg - 5;
+        $pgCounter = ($pg < 6)? 1: $pg - 5;
         $maxCounter = ceil($count/12) - 1;
+
+        // Last index button link
+        $query = $_GET;
+        $query['pg'] = $maxCounter;
+        $lastlink = "?" . http_build_query($query);
+
+        // First index button link
+        $query = $_GET;
+        $query['pg'] = 1;
+        $firstlink = "?" . http_build_query($query);
 
         for(; $pgCounter <= $maxCounter ; $pgCounter++){
           $query = $_GET;
           $query['pg'] = $pgCounter;
           $link = "?" . http_build_query($query);
 
+
           //If there are a lot of results then put a button and exit
           if($pgCounter > $pg + 5){
             echo <<<END
-            <li class="page-item"><a class="page-link" href="{$link}">...</a></li>
+            <li class="page-item"><a class="page-link">...</a></li>
+END;
+            echo <<<END
+            <li class="page-item"><a class="page-link" href="{$lastlink}">{$maxCounter}</a></li>
 END;
             break;
           }
@@ -205,6 +219,13 @@ END;
           if($pg == $pgCounter){
             echo <<<END
             <li class="page-item active"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
+END;
+          } elseif ($pgCounter == $pg - 5) {
+            echo <<<END
+            <li class="page-item"><a class="page-link" href="{$firstlink}">1</a></li>
+END;
+            echo <<<END
+            <li class="page-item"><a class="page-link">...</a></li>
 END;
           } else {
             echo <<<END
@@ -214,6 +235,8 @@ END;
 
 
         }
+
+
 
         ?>
 
