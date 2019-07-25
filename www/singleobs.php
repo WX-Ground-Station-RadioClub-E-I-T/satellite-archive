@@ -40,7 +40,7 @@
       <div class="card bg-secondary icons-sub-logo">
         <div class="card-header">
 
-          <a href="/test.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="CSV file output"><i class="fas fa-file-csv icon" style="color:#00a9e0"></i></a>
+          <a href="/generatecsv.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="CSV file output"><i class="fas fa-file-csv icon" style="color:#00a9e0"></i></a>
 
           <a href="/generatejson.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="JSON file output"><i class="far fa-file-code icon" style="color:#00a9e0"></i></a>
 
