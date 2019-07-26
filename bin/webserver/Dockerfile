@@ -71,10 +71,3 @@ RUN npm install --save-dev @fortawesome/fontawesome-free@5.9.0
 RUN npm install xzoom@1.0.14
 RUN npm install hammerjs@2.0.8
 RUN npm install foundation-sites@6.5.3
-
-
-#RUN bower install tempusdominus-bootstrap-4 --save --allow-root
-#RUN bower install jquery --save --allow-root
-#RUN bower install moment --save --allow-root
-#RUN bower install bootstrap --save --allow-root
-#RUN bower install popper.js --save --allow-root
