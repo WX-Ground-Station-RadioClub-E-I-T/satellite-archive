@@ -3,7 +3,7 @@ version: "3"
 services:
   webserver:
     build: ./bin/webserver
-    container_name: 'png-webserver'
+    container_name: 'cesar-archive'
     restart: 'always'
     ports:
       - "80:80"
@@ -23,7 +23,7 @@ services:
       - ARCHIVE_ENDPOINT=http://cesar.esa.int/sun_monitor/archive/
   mysql:
     build: ./bin/mysql
-    container_name: 'png-mysql'
+    container_name: 'cesar-archive-db'
     restart: 'always'
     ports:
       - "3306:3306"
@@ -37,7 +37,7 @@ services:
       MYSQL_PASSWORD: png
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: 'png-phpmyadmin'
+    container_name: 'cesar-archive-phpmyadmin'
     links:
       - mysql
     environment:
@@ -47,8 +47,3 @@ services:
       - '8080:80'
     volumes:
       - /sessions
-  redis:
-    container_name: 'png-redis'
-    image: redis:latest
-    ports:
-      - "6379:6379"
