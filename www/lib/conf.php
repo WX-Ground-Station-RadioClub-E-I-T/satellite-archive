@@ -8,4 +8,4 @@ define("MYSQL_PASS", $_ENV["MYSQL_CESAR_PASSWORD"]);
 define("ARCHIVE_ENDPOINT", $_ENV["ARCHIVE_ENDPOINT"]);
 
 
-define("DEBUG", true);
+define("DEBUG", false);
