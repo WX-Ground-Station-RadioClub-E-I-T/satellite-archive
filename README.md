@@ -1,68 +1,57 @@
-# Cosmos Archive
+# Cesar Archive
 
-## Installation
+![Home screen picture](./pics/screen.png)
 
-**Requeriments**:
-* Docker
-* Docker-compose
+Cesar Archive Viewer it's a web tool to navigate the data obtained in CESAR project. It's developed in `PHP` with `mySQL`, to filter and display the pictures obtained with the telescopes.
 
-### Building image with Docker-compose
+[ESAC Solar Observatory Helios](http://cesar.esa.int/index.php?Section=Observatories_ESAC_Sun) obtain pictures of the sun every day. They are proccessed and uploaded to Cesar Archive.
 
-Cosmos Archive is built using [Docker](https://www.docker.com/). For building the whole project it uses `docker-compose`.
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### Prerequisites
+
+Cesar Archive is built with **Docker**. In order to start the web application, you must have installed:
+
+* [Docker](https://docs.docker.com/install/)
+* [Docker-compose](https://docs.docker.com/compose/install/)
+
+### Installing
 
 To start Cosmos Archive just type in the root directory of the project:
 
 ```
-$ docker compose up
+$ docker-compose up
 ```
 
+Then, it will deploy:
+* **On port 80**: The Webserver application.
+* **On port 8080**: PHPmyadmin connected to the database.
+* **On port 3306**: MySQL database.
 
+## Built With
 
+* [Docker](https://www.docker.com/) - Contanier platform
+* [Docker-compose](https://docs.docker.com/compose/) - Tool for defining and running multi-container Docker applications
+* [Apache](https://httpd.apache.org/) - HTTP Server Project
+* [PHP](https://php.net/)
+* [MySQL](https://www.mysql.com/)
+* [Bootstrap](https://getbootstrap.com/) - Frontend framework
+* [npm](https://www.npmjs.com/) - Javascript package manager
 
+## Authors
 
+* **Fran Acién** - *Initial work* - [Github](https://github.com/acien101)
 
-### Frontend Dependencies
-Frontend dependencies are download automatically by Docker, [see Dockerfile](./bin/webserver/Dockerfile), and stored (on the Docker) in `/var/www/node_components`. Apache is configured for serving these dependecies in `localhost/dep/`, see [apache conf](./config/vhosts/default.conf).
+See also the list of contributors who participated in this project.
 
-If you want to download a new dependency with *npm* or *bower*, put it on the [Dockerfile](./bin/webserver/Dockerfile), and then setup the machine for serving on a path, with Apache. This [Dockerfile](./bin/webserver/Dockerfile) is a good example.
+## License
 
-## How works?
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-### How its built?
+## How it works
 
-Comos-archive is built using PHP-MYSQL. PHP dependencies are installed using composer, located inside docker image in `/var/www/vendor` [see webserver Dockerfile](./webserver/Dockerfile).
+The whole project is configured by *Docker* in the **Dockerfile** on `./bin`.
 
-
-# LAMP stack built with Docker Compose
-
-![Landing Page](https://preview.ibb.co/gOTa0y/LAMP_STACK.png)
-
-This is a basic LAMP stack environment built using Docker Compose. It consists following:
-
-* PHP
-* Apache
-* MySQL
-* phpMyAdmin
-
-As of now, we have 3 different branches for different PHP versions. Use appropriate branch as per your php version need:
-* [5.6.x](https://github.com/sprintcube/docker-compose-lamp/tree/5.6.x)
-* [7.1.x](https://github.com/sprintcube/docker-compose-lamp/tree/7.1.x)
-* [7.2.x](https://github.com/sprintcube/docker-compose-lamp/tree/7.2.x)
-
-## Installation
-
-Clone this repository on your local computer and checkout the appropriate branch e.g. 7.1.x. Run the `docker-compose up -d`.
-
-```shell
-git clone https://github.com/sprintcube/docker-compose-lamp.git
-cd docker-compose-lamp/
-git fetch --all
-git checkout 7.1.x
-docker-compose up -d
-```
-
-Your LAMP stack is now ready!! You can access it via `http://localhost`.
-
-## Configuration and Usage
-
-Please read from appropriate version branch.
+Npm modules are installed when the container starts, saved on `/var/www/node_modules` inside the Docker machine. With Apache, modules are redirected on `localhost/dep/`. See [index.php](./www/index.php) for more information.
