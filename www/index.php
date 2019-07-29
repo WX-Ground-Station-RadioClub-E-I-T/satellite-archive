@@ -13,7 +13,7 @@
     <div class="row text-center main-block">
       <?php
 
-      $pg = ($_GET["pg"] == NULL)? 0: $_GET["pg"];
+      $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
 
       $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
       $res = $obj->getImages(True, 12, 12 * $pg);
