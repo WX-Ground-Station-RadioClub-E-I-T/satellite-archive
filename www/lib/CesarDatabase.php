@@ -90,7 +90,7 @@ class CesarDatabase{
       }
 
       // Then we have to count the results, the same query with a counter and without the limit
-      $sql = "SELECT COUNT(*) FROM `cesar-archive-images`";
+      $sql = "SELECT COUNT(*) FROM `cesar-archive-images` " . $filterFeatured;
 
       if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 

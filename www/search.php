@@ -133,7 +133,7 @@
           $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
           $discardDark = ($_GET["inputDark"] == "on")? True: False;
           $onlyFeatured = ($_GET["inputFeat"] == "on")? True: False;
-          $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $dateOrd ,12, 12 * $pg);
+          $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $dateOrd ,12, 12 * ($pg - 1));
           $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
           $data = $res[0];
           if($res != NULL){
@@ -187,7 +187,7 @@ END;
         // With count put the number above
 
         $pgCounter = ($pg < 6)? 1: $pg - 5;
-        $maxCounter = ceil($count/12) - 1;
+        $maxCounter = ceil($count/12);
 
         // Last index button link
         $query = $_GET;
