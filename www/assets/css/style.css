@@ -11,12 +11,15 @@ footer {
 }
 
 a {
-  color: #81a7c1!important;
   text-decoration: none;
 }
 
 * {
   font-family: 'Roboto Slab', serif;
+}
+
+.nav-link {
+  color: #81a7c1!important;
 }
 
 .menu_top_main {
