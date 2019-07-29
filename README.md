@@ -20,7 +20,7 @@ Cesar Archive is built with **Docker**. In order to start the web application, y
 To start Cosmos Archive just type in the root directory of the project:
 
 ```
-$ docker-compose up
+$ docker-compose up -d
 ```
 
 Then, it will deploy:
@@ -31,8 +31,7 @@ Then, it will deploy:
 Then we have to import the `sample_database.sql` to MySQL. Run the following command:
 
 ```
-$ docker exec -i cesar-archive-db bash -c 'mysql -u root --password=tiger -e "CREATE DATABASE sample_database";
-mysql -u root sample_database --password=tiger < /home/sample_database.sql'
+$ docker exec -i cesar-archive-db bash -c 'mysql -u root sample_database --password=tiger < /home/sample_database.sql'
 ```
 
 ## Built With
