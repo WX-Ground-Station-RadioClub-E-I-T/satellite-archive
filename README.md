@@ -8,8 +8,6 @@ Cesar Archive Viewer it's a web tool to navigate the data obtained in CESAR proj
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
 ### Prerequisites
 
 Cesar Archive is built with **Docker**. In order to start the web application, you must have installed:
@@ -29,6 +27,13 @@ Then, it will deploy:
 * **On port 80**: The Webserver application.
 * **On port 8080**: PHPmyadmin connected to the database.
 * **On port 3306**: MySQL database.
+
+Then we have to import the `sample_database.sql` to MySQL. Run the following command:
+
+```
+$ docker exec -i cesar-archive-db bash -c 'mysql -u root --password=tiger -e "CREATE DATABASE sample_database";
+mysql -u root sample_database --password=tiger < /home/sample_database.sql'
+```
 
 ## Built With
 
