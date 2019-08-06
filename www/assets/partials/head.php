@@ -1,20 +1,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<?php include './lib/conf.php' ?>
+<?php include './lib/CesarDatabase.php' ?>
+<?php include './lib/CesarImage.php' ?>
+<?php include './lib/CesarMetadata.php' ?>
+<?php include './lib/CesarObservatory.php' ?>
+
 <title>Cesar Archive Viewer</title>
 
 <link href="http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700" rel="stylesheet" type="text/css">
 
-<link rel="stylesheet" href="/dep/bootstrap/dist/css/bootstrap.min.css" />
-<link rel="stylesheet" href="/dep/tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css" />
+<link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "bootstrap/dist/css/bootstrap.min.css"; ?>"/>
+<link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css"; ?>"/>
 <link rel="stylesheet" href="/assets/css/style.css">
 
-<script type="text/javascript" src="/dep/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="/dep/@fortawesome/fontawesome-free/js/all.js"></script>
-<script type="text/javascript" src="/dep/moment/min/moment.min.js"></script>
-<script type="text/javascript" src="/dep/popper.js/dist/umd/popper.min.js"></script>
-<script type="text/javascript" src="/dep/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/dep/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"></script>
+<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "jquery/dist/jquery.min.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "@fortawesome/fontawesome-free/js/all.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "moment/min/moment.min.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "popper.js/dist/umd/popper.min.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "bootstrap/dist/js/bootstrap.min.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"; ?>"></script>
 <script type="text/javascript" src="/lib/modal-triggers.js"></script>
 
 <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/apple-icon-57x57.png">
@@ -72,9 +78,3 @@ $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Const
             } });
 
 </script>
-
-<?php include './lib/conf.php' ?>
-<?php include './lib/CesarDatabase.php' ?>
-<?php include './lib/CesarImage.php' ?>
-<?php include './lib/CesarMetadata.php' ?>
-<?php include './lib/CesarObservatory.php' ?>
