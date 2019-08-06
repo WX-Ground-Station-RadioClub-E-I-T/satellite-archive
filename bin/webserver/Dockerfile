@@ -1,4 +1,4 @@
-FROM php:7.1.30-apache
+FROM php:5.6.40-apache
 
 # https://askubuntu.com/questions/41605/trouble-downloading-packages-list-due-to-a-hash-sum-mismatch-error
 RUN rm -rf /var/lib/apt/lists/*
@@ -12,7 +12,7 @@ RUN apt-get upgrade -y --fix-missing
 RUN apt-get -y install apt-utils nano wget dialog
 
 # Install important libraries
-RUN apt-get -y install --fix-missing apt-utils build-essential git curl libcurl4 libcurl3-dev zip
+RUN apt-get -y install --fix-missing apt-utils build-essential git curl libcurl3 libcurl3-dev zip
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include './assets/partials/head.php' ?>
+    <?php include 'assets/partials/head.php' ?>
     <script type="text/javascript" src="/dep/hammerjs/hammer.min.js"></script>
     <script type="text/javascript" src="/dep/xzoom/src/xzoom.js"></script>
     <script type="text/javascript" src="/dep/foundation-sites/dist/js/foundation.min.js"></script>
@@ -10,7 +10,7 @@
 <body>
 
 <!-- Navigation -->
-<?php include './assets/partials/navbar.php'?>
+<?php include 'assets/partials/navbar.php'?>
 
 <!-- Page Content -->
 <div class="container">
@@ -105,6 +105,6 @@
 <!-- /.container -->
 
 <!-- Footer -->
-<?php include './assets/partials/footer.php'?>
+<?php include 'assets/partials/footer.php'?>
 </body>
 </html>

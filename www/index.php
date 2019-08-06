@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include './assets/partials/head.php' ?>
+    <?php include 'assets/partials/head.php' ?>
 </head>
 <body>
   <!-- Navigation -->
-  <?php include './assets/partials/navbar.php'?>
+  <?php include 'assets/partials/navbar.php'?>
 
   <!-- Page Content -->
   <div class="container">
@@ -60,8 +60,8 @@ END;
 
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
-        <li class="page-item <? if($pg == 1){ echo "disabled"; } ?>">
-          <a class="page-link" href="<?php echo $prevPg ?>" tabindex="-1" <? if($pg == 0){ echo "aria-disabled=\"true\""; } ?>>Previous</a>
+        <li class="page-item <?php if($pg == 1){ echo "disabled"; } ?>">
+          <a class="page-link" href="<?php echo $prevPg ?>" tabindex="-1" <?php if($pg == 0){ echo "aria-disabled=\"true\""; } ?>>Previous</a>
         </li>
 
         <?php
@@ -120,7 +120,7 @@ END;
 
         ?>
 
-        <li class="page-item <? if($pg == $maxCounter){ echo "disabled"; } ?>">
+        <li class="page-item <?php if($pg == $maxCounter){ echo "disabled"; } ?>">
           <a class="page-link" href="<?php echo $nextPg ?>">Next</a>
         </li>
       </ul>
@@ -128,7 +128,7 @@ END;
   </div>
   <!-- /.container -->
   <!-- Footer -->
-  <?php include './assets/partials/footer.php'?>
+  <?php include 'assets/partials/footer.php'?>
 
   <!-- Modal -->
   <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

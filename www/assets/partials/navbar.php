@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
   <div class="container">
-    <a href="/">
-      <img src="/assets/images/logo.png" height="70" alt="" href="/">
+    <a href="index.php">
+      <img src="assets/images/logo.png" height="70" alt="" href="index.php">
     </a>
 
 
@@ -15,7 +15,7 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link active pb-0 pt-3" href="/">Home
+            <a class="nav-link active pb-0 pt-3" href="index.php">Home
               <span class="sr-only">(current)</span>
             </a>
           </div>
@@ -26,7 +26,7 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="/about.php">About</a>
+            <a class="nav-link pb-0 pt-3" href="about.php">About</a>
           </div>
           <div class="menu_top_second">
             Helios observatory
@@ -74,7 +74,7 @@
         <i class="fas fa-search" style="color:#00a9e0"></i>
         <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search...">
         <small class="form-text text-muted">
-          Or <a href="./search.php">advanced search</a>
+          Or <a href="search.php">advanced search</a>
         </small>
       </form>
 

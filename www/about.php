@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <?php include './assets/partials/head.php' ?>
+    <?php include 'assets/partials/head.php' ?>
 </head>
 <body>
   <!-- Navigation -->
-  <?php include './assets/partials/navbar.php'?>
+  <?php include 'assets/partials/navbar.php'?>
 
   <!-- Page Content -->
   <div class="container">
@@ -23,7 +23,7 @@
   </div>
   <!-- /.container -->
   <!-- Footer -->
-  <?php include './assets/partials/footer.php'?>
+  <?php include 'assets/partials/footer.php'?>
 
   <!-- Modal -->
   <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
