@@ -2,10 +2,10 @@
 <html>
 <head>
     <?php include 'assets/partials/head.php' ?>
-    <script type="text/javascript" src="/dep/hammerjs/hammer.min.js"></script>
-    <script type="text/javascript" src="/dep/xzoom/src/xzoom.js"></script>
-    <script type="text/javascript" src="/dep/foundation-sites/dist/js/foundation.min.js"></script>
-    <script type="text/javascript" src="/lib/zoom.js"></script>
+    <script type="text/javascript" src="dep/hammerjs/hammer.min.js"></script>
+    <script type="text/javascript" src="dep/xzoom/src/xzoom.js"></script>
+    <script type="text/javascript" src="dep/foundation-sites/dist/js/foundation.min.js"></script>
+    <script type="text/javascript" src="lib/zoom.js"></script>
 </head>
 <body>
 
@@ -40,9 +40,9 @@
       <div class="card bg-secondary icons-sub-logo">
         <div class="card-header">
 
-          <a href="/generatecsv.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="CSV file output"><i class="fas fa-file-csv icon" style="color:#00a9e0"></i></a>
+          <a href="generatecsv.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="CSV file output"><i class="fas fa-file-csv icon" style="color:#00a9e0"></i></a>
 
-          <a href="/generatejson.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="JSON file output"><i class="far fa-file-code icon" style="color:#00a9e0"></i></a>
+          <a href="generatejson.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="JSON file output"><i class="far fa-file-code icon" style="color:#00a9e0"></i></a>
 
           <a href="<?php echo $pic->getExtSrc(); ?>" data-toggle="tooltip" data-placement="bottom" title="Download Thumbnail"><i class="far fa-image icon" style="color:#00a9e0"></i></a>
 
