@@ -28,6 +28,6 @@ $(document).ready(function(){
     $("#alt").text(alt + " m");
     $("#filter").text(filter);
     $('.modal-body .card-img-top').attr('src', src);
-    $('.modal-footer a[href]').attr('href', '/singleobs.php?id=' + id);
+    $('.modal-footer a[href]').attr('href', 'singleobs.php?id=' + id);
   });
 });
