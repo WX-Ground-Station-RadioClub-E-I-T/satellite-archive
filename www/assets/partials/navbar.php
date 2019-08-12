@@ -26,6 +26,15 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
+            <a class="nav-link pb-0 pt-3" href="videos.php">Videos</a>
+          </div>
+          <div class="menu_top_second">
+            Daily videos
+          </div>
+        </li>
+
+        <li class="nav-item ml-3">
+          <div class="menu_top_main text-left">
             <a class="nav-link pb-0 pt-3" href="about.php">About</a>
           </div>
           <div class="menu_top_second">
