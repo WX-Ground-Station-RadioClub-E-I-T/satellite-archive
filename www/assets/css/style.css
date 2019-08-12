@@ -18,6 +18,10 @@ a {
   font-family: 'Roboto Slab', serif;
 }
 
+.sub-text {
+  color: grey!important;
+}
+
 .nav-link {
   color: #81a7c1!important;
 }

@@ -14,6 +14,20 @@
   <!-- Navigation -->
   <?php include 'assets/partials/navbar.php'?>
 
+  <?php
+
+  $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
+
+  $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+  $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
+  $discardDark = ($_GET["inputDark"] == "on")? True: False;
+  $onlyFeatured = ($_GET["inputFeat"] == "on")? True: False;
+  $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $dateOrd ,12, 12 * ($pg - 1));
+  $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
+  $data = $res[0];
+
+  ?>
+
   <!-- Page Content -->
   <div class="container">
     <div class="card main-block">
@@ -107,6 +121,10 @@
         $dateAsc = "?" . http_build_query($query);
         ?>
 
+        <div class="float-left sub-text">
+          Obtained <?php echo number_format($count); ?> results
+        </div>
+
         <div class="float-right">
           <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -127,15 +145,6 @@
 
           <?php
 
-          $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
-
-          $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
-          $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
-          $discardDark = ($_GET["inputDark"] == "on")? True: False;
-          $onlyFeatured = ($_GET["inputFeat"] == "on")? True: False;
-          $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $dateOrd ,12, 12 * ($pg - 1));
-          $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
-          $data = $res[0];
           if($res != NULL){
             foreach($data as $pic){
               echo <<<END
