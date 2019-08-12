@@ -79,9 +79,9 @@
       -->
     </ul>
 
-      <form class="form-inline my-2 my-lg-0 pt-3 float-right">
+      <form class="form-inline my-2 my-lg-0 pt-3 float-right" action="simplesearch.php" method="GET">
         <i class="fas fa-search" style="color:#00a9e0"></i>
-        <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search...">
+        <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search..." name="query" id="inputQuery" <?php if($_GET[query] != ""){echo "value =\"" . $_GET[query] . "\"";} ?>>
         <small class="form-text text-muted">
           Or <a href="search.php">advanced search</a>
         </small>
