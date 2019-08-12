@@ -46,7 +46,7 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="http://cesar.esa.int/index.php?Section=Contact">Contact</a>
+            <a class="nav-link pb-0 pt-3" href="http://cesar.esa.int/index.php?Section=Contact&Origin=Archive_Viewer">Contact</a>
           </div>
           <div class="menu_top_second">
             Contact us
