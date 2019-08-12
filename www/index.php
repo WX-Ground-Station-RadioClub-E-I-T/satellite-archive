@@ -4,22 +4,53 @@
     <?php include 'assets/partials/head.php' ?>
 </head>
 <body>
+  <?php
+
+  $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
+
+  $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+  $res = $obj->getImages(True, 12, 12 * ($pg - 1));
+  $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
+  $data = $res[0];
+
+  $picsCounter = $obj->getObservationCount();
+  ?>
+
+
   <!-- Navigation -->
   <?php include 'assets/partials/navbar.php'?>
+  <div class="jumbotron jumbotron-fluid my-jumbotron">
+    <div class="container">
+
+
+
+      <div class="float-right" style="width: 18rem;">
+        <div class="alert alert-primary" role="alert">
+
+          <?php
+
+          $length = count($picsCounter);
+          for($i = 0; $i < $length; $i++){
+            echo "<b>" . $picsCounter[$i][0] . "</b>: " . $picsCounter[$i][1] . " images <br>";
+          }
+
+
+          ?>
+        </div>
+      </div>
+
+
+
+      <h1 class="display-4">CESAR Archive Viewer</h1>
+      <p class="lead">CESAR Educational Initiative sky observations database</p>
+    </div>
+  </div>
 
   <!-- Page Content -->
   <div class="container">
     <!-- Page Features -->
     <div class="row text-center main-block">
       <?php
-
-      $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
-
-      $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
-
-      $res = $obj->getImages(True, 12, 12 * ($pg - 1));
-      $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
-      $data = $res[0];
       if($res != NULL){
         foreach($data as $pic){
           echo <<<END

@@ -384,4 +384,52 @@ class CesarDatabase{
     return $res;
   }
 
+  public function getObservationCount(){    // Get amount of pictures of every source
+    $res = array();
+
+    // First get sources names
+    $sql = "SELECT DISTINCT `value` FROM `cesar-archive-images-metadata` WHERE `metadata_id` = 34";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+      error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+      exit;
+    }
+
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        array_push($res, array(0 => $row['value'], 1 => -1));
+      }
+    } else {
+      error_log("Ninguna coincidencia", 0);
+      exit;
+    }
+
+    // Now we have to put the amount of pictures in every source
+    $length = count($res);
+    for($i = 0; $i < $length; $i++){
+      $sql = "SELECT COUNT(*) FROM `cesar-archive-images-metadata` WHERE `value` = \"" . $res[$i][0] . "\";";
+
+      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+      if (!$resultado = $this->conn->query($sql)) {
+        error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+        exit;
+      }
+
+      if ($resultado->num_rows > 0) {
+        while($row = $resultado->fetch_assoc()) {
+          $res[$i][1] = $row["COUNT(*)"];
+        }
+      } else {
+        error_log("Ninguna coincidencia", 0);
+        exit;
+      }
+    }
+
+
+    return $res;
+  }
+
 }
