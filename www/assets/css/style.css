@@ -184,3 +184,21 @@ a {
   font-weight: bold;
   padding: 10px;
 }
+
+.rate {
+  font-size: 35px;
+}
+
+.rate-base-layer
+{
+    color: #aaa;
+}
+.rate-hover-layer
+{
+    color: #ffc107;
+}
+
+.rate .rate-select-layer
+{
+    color: #ffc107;
+}

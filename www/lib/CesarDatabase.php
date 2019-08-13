@@ -432,4 +432,100 @@ class CesarDatabase{
     return $res;
   }
 
+  // Return if there is a rate with the given ip and image_id
+  public function existRate($imageid, $ip){
+    $res = false;
+
+    $sql = "SELECT 1 FROM `cesar-archive-images-rates` WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\" LIMIT 1";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+    if ($resultado->num_rows > 0) {
+      $res = true;
+    }
+
+    return $res;
+  }
+
+  public function insertRate($imageid, $rate, $ip, $browser){
+    $sql = "INSERT INTO `cesar-archive-images-rates` (`image_id`, `rate`, `ip`, `browser`) VALUES (" . $imageid .
+        ", \"" . $rate . "\", \"" . $ip . "\" , \"" . $browser .
+        "\")";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+  }
+
+  // Update an alredy set rate at `cesar-archive-images-rates`
+  public function updateRate($imageid, $rate, $ip){
+    $sql = "UPDATE `cesar-archive-images-rates` SET `rate` = " . $rate . " WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\"";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+  }
+
+  // Update the average rate at `cesar-archive-images-rates`
+  public function updateAvrRate($imageid){
+    $avr = -1;
+
+    $sql = "SELECT AVG(`rate`) FROM `cesar-archive-images-rates` WHERE `image_id` = " . $imageid;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $avr = $row["AVG(`rate`)"];
+      }
+    }
+
+    $sql = "UPDATE `cesar-archive-images` SET `rate`=" . $avr . " WHERE `id` = " . $imageid;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+
+    return $avr;
+  }
+
+  // Get Avr Rate from `cesar-archive-images-rates`
+  public function getAvrRate($imageid){
+    $res = -1;
+
+    $sql = "SELECT `rate` FROM `cesar-archive-images` WHERE `id` = " . $imageid;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $res = $row["rate"];
+      }
+    }
+
+    return $res;
+  }
+
 }

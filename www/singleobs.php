@@ -2,10 +2,32 @@
 <html>
 <head>
     <?php include 'assets/partials/head.php' ?>
-    <script type="text/javascript" src="dep/hammerjs/hammer.min.js"></script>
-    <script type="text/javascript" src="dep/xzoom/src/xzoom.js"></script>
-    <script type="text/javascript" src="dep/foundation-sites/dist/js/foundation.min.js"></script>
+    <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "hammerjs/hammer.min.js"; ?>"></script>
+    <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "xzoom/src/xzoom.js"; ?>"></script>
+    <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "foundation-sites/dist/js/foundation.min.js"; ?>"></script>
     <script type="text/javascript" src="lib/zoom.js"></script>
+    <script type="text/javascript" src="assets/js/rater.min.js"></script>
+
+
+    <?php
+    $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+    $avrRate = $obj->getAvrRate($_GET["id"]);
+    ?>
+
+    <script>
+        $(document).ready(function(){
+            $(".rate").rate({
+                max_value: 5,
+                step_size: 0.5,
+                change_once: false, // Determines if the rating can only be set once
+                ajax_method: 'POST',
+                url: 'http://localhost/addrate.php',
+                additional_data: {id: <?php echo $_GET["id"] ?>},
+                initial_value: <?php echo $avrRate;?>
+            });
+        });
+    </script>
+
 </head>
 <body>
 
@@ -26,12 +48,6 @@
 
 
     <div class="col-6">
-      <!--
-      <img class="card-img-top"
-           src="<?php echo $pic->getExtSrc(); ?>"
-           alt="">
-        -->
-
       <div class="xzoom-container">
         <img class="xzoom card-img-top" id="xzoom-default" src="<?php echo $pic->getExtSrc(); ?>" xoriginal="<?php echo $pic->getExtSrc(); ?>" />
       </div>
@@ -52,32 +68,32 @@
 
         </div>
       </div>
+
+      <div class="float-right  mt-4 mr-4 ">
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+    				<div class="rating-block">
+    					<h4>Average user rating</h4>
+    					<h2 class="bold padding-bottom-7"> <?php echo number_format($avrRate); ?> <small>/ 5</small></h2>
+
+              <div class="rate"></div>
+
+
+    					</button>
+    				</div>
+          </div>
+    		</div>
+
+      </div>
     </div>
 
     <div class="col">
       <div class="col-sm">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item list-group-item-primary"><b class="float-left">Observatory Name:</b> <a class="float-right" id="alt"><?php echo $pic->getObservatory()->getName(); ?></a></li>
           <li class="list-group-item list-group-item-primary"><b class="float-left">Source:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getSource(); ?></a></li>
           <li class="list-group-item list-group-item-primary"><b class="float-left">Short description:</b> <a class="float-right" id="alt"><?php echo $pic->getObservatory()->getShortDescription(); ?></a></li>
-          <li class="list-group-item list-group-item-primary"><b class="float-left">Since:</b> <a class="float-right" id="alt"><?php echo $pic->getObservatory()->getDateCreated(); ?></a></li>
-          <li class="list-group-item list-group-item-primary" data-toggle="tooltip" data-placement="top" title="Organisation responsible for data"><b class="float-left">Organization</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getOrigin(); ?></a></li>
           <li class="list-group-item list-group-item-success"><b class="float-left">Date observation:</b> <a class="float-right" id="alt"><?php echo $pic->getDateObs(); ?></a></li>
-          <li class="list-group-item list-group-item-success"><b class="float-left">Date updated:</b> <a class="float-right" id="alt"><?php echo $pic->getDateUpdated(); ?></a></li>
-          <li class="list-group-item list-group-item-success"><b class="float-left">Date uploaded:</b> <a class="float-right" id="alt"><?php echo $pic->getDateUpload(); ?></a></li>
-          <li class="list-group-item list-group-item-dark"><b class="float-left">Filesize:</b> <a class="float-right" id="alt"><?php echo $pic->getFilesizeProcessed(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Observatory latitude"><b class="float-left">Latitude</b> <a class="float-right" id="alt" align="right"><?php echo $pic->getMetadata()->getLatitude(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Observatory longitude"><b class="float-left">Longitude</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getLongitud(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Observatory altitude"><b class="float-left">Altitude</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getAltitude(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Telescope right ascension"><b class="float-left">TEL-RA</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelRa(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Telescope declination"><b class="float-left">TEL-DEC</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelDec(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Telescope azimuth"><b class="float-left">TEL-AZ</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelAz(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Telescope altitude"><b class="float-left">TEL-ALT</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelAlt(); ?></a></li>
-          <li class="list-group-item" data-toggle="tooltip" data-placement="top" title="Name of the data acqusition telescope"><b class="float-left">Telescop</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelescop(); ?></a></li>
-          <li class="list-group-item" data-toggle="tooltip" data-placement="top" title="Name of the data acqusition instrument"><b class="float-left">Instrument</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getInstrume(); ?></a></li>
-          <li class="list-group-item" data-toggle="tooltip" data-placement="top" title="Exposure length in milliseconds"><b class="float-left">Time exposure</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getExposure() ." ms"; ?></a></li>
-          <li class="list-group-item" data-toggle="tooltip" data-placement="top" title="Path of the processing script"><b class="float-left">Script</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getScript(); ?></a></li>
-          <li class="list-group-item" data-toggle="tooltip" data-placement="top" title=""><b class="float-left">Mount name</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getMntName(); ?></a></li>
+          <li class="list-group-item list-group-item-success"><b class="float-left">Image ID:</b> <a class="float-right" id="alt"><?php echo $pic->getId(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Local Sidereal Time"><b class="float-left">LST</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getLst(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Position of the center of the Sun, e.g.(horizontal, vertical), in pixels relative to the top left corner"><b class="float-left">Sun XY-PX</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getSunXyPx(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Bits per pixel component"><b class="float-left">BITPIX</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getBitpix(); ?></a></li>
@@ -96,6 +112,22 @@
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Unsharp flag"><b class="float-left">UNSHARP-FLAG</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getUnsharpFlag(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Lower value for mask of the Sun"><b class="float-left">MASK-LOW</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getMaskLow(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="Stretching parameters"><b class="float-left">STRETCH-INPUT</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getStretchInput(); ?></a></li>
+          <li class="list-group-item list-group-item-dark"><b class="float-left">Filesize:</b> <a class="float-right" id="alt"><?php echo $pic->getFilesizeProcessed(); ?></a></li>
+          <li class="list-group-item list-group-item-info"><b class="float-left">Observatory Name:</b> <a class="float-right" id="alt"><?php echo $pic->getObservatory()->getName(); ?></a></li>
+          <li class="list-group-item list-group-item-info"><b class="float-left">Operation since:</b> <a class="float-right" id="alt"><?php echo $pic->getObservatory()->getDateCreated(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Organisation responsible for data"><b class="float-left">Operated by:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getOrigin(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Observatory latitude"><b class="float-left">Latitude</b> <a class="float-right" id="alt" align="right"><?php echo $pic->getMetadata()->getLatitude(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Observatory longitude"><b class="float-left">Longitude</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getLongitud(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Observatory altitude"><b class="float-left">Altitude</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getAltitude(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Telescope right ascension"><b class="float-left">TEL-RA</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelRa(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Telescope declination"><b class="float-left">TEL-DEC</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelDec(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Telescope azimuth"><b class="float-left">TEL-AZ</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelAz(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Telescope altitude"><b class="float-left">TEL-ALT</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelAlt(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Name of the data acqusition telescope"><b class="float-left">Telescop</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTelescop(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Name of the data acqusition instrument"><b class="float-left">Instrument</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getInstrume(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Exposure length in milliseconds"><b class="float-left">Time exposure</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getExposure() ." ms"; ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="Path of the processing script"><b class="float-left">Script</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getScript(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title=""><b class="float-left">Mount name</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getMntName(); ?></a></li>
         </ul>
       </div>
     </div>
