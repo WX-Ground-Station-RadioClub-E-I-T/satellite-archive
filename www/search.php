@@ -20,10 +20,13 @@
 
   $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
   $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
-  $dateOrd = ($_GET["dateOrd"] == NULL)? "desc": $_GET["dateOrd"];    // Current oder
+
+  // Ordenation modes can be {"0" -> date desc, "1" -> date asc, "2" -> rate desc, "3" rate asc}
+  $ord = ($_GET["ord"] == NULL)? "0": $_GET["ord"];    // Current oder
+
   $discardDark = ($_GET["inputDark"] == "on")? True: False;
   $onlyFeatured = ($_GET["inputFeat"] == "on")? True: False;
-  $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $dateOrd ,12, 12 * ($pg - 1));
+  $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $ord ,12, 12 * ($pg - 1));
   $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
   $data = $res[0];
 
@@ -110,13 +113,23 @@
 
         // Order By Date desc Button
         $query = $_GET;
-        $query['dateOrd'] = "desc";
+        $query['ord'] = "0";
         $dateDesc = "?" . http_build_query($query);
 
         // Order by Date asc button
         $query = $_GET;
-        $query['dateOrd'] = "asc";
+        $query['ord'] = "1";
         $dateAsc = "?" . http_build_query($query);
+
+        // Order by Rate desc button
+        $query = $_GET;
+        $query['ord'] = "2";
+        $rateDesc = "?" . http_build_query($query);
+
+        // Order by Rate asc button
+        $query = $_GET;
+        $query['ord'] = "3";
+        $rateAsc = "?" . http_build_query($query);
         ?>
 
         <div class="float-left sub-text">
@@ -126,11 +139,13 @@
         <div class="float-right">
           <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Order by Date <?php echo ($dateOrd == "desc")? "DESC" : "ASC";?>
+              Order by Date <?php echo ($ord == "0")? "DESC" : "ASC";?>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" href="<?php echo $dateDesc; ?>">Date DESC</a>
               <a class="dropdown-item" href="<?php echo $dateAsc; ?>">Date ASC</a>
+              <a class="dropdown-item" href="<?php echo $rateDesc; ?>">Rate DESC</a>
+              <a class="dropdown-item" href="<?php echo $rateAsc; ?>">Rate ASC</a>
             </div>
           </div>
         </div><br><br>

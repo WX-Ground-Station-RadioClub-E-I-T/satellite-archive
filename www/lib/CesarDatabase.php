@@ -256,7 +256,25 @@ class CesarDatabase{
       AND '" .  date( 'Y-m-d H:i:s', strtotime($until)) . "' ";
     }
 
-    $sqlOrd = ($order != NULL) ? (($order == "asc")? "ORDER BY `date_obs` ASC ": "ORDER BY `date_obs` DESC "): "";
+    // Ordenation modes can be {"0" -> date desc, "1" -> date asc, "2" -> rate desc, "3" rate asc}
+
+    switch($order){
+      case 0:
+        $sqlOrd = "ORDER BY `date_obs` DESC ";
+        break;
+      case 1:
+        $sqlOrd = "ORDER BY `date_obs` ASC ";
+        break;
+      case 2:
+        $sqlOrd = "ORDER BY `rate` DESC ";
+        break;
+      case 3:
+        $sqlOrd = "ORDER BY `rate` ASC ";
+        break;
+      default:
+        $sqlOrd = "ORDER BY `date_obs` DESC ";
+    }
+
     $sqlLimit = ($amount != NULL) ? "LIMIT " . $amount . " " : "LIMIT 12";
     $sqlOffset = ($offset != NULL) ? "OFFSET " . $offset : "";
 
