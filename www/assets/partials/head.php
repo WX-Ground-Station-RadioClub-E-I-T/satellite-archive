@@ -49,8 +49,11 @@ date_default_timezone_set('UTC');
 
 <script type="text/javascript">
   $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip({
+      trigger : 'hover'
+    });
   });
+
 
   $.fn.datetimepicker.Constructor.Default = $.extend({}, $.fn.datetimepicker.Constructor.Default, {
     viewMode: 'days',
