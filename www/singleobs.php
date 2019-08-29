@@ -59,29 +59,45 @@
 
       <div class="card bg-secondary icons-sub-logo">
         <div class="card-header">
-
           <a href="generatecsv.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="CSV file output"><i class="fas fa-file-csv icon" style="color:#00a9e0"></i></a>
-
           <a href="generatejson.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="JSON file output"><i class="far fa-file-code icon" style="color:#00a9e0"></i></a>
-
           <a href="<?php echo $pic->getExtSrc(); ?>" data-toggle="tooltip" data-placement="bottom" title="Download Thumbnail"><i class="far fa-image icon" style="color:#00a9e0"></i></a>
-
           <a href="<?php echo $pic->getExtSrcLarge(); ?>" data-toggle="tooltip" data-placement="bottom" title="Download Large Image"><i class="far fa-image icon" style="color:#00a9e0"></i></a>
-
           <a href="<?php echo $pic->getExtSrcBitmap(); ?>" data-toggle="tooltip" data-placement="bottom" title="Download Bitmap"><i class="far fa-image icon" style="color:#00a9e0"></i></a>
-
         </div>
       </div>
 
-      <div class="float-right  mt-4 mr-4 ">
-        <div class="card" style="width: 18rem;">
-          <div class="card-body">
-    				<div class="rating-block">
+      <div class="row">
+        <div class="col-sm-5 mt-4">
+          <div class="card icons-sub-logo">
+            <div class="card-body">
+              <!-- Load Facebook SDK for JavaScript -->
+              <div id="fb-root"></div>
+              <script>(function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+                fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));</script>
 
+              <!-- Facebook share button code -->
+              <div class="fb-share-button"
+              data-href="<?php echo "https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";?>"
+              data-layout="button">
+              </div>
+
+              <a href="<?php echo "https://twitter.com/intent/tweet?text=Check%20out%20this%20observation%20from%20ESAC%20Helios%20observatory%20https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";?>" data-toggle="tooltip" data-placement="bottom" title="Share on twitter"><i class="fab fa-twitter-square icon" style="color:#1DA1F2"></i></a>
+              <a href="<?php echo "mailto:?subject=Check out this observation from ESAC Helios Observatory&amp;body=Check out this site https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"; ?>" data-toggle="tooltip" data-placement="bottom" title="Send by mail"><i class="fas fa-envelope icon" style="color:#00a9e0"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 mt-4 mr-4 rating-block">
+          <div class="card">
+            <div class="card-body">
               <?php
-
               $formatedRate = number_format($avrRate, 1);
-
               if ($avrRate != ""){
                 echo <<<END
                 <h4>Rating</h4>
@@ -94,18 +110,12 @@ END;
                 <div class="rate"></div>
 END;
               }
-
               ?>
-
-
-              <div id="vote-text">
-              </div>
-
+              <div id="vote-text"></div>
     					</button>
-    				</div>
-          </div>
-    		</div>
-
+            </div>
+      		</div>
+        </div>
       </div>
     </div>
 
