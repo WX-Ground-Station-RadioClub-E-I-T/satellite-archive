@@ -2,6 +2,10 @@
 <html>
 <head>
   <?php include 'assets/partials/head.php' ?>
+
+  <script>
+  $('.dropdown-toggle').dropdown()
+  </script>
 </head>
 <body>
 
@@ -26,7 +30,7 @@
 
   $discardDark = ($_GET["inputDark"] == "on")? True: False;
   $onlyFeatured = ($_GET["inputFeat"] == "on")? True: False;
-  $res = $obj->advanceSearch($_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $ord ,12, 12 * ($pg - 1));
+  $res = $obj->advanceSearch($_GET["inputQuery"], $_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $ord ,12, 12 * ($pg - 1));
   $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
   $data = $res[0];
 
@@ -37,6 +41,10 @@
     <div class="card main-block">
       <div class="card-body">
         <form action="search.php" method="get">
+          <div class="form-group">
+            <label for="inputQuery">Keywords</label>
+            <input type="text" class="form-control" id="inputQuery" name="inputQuery" placeholder="Search..." value="<?php if($_GET["inputQuery"]) echo $_GET["inputQuery"];  ?>">
+          </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="inputSource">Since</label>
@@ -136,28 +144,47 @@
           Obtained <?php echo number_format($count); ?> results
         </div>
 
-        <div class="float-right">
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Order by Date <?php echo ($ord == "0")? "DESC" : "ASC";?>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="<?php echo $dateDesc; ?>">Date DESC</a>
-              <a class="dropdown-item" href="<?php echo $dateAsc; ?>">Date ASC</a>
-              <a class="dropdown-item" href="<?php echo $rateDesc; ?>">Rate DESC</a>
-              <a class="dropdown-item" href="<?php echo $rateAsc; ?>">Rate ASC</a>
+        <?php
+
+        if($count > 0){
+          switch($ord){
+            case 0:
+              $ordText = "Order by Date DESC";
+              break;
+            case 1:
+              $ordText = "Order by Date ASC";
+              break;
+            case 2:
+              $ordText = "Order by Rate DESC";
+              break;
+            case 3:
+              $ordText = "Order by Rate ASC";
+              break;
+          }
+          echo <<<END
+          <div class="float-right">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {$ordText}
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{$dateDesc}">Date DESC</a>
+                <a class="dropdown-item" href="{$dateAsc}">Date ASC</a>
+                <a class="dropdown-item" href="{$rateDesc}">Rate DESC</a>
+                <a class="dropdown-item" href="{$rateAsc}">Rate ASC</a>
+              </div>
             </div>
           </div>
-        </div><br><br>
+END;
+        }
 
-        <script>
-        $('.dropdown-toggle').dropdown()
-        </script>
+        ?>
+
+        <br><br>
+
 
         <div class="row text-center">
-
           <?php
-
           if($res != NULL){
             foreach($data as $pic){
               $avrRate = $pic->getRate();
@@ -188,87 +215,88 @@ END;
 
     <?php   // Pagination scripts
 
-    // Next Button
-    $query = $_GET;
-    $query['pg'] = $pg + 1;
-    $nextPg = "?" . http_build_query($query);
+    $displayPagination = ceil($count/12) > 1;
+
+    if($displayPagination){
+      // With count put the number above
+      $pgCounter = ($pg < 6)? 1: $pg - 5;
+      $maxCounter = ceil($count/12);
+
+      // Next Button
+      $query = $_GET;
+      $query['pg'] = $pg + 1;
+      $nextPg = "?" . http_build_query($query);
 
 
-    // Previous Button
-    $query = $_GET;
-    $query['pg'] = $pg - 1;
-    $prevPg = "?" . http_build_query($query);
-    ?>
+      // Previous Button
+      $query = $_GET;
+      $query['pg'] = $pg - 1;
+      $prevPg = "?" . http_build_query($query);
 
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        <li class="page-item <?php if($pg == 1){ echo "disabled"; } ?>">
-          <a class="page-link" href="<?php echo $prevPg ?>" tabindex="-1" <?php if($pg == 0){ echo "aria-disabled=\"true\""; } ?>>Previous</a>
-        </li>
+      $previousDisabled = ($pg == 1)? "disabled":"";
+      $nextDisabled = ($pg == $maxCounter)? "disabled":"";
+      echo <<<END
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item {$previousDisabled}">
+            <a class="page-link" href="{$prevPg}" tabindex="-1">Previous</a>
+          </li>
+END;
 
-        <?php
+      // Last index button link
+      $query = $_GET;
+      $query['pg'] = $maxCounter;
+      $lastlink = "?" . http_build_query($query);
 
-        // With count put the number above
+      // First index button link
+      $query = $_GET;
+      $query['pg'] = 1;
+      $firstlink = "?" . http_build_query($query);
 
-        $pgCounter = ($pg < 6)? 1: $pg - 5;
-        $maxCounter = ceil($count/12);
-
-        // Last index button link
+      for(; $pgCounter <= $maxCounter ; $pgCounter++){
         $query = $_GET;
-        $query['pg'] = $maxCounter;
-        $lastlink = "?" . http_build_query($query);
-
-        // First index button link
-        $query = $_GET;
-        $query['pg'] = 1;
-        $firstlink = "?" . http_build_query($query);
-
-        for(; $pgCounter <= $maxCounter ; $pgCounter++){
-          $query = $_GET;
-          $query['pg'] = $pgCounter;
-          $link = "?" . http_build_query($query);
+        $query['pg'] = $pgCounter;
+        $link = "?" . http_build_query($query);
 
 
-          //If there are a lot of results then put a button and exit
-          if($pgCounter > $pg + 5){
-            echo <<<END
-            <li class="page-item"><a class="page-link">...</a></li>
+        //If there are a lot of results then put a button and exit
+        if($pgCounter > $pg + 5){
+          echo <<<END
+          <li class="page-item"><a class="page-link">...</a></li>
 END;
-            echo <<<END
-            <li class="page-item"><a class="page-link" href="{$lastlink}">{$maxCounter}</a></li>
+          echo <<<END
+          <li class="page-item"><a class="page-link" href="{$lastlink}">{$maxCounter}</a></li>
 END;
-            break;
-          }
-
-          if($pg == $pgCounter){
-            echo <<<END
-            <li class="page-item active"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
-END;
-          } elseif ($pgCounter == $pg - 5) {
-            echo <<<END
-            <li class="page-item"><a class="page-link" href="{$firstlink}">1</a></li>
-END;
-            echo <<<END
-            <li class="page-item"><a class="page-link">...</a></li>
-END;
-          } else {
-            echo <<<END
-            <li class="page-item"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
-END;
-          }
-
-
+          break;
         }
 
+        if($pg == $pgCounter){
+          echo <<<END
+          <li class="page-item active"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
+END;
+        } elseif ($pgCounter == $pg - 5) {
+          echo <<<END
+          <li class="page-item"><a class="page-link" href="{$firstlink}">1</a></li>
+END;
+          echo <<<END
+          <li class="page-item"><a class="page-link">...</a></li>
+END;
+        } else {
+          echo <<<END
+          <li class="page-item"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
+END;
+        }
+      }
 
-
-        ?>
-
-        <li class="page-item <?php if($pg == $maxCounter){ echo "disabled"; } ?>">
-          <a class="page-link" href="<?php echo $nextPg ?>">Next</a>
+      echo <<<END
+        <li class="page-item {$nextDisabled}">
+          <a class="page-link" href="{$nextPg}">Next</a>
         </li>
       </ul>
     </nav>
+END;
+    }
+    ?>
   <!-- /.container -->
   </div>
 

@@ -81,85 +81,88 @@ END;
 
     <?php   // Pagination scripts
 
-    // Next Button
-    $query = $_GET;
-    $query['pg'] = $pg + 1;
-    $nextPg = "?" . http_build_query($query);
+    $displayPagination = ceil($count/12) > 1;
+
+    if($displayPagination){
+      // With count put the number above
+      $pgCounter = ($pg < 6)? 1: $pg - 5;
+      $maxCounter = ceil($count/12);
+
+      // Next Button
+      $query = $_GET;
+      $query['pg'] = $pg + 1;
+      $nextPg = "?" . http_build_query($query);
 
 
-    // Previous Button
-    $query = $_GET;
-    $query['pg'] = $pg - 1;
-    $prevPg = "?" . http_build_query($query);
-    ?>
+      // Previous Button
+      $query = $_GET;
+      $query['pg'] = $pg - 1;
+      $prevPg = "?" . http_build_query($query);
 
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        <li class="page-item <?php if($pg == 1){ echo "disabled"; } ?>">
-          <a class="page-link" href="<?php echo $prevPg ?>" tabindex="-1" <?php if($pg == 0){ echo "aria-disabled=\"true\""; } ?>>Previous</a>
-        </li>
+      $previousDisabled = ($pg == 1)? "disabled":"";
+      $nextDisabled = ($pg == $maxCounter)? "disabled":"";
+      echo <<<END
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item {$previousDisabled}">
+            <a class="page-link" href="{$prevPg}" tabindex="-1">Previous</a>
+          </li>
+END;
 
-        <?php
+      // Last index button link
+      $query = $_GET;
+      $query['pg'] = $maxCounter;
+      $lastlink = "?" . http_build_query($query);
 
-        // With count put the number above
+      // First index button link
+      $query = $_GET;
+      $query['pg'] = 1;
+      $firstlink = "?" . http_build_query($query);
 
-        $pgCounter = ($pg < 6)? 1: $pg - 5;
-        $maxCounter = ceil($count/12);
-
-        // Last index button link
+      for(; $pgCounter <= $maxCounter ; $pgCounter++){
         $query = $_GET;
-        $query['pg'] = $maxCounter;
-        $lastlink = "?" . http_build_query($query);
-
-        // First index button link
-        $query = $_GET;
-        $query['pg'] = 1;
-        $firstlink = "?" . http_build_query($query);
-
-        for(; $pgCounter <= $maxCounter ; $pgCounter++){
-          $query = $_GET;
-          $query['pg'] = $pgCounter;
-          $link = "?" . http_build_query($query);
+        $query['pg'] = $pgCounter;
+        $link = "?" . http_build_query($query);
 
 
-          //If there are a lot of results then put a button and exit
-          if($pgCounter > $pg + 5){
-            echo <<<END
-            <li class="page-item"><a class="page-link">...</a></li>
+        //If there are a lot of results then put a button and exit
+        if($pgCounter > $pg + 5){
+          echo <<<END
+          <li class="page-item"><a class="page-link">...</a></li>
 END;
-            echo <<<END
-            <li class="page-item"><a class="page-link" href="{$lastlink}">{$maxCounter}</a></li>
+          echo <<<END
+          <li class="page-item"><a class="page-link" href="{$lastlink}">{$maxCounter}</a></li>
 END;
-            break;
-          }
-
-          if($pg == $pgCounter){
-            echo <<<END
-            <li class="page-item active"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
-END;
-          } elseif ($pgCounter == $pg - 5) {
-            echo <<<END
-            <li class="page-item"><a class="page-link" href="{$firstlink}">1</a></li>
-END;
-            echo <<<END
-            <li class="page-item"><a class="page-link">...</a></li>
-END;
-          } else {
-            echo <<<END
-            <li class="page-item"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
-END;
-          }
-
-
+          break;
         }
 
-        ?>
+        if($pg == $pgCounter){
+          echo <<<END
+          <li class="page-item active"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
+END;
+        } elseif ($pgCounter == $pg - 5) {
+          echo <<<END
+          <li class="page-item"><a class="page-link" href="{$firstlink}">1</a></li>
+END;
+          echo <<<END
+          <li class="page-item"><a class="page-link">...</a></li>
+END;
+        } else {
+          echo <<<END
+          <li class="page-item"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
+END;
+        }
+      }
 
-        <li class="page-item <?php if($pg == $maxCounter){ echo "disabled"; } ?>">
-          <a class="page-link" href="<?php echo $nextPg ?>">Next</a>
+      echo <<<END
+        <li class="page-item {$nextDisabled}">
+          <a class="page-link" href="{$nextPg}">Next</a>
         </li>
       </ul>
     </nav>
+END;
+    }
+    ?>
   </div>
   <!-- /.container -->
   <!-- Footer -->

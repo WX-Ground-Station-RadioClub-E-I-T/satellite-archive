@@ -220,7 +220,7 @@ class CesarDatabase{
   }
 
 
-  public function advanceSearch($source, $obsId, $filter, $since, $until, $discardDark, $onlyFeatured, $order, $amount, $offset){      // Return the requested image ID's
+  public function advanceSearch($query, $source, $obsId, $filter, $since, $until, $discardDark, $onlyFeatured, $order, $amount, $offset){      // Return the requested image ID's
     $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
     $since = str_replace('/', '-', $since);    // Format date, SRC: https://bit.ly/2YRdKAw
     $until = str_replace('/', '-', $until);
@@ -234,6 +234,18 @@ class CesarDatabase{
     $sqlMetaFilterBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
     $sqlMeta .= ($filter != NULL) ? (($source != NULL || $discardDark) ? "AND " . $sqlMetaFilterBase :  "WHERE " . $sqlMetaFilterBase) : "";
 
+    if($query){
+      $sqlMeta .= ($filter != NULL || $source != NULL || $discardDark)? "AND ": "WHERE ";
+      $sqlMeta .= ($query != NULL)? "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%')) " : "";
+      $sqlMeta .= ($query != NULL)? "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%')) " : "";
+      $sqlMeta .= ($query != NULL)? "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%')) " : "";
+      $sqlMeta .= ($query != NULL)? "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%')) " : "";
+      $sqlMeta .= ($query != NULL)? "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%')) " : "";
+      $sqlMeta .= ($query != NULL)? "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%')) " : "";
+      $sqlMeta .= ($query != NULL)? "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%')) " : "";
+      $sqlMeta .= ($query != NULL)? "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%')) " : "";
+    }
+
     if(DEBUG){ echo "<p>" . $sqlMeta . "</p>"; }
 
     $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
@@ -243,6 +255,7 @@ class CesarDatabase{
     $sqlWheBase = "`id` IN (" . $sqlMeta . ") ";
     $sqlWhe = ($onlyFeatured)? "AND " . $sqlWheBase : "WHERE " . $sqlWheBase ;
     $sqlObs = ($obsId != NULL) ? "AND `observatory_id` = " . $obsId . " ": "";
+
 
     // Then filter by observatory
     if($since == NULL && $until == NULL){
@@ -256,8 +269,10 @@ class CesarDatabase{
       AND '" .  date( 'Y-m-d H:i:s', strtotime($until)) . "' ";
     }
 
-    // Ordenation modes can be {"0" -> date desc, "1" -> date asc, "2" -> rate desc, "3" rate asc}
+    $sqlDateQuery = "OR `date_obs` LIKE '%" . date( 'Y-m-d', strtotime($query)) . "%' ";
+    $sqlDateQuery .= "OR `date_obs` LIKE '%" . $query . "%' ";
 
+    // Ordenation modes can be {"0" -> date desc, "1" -> date asc, "2" -> rate desc, "3" rate asc}
     switch($order){
       case 0:
         $sqlOrd = "ORDER BY `date_obs` DESC ";
@@ -278,7 +293,7 @@ class CesarDatabase{
     $sqlLimit = ($amount != NULL) ? "LIMIT " . $amount . " " : "LIMIT 12";
     $sqlOffset = ($offset != NULL) ? "OFFSET " . $offset : "";
 
-    $sql = $sqlSel . $filterFeatured . $sqlWhe . $sqlObs . $sqlDate . $sqlOrd . $sqlLimit . $sqlOffset;
+    $sql = $sqlSel . $filterFeatured . $sqlWhe . $sqlObs . $sqlDate . $sqlDateQuery . $sqlOrd . $sqlLimit . $sqlOffset;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -305,7 +320,7 @@ class CesarDatabase{
 
     $sqlSel = "SELECT COUNT(*) FROM `cesar-archive-images` ";
     // Then we have to count the results, the same query with a counter and without the limit
-    $sql = $sqlSel . $filterFeatured . $sqlWhe . $sqlObs . $sqlDate;
+    $sql = $sqlSel . $filterFeatured . $sqlWhe . $sqlObs . $sqlDate . $sqlDateQuery;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -332,14 +347,16 @@ class CesarDatabase{
     // Ensure that if some parameters are NULL, there is not in the query
     // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
     $sqlMeta = "SELECT `image_id` FROM `cesar-archive-images-metadata` ";
-    $sqlMeta .= ($query != NULL)? " WHERE `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%'))" : "";
-    $sqlMeta .= ($query != NULL)? " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%'))" : "";
-    $sqlMeta .= ($query != NULL)? " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%'))" : "";
-    $sqlMeta .= ($query != NULL)? " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%'))" : "";
-    $sqlMeta .= ($query != NULL)? " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%'))" : "";
-    $sqlMeta .= ($query != NULL)? " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%'))" : "";
-    $sqlMeta .= ($query != NULL)? " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%'))" : "";
-    $sqlMeta .= ($query != NULL)? " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%'))" : "";
+    if($query){
+      $sqlMeta .= " WHERE `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%'))";
+    }
 
     if(DEBUG){ echo "<p>" . $sqlMeta . "</p>"; }
 

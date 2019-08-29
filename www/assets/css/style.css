@@ -88,6 +88,10 @@ a {
   font-size: 11px;
 }
 
+.rating-block {
+  min-width: 230px !important;
+}
+
 .rate-item{
   margin: auto;
   width: 50%;
