@@ -10,6 +10,13 @@ footer {
   color: #fff!important;
 }
 
+.stats {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    opacity: 0.7;
+}
+
 .my-jumbotron {
   color: #FFFFFF;
   font-weight: bold;
@@ -79,6 +86,12 @@ a {
 
 .footer_secondary {
   font-size: 11px;
+}
+
+.rate-item{
+  margin: auto;
+  width: 50%;
+  margin-top: 10px;
 }
 
 /* Compatibility styles for frameworks like bootstrap, foundation e.t.c */
@@ -200,5 +213,5 @@ a {
 
 .rate .rate-select-layer
 {
-    color: #ffc107;
+    color: #004085;
 }

@@ -30,7 +30,7 @@ class CesarDatabase{
       $res = array();
 
       $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated` FROM `cesar-archive-images` ORDER BY `date_obs` DESC LIMIT " . $amount;
+ `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` ORDER BY `date_obs` DESC LIMIT " . $amount;
       if (!$resultado = $this->conn->query($sql)) {
         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
         exit;
@@ -40,7 +40,7 @@ class CesarDatabase{
 
               $obj = new CesarImage($row["id"], $row["path"], $row["filename_final"],
                 $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-                $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"]);
+                $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
               $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
 
@@ -62,7 +62,7 @@ class CesarDatabase{
       $filterFeatured = ($onlyFeatured)? "WHERE `featured` = true ": "";
 
       $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated` FROM `cesar-archive-images` " . $filterFeatured .
+ `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` " . $filterFeatured .
  "AND `id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata`
    WHERE (`metadata_id` = 23 AND `value` = 'False') ) ORDER BY `date_obs` DESC LIMIT " . $amount .
  " OFFSET " . $offset;
@@ -77,7 +77,7 @@ class CesarDatabase{
         while($row = $resultado->fetch_assoc()) {
           $obj = new CesarImage($row["id"], $row["path"], $row["filename_final"],
             $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-            $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"]);
+            $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
           $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
 
@@ -156,7 +156,7 @@ class CesarDatabase{
     $res = NULL;
 
     $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated` FROM `cesar-archive-images` WHERE `id` = " . $id;
+ `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` WHERE `id` = " . $id;
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
@@ -165,7 +165,7 @@ class CesarDatabase{
       while($row = $resultado->fetch_assoc()) {
         $res = new CesarImage($row["id"], $row["path"], $row["filename_final"],
           $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"]);
+          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
         $res->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
 
@@ -238,7 +238,7 @@ class CesarDatabase{
 
     $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
       `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
-      `date_upload`, `date_updated` FROM `cesar-archive-images` ";
+      `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` ";
     $filterFeatured = ($onlyFeatured)? "WHERE `featured` = true ": "";
     $sqlWheBase = "`id` IN (" . $sqlMeta . ") ";
     $sqlWhe = ($onlyFeatured)? "AND " . $sqlWheBase : "WHERE " . $sqlWheBase ;
@@ -291,7 +291,7 @@ class CesarDatabase{
 
         $obj = new CesarImage($row["id"], $row["path"], $row["filename_final"],
           $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"]);
+          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
         $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
 
@@ -345,7 +345,7 @@ class CesarDatabase{
 
     $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
       `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
-      `date_upload`, `date_updated` FROM `cesar-archive-images` ";
+      `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` ";
     $sqlWhe = "WHERE `id` IN (" . $sqlMeta . ") ";
 
     // In this case we have to format the date as the webpage
@@ -368,7 +368,7 @@ class CesarDatabase{
 
         $obj = new CesarImage($row["id"], $row["path"], $row["filename_final"],
           $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"]);
+          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
         $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
 

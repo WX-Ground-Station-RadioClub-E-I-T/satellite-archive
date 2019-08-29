@@ -13,7 +13,28 @@ $(document).ready(function(){
     var id = button.data('image-id');
     var src = button.data('image-src');
     var filter = button.data('filter');
-    var source = button.data('source')
+    var source = button.data('source');
+    var rate = button.data('rate');
+
+    // Delete existing rate(previous modal) and generate it if there is a rate on the DB
+    $(".rate").remove();      // Star ratet
+    $("#rateitem").remove();  // Text with the rate
+    if(rate != ""){
+      var rateprophtml = "<li class=\"list-group-item\" id=\"rateitem\"><b>Rate:</b> <a id=\"ratetext\">" + rate + "</a></li>";
+      $("#properties").append(rateprophtml);
+      var ratehtml = "<div class=\"rate\" data-rate-value=" +  rate + "></div>";
+      $('#ratetext').text(rate);
+      $('#rating').attr('data-rate-value', rate);
+      $('#ratecont').append(ratehtml);
+      $(".rate").rate({
+        max_value: 5,
+        step_size: 0.5,
+        readonly: true,
+        initial_value: rate
+      });
+    }
+
+
 
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.

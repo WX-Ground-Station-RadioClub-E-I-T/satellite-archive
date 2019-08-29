@@ -6,7 +6,6 @@
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "xzoom/src/xzoom.js"; ?>"></script>
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "foundation-sites/dist/js/foundation.min.js"; ?>"></script>
     <script type="text/javascript" src="lib/zoom.js"></script>
-    <script type="text/javascript" src="assets/js/rater.min.js"></script>
 
 
     <?php
@@ -23,8 +22,13 @@
                 ajax_method: 'POST',
                 url: 'http://localhost/addrate.php',
                 additional_data: {id: <?php echo $_GET["id"] ?>},
-                initial_value: <?php echo $avrRate;?>
+                initial_value: "<?php echo $avrRate;?>"
             });
+
+            $(".rate").on("change", function(ev, data){
+              $("#vote-text").text("Your rating has been changed, thanks for rating!")
+            });
+
         });
     </script>
 
@@ -73,11 +77,29 @@
         <div class="card" style="width: 18rem;">
           <div class="card-body">
     				<div class="rating-block">
-    					<h4>Average user rating</h4>
-    					<h2 class="bold padding-bottom-7"> <?php echo number_format($avrRate); ?> <small>/ 5</small></h2>
 
-              <div class="rate"></div>
+              <?php
 
+              $formatedRate = number_format($avrRate, 1);
+
+              if ($avrRate != ""){
+                echo <<<END
+                <h4>Rating</h4>
+      					<h2 class="bold padding-bottom-7">{$formatedRate}<small>/ 5</small></h2>
+                <div class="rate"></div>
+END;
+              } else {
+                echo <<<END
+                <h4>Be the first to vote!</h4>
+                <div class="rate"></div>
+END;
+              }
+
+              ?>
+
+
+              <div id="vote-text">
+              </div>
 
     					</button>
     				</div>

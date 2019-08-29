@@ -19,6 +19,7 @@ class CesarImage implements JsonSerializable{
     private $date_upload;
     private $visits;
     private $tags;
+    private $rate;
     private $metadata;
     private $observatory;
 
@@ -36,7 +37,7 @@ class CesarImage implements JsonSerializable{
      * @param $visits
      * @param $tags
      */
-    public function __construct($id, $path, $filename_final, $filename_original, $filename_thumb, $date_obs, $filesize_processed, $date_updated, $visits, $tags, $date_upload)
+    public function __construct($id, $path, $filename_final, $filename_original, $filename_thumb, $date_obs, $filesize_processed, $date_updated, $visits, $tags, $date_upload, $rate)
     {
         $this->id = $id;
         $this->path = $path;
@@ -49,6 +50,7 @@ class CesarImage implements JsonSerializable{
         $this->visits = $visits;
         $this->tags = $tags;
         $this->date_upload = $date_upload;
+        $this->rate = $rate;
     }
 
 
@@ -238,6 +240,20 @@ class CesarImage implements JsonSerializable{
     {
         $this->tags = $tags;
     }
+
+  /**
+   * @return mixed
+   */
+  public function getRate(){
+    return $this->rate;
+  }
+
+  /**
+   * @param mixed $rate
+   */
+  public function setRate($rate){
+    $this->rate = $rate;
+  }
 
   /**
    * @return mixed

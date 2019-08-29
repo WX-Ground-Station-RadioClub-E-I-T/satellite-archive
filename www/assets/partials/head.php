@@ -28,6 +28,7 @@ date_default_timezone_set('UTC');
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "bootstrap/dist/js/bootstrap.min.js"; ?>"></script>
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"; ?>"></script>
 <script type="text/javascript" src="lib/modal-triggers.js"></script>
+<script type="text/javascript" src="assets/js/rater.min.js"></script>
 
 <link rel="apple-touch-icon" sizes="57x57" href="assets/images/apple-icon-57x57.png">
 <link rel="apple-touch-icon" sizes="60x60" href="assets/images/apple-icon-60x60.png">
