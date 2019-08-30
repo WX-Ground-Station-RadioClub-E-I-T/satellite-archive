@@ -25,7 +25,7 @@
 
 
       <div class="float-right" style="width: 18rem;">
-        <div class="alert stats" role="alert">
+        <div class="alert stats" role="alert" data-toggle="tooltip" data-placement="top" title="Images captured and processed by the CESAR observatories">
 
           <?php
           $length = count($picsCounter);
