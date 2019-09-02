@@ -563,4 +563,19 @@ class CesarDatabase{
     return $res;
   }
 
+  // Update the visits of a observation, giving his ID
+  public function addVisitObs($imageId){
+    $sql = "UPDATE `cesar-archive-images` SET `visits` = `visits` + 1 WHERE `id` = " . $imageId;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         return false;
+         exit;
+    }
+
+    return true;
+  }
+
 }

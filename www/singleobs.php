@@ -8,11 +8,11 @@
     <script type="text/javascript" src="lib/zoom.js"></script>
 
     <?php
-    $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
-    $avrRate = $obj->getAvrRate($_GET["id"]);
-
     $imageId = $_GET["id"];
     $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+    $obj->addVisitObs($imageId);    // Adding a new visit to observation
+    $avrRate = $obj->getAvrRate($imageId);
+
     $pic = $obj->getImageById($imageId);
     ?>
 
@@ -26,7 +26,7 @@
                 change_once: false, // Determines if the rating can only be set once
                 ajax_method: 'POST',
                 url: 'http://localhost/addrate.php',
-                additional_data: {id: <?php echo $_GET["id"] ?>},
+                additional_data: {id: <?php echo $imageId ?>},
                 initial_value: "<?php echo $avrRate;?>"
             });
 
