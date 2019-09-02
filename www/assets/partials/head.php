@@ -20,6 +20,7 @@ date_default_timezone_set('UTC');
 <meta name="twitter:title" content="Cesar Archive Viewer" />
 <meta name="author" content=""/>
 <meta property="og:site_name" content="Cesar Archive Viewer" />
+<meta property="og:description"   content="CESAR Educational Initiative sky observations database" />
 <meta property="og:url" content="<?php echo "https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"?>" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />

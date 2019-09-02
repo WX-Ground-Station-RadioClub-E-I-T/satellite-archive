@@ -7,11 +7,16 @@
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "foundation-sites/dist/js/foundation.min.js"; ?>"></script>
     <script type="text/javascript" src="lib/zoom.js"></script>
 
-
     <?php
     $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
     $avrRate = $obj->getAvrRate($_GET["id"]);
+
+    $imageId = $_GET["id"];
+    $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+    $pic = $obj->getImageById($imageId);
     ?>
+
+    <meta property="og:image"         content="<?php  echo $pic->getExtSrcBitmap()?>" />
 
     <script>
         $(document).ready(function(){
@@ -41,21 +46,12 @@
 <!-- Page Content -->
 <div class="container">
 
-  <?php
-  $imageId = $_GET["id"];
-  $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
-  $pic = $obj->getImageById($imageId);
-  ?>
-
   <!-- Page Features -->
   <div class="row main-block">
-
-
     <div class="col-6">
       <div class="xzoom-container">
         <img class="xzoom card-img-top" id="xzoom-default" src="<?php echo $pic->getExtSrc(); ?>" xoriginal="<?php echo $pic->getExtSrc(); ?>" />
       </div>
-
 
       <div class="card bg-secondary icons-sub-logo">
         <div class="card-header">
