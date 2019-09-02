@@ -8,6 +8,18 @@
 <?php include 'lib/CesarObservatory.php' ?>
 
 <?php
+  switch(substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 )){
+    case "en":
+      include 'assets/locale/en_US/strings.php';
+      break;
+    case "es":
+      include 'assets/locale/es_ES/strings.php';
+      break;
+    default:
+      include 'assets/locale/en_US/strings.php';
+  }
+?>
+<?php
 
 date_default_timezone_set('UTC');
 

@@ -21,11 +21,8 @@
   <?php include 'assets/partials/navbar.php'?>
   <div class="jumbotron jumbotron-fluid my-jumbotron">
     <div class="container">
-
-
-
       <div class="float-right" style="width: 18rem;">
-        <div class="alert stats" role="alert" data-toggle="tooltip" data-placement="top" title="Images captured and processed by the CESAR observatories">
+        <div class="alert stats" role="alert" data-toggle="tooltip" data-placement="top" title="<?php echo JUMBO_IM_TOOLTIP; ?>">
 
           <?php
           $length = count($picsCounter);
@@ -36,7 +33,7 @@
               $total += $picsCounter[$i][1];
             }
           }
-          echo "<b>Total images</b>: " . $total . "<br>";
+          echo "<b>" . JUMBO_IM . "</b>: " . $total . "<br>";
           ?>
         </div>
       </div>
@@ -44,7 +41,7 @@
 
 
       <h1 class="display-4">CESAR Archive Viewer</h1>
-      <p class="lead">CESAR Educational Initiative sky observations database</p>
+      <p class="lead"><?php echo JUMBOTRON; ?></p>
     </div>
   </div>
 
@@ -57,12 +54,18 @@
         foreach($data as $pic){
           $avrRate = $pic->getRate();
           $formatedRate = ($avrRate != "")?number_format($avrRate, 1): "";
+          $rateText = MODAL_RATE;
+          if(substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 ) == "es"){
+            $modalTitle = MODAL_TITLE1 . " " . $pic->getMetadata()->getSource() . " " . MODAL_TITLE2 . " " . $pic->getObservatory()->getName();
+          } else {
+            $modalTitle = $pic->getMetadata()->getSource() . " " . MODAL_TITLE . " " . $pic->getObservatory()->getName();
+          }
           echo <<<END
           <div class="col-lg-3 col-md-6">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-title="{$modalTitle}" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
                 data-date-updated="{$pic->getDateUpdated()}" data-observatory="{$pic->getObservatory()->getName()}" data-observatory-lat="{$pic->getMetadata()->getLatitude()}"
                 data-observatory-long="{$pic->getMetadata()->getLongitud()}" data-observatory-alt="{$pic->getMetadata()->getAltitude()}" data-telecop="{$pic->getMetadata()->getTelescop()}" data-instrume="{$pic->getMetadata()->getInstrume()}"
-                data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}" data-rate="{$formatedRate}">
+                data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}" data-rate="{$formatedRate}" data-rate-text="{$rateText}">
             <div class="card" style="width: 15rem;">
               <img class="card-img-top" src="{$pic->getExtSrc()}" alt="Card image cap">
               <div class="card-body">
@@ -73,8 +76,9 @@
           </div>
 END;
         }
+      } else {  // There is no coincidences
+        echo "There is no coincidences";
       }
-
       ?>
     </div>
     <!-- /.row -->
@@ -101,13 +105,12 @@ END;
 
       $previousDisabled = ($pg == 1)? "disabled":"";
       $nextDisabled = ($pg == $maxCounter)? "disabled":"";
-      echo <<<END
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item {$previousDisabled}">
-            <a class="page-link" href="{$prevPg}" tabindex="-1">Previous</a>
-          </li>
-END;
+
+      echo "<nav aria-label=\"Page navigation example\">
+        <ul class=\"pagination justify-content-center\">
+          <li class=\"page-item {$previousDisabled}\">
+            <a class=\"page-link\" href=\"{$prevPg}\" tabindex=\"-1\">" . PAGINATION_PREV . "</a>
+          </li>";
 
       // Last index button link
       $query = $_GET;
@@ -154,17 +157,15 @@ END;
         }
       }
 
-      echo <<<END
-        <li class="page-item {$nextDisabled}">
-          <a class="page-link" href="{$nextPg}">Next</a>
+      echo "<li class=\"page-item {$nextDisabled}\">
+          <a class=\"page-link\" href=\"{$nextPg}\">" . PAGINATION_NEXT . "</a>
         </li>
       </ul>
-    </nav>
-END;
+    </nav>";
     }
     ?>
-  </div>
   <!-- /.container -->
+  </div>
   <!-- Footer -->
   <?php include 'assets/partials/footer.php'?>
 
@@ -188,22 +189,22 @@ END;
             </div>
             <div class="col-sm">
               <ul class="list-group list-group-flush"  id="properties">
-                <li class="list-group-item"><b>Date uploaded: </b> <a id="date-uploaded"></a></li>
-                <li class="list-group-item"><b>Telecope:</b> <a id="telescope"></a> </li>
-                <li class="list-group-item"><b>Filter:</b> <a id="filter"></a> </li>
-                <li class="list-group-item"><b>Camera:</b> <a id="instrume"></a></li>
-                <li class="list-group-item"><b>Time exposure:</b> <a id="exposure"></a></li>
-                <li class="list-group-item"><b>Latitude:</b> <a id="lat"></a></li>
-                <li class="list-group-item"><b>Longitude:</b> <a id="long"></a></li>
-                <li class="list-group-item"><b>Altitude:</b> <a id="alt"></a></li>
-                <li class="list-group-item" id="rateitem"><b>Rate:</b> <a id="ratetext"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_DATE;?>: </b> <a id="date-uploaded"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_TELESCOPE;?>:</b> <a id="telescope"></a> </li>
+                <li class="list-group-item"><b><?php echo MODAL_FILTER;?>:</b> <a id="filter"></a> </li>
+                <li class="list-group-item"><b><?php echo MODAL_CAMERA;?>:</b> <a id="instrume"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_TIME_EXP;?>:</b> <a id="exposure"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_LAT;?>:</b> <a id="lat"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_LONG;?>:</b> <a id="long"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_ALT;?>:</b> <a id="alt"></a></li>
+                <li class="list-group-item" id="rateitem"><b><?php echo MODAL_RATE;?>:</b> <a id="ratetext"></a></li>
               </ul>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <a href="#" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true">More info</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo MODAL_CLOSE; ?></button>
+          <a href="#" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true"><?php echo MODAL_MOREINFO; ?></a>
         </div>
       </div>
     </div>

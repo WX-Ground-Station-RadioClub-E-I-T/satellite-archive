@@ -42,12 +42,12 @@
       <div class="card-body">
         <form action="search.php" method="get">
           <div class="form-group">
-            <label for="inputQuery">Keywords</label>
-            <input type="text" class="form-control" id="inputQuery" name="inputQuery" placeholder="Search..." value="<?php if($_GET["inputQuery"]) echo $_GET["inputQuery"];  ?>">
+            <label for="inputQuery"><?php echo SEARCH_KEYWORDS; ?></label>
+            <input type="text" class="form-control" id="inputQuery" name="inputQuery" placeholder="<?php echo SEARCH; ?>" value="<?php if($_GET["inputQuery"]) echo $_GET["inputQuery"];  ?>">
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label for="inputSource">Since</label>
+              <label for="inputSource"><?php echo SEARCH_SINCE; ?></label>
               <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" name="inputSince"/>
                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
@@ -56,7 +56,7 @@
                </div>
             </div>
             <div class="form-group col-md-6">
-              <label for="inputSource">Until</label>
+              <label for="inputSource"><?php echo SEARCH_UNTIL; ?></label>
               <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker8" name="inputUntil"/>
                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
@@ -67,16 +67,16 @@
           </div>
           <div class="form-row">
             <div class="form-group col-md-4">
-              <label for="inputSource">Source</label>
+              <label for="inputSource"><?php echo SEARCH_SOURCE;?></label>
               <select id="inputsource" class="form-control" name="inputSource">
-                <option value="" <?php if($_GET["inputSource"] == NULL) echo "selected" ?>>Whatever</option>
-                <option <?php if($_GET["inputSource"] == "Sun") echo "selected" ?>>Sun</option>
+                <option value="" <?php if($_GET["inputSource"] == NULL) echo "selected"; ?>><?php echo SEARCH_WHATEVER; ?></option>
+                <option <?php if($_GET["inputSource"] == "Sun") echo "selected" ?>><?php echo SUN;?></option>
               </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="inputObs">Observatory</label>
+              <label for="inputObs"><?php echo SEARCH_OBSERVATORY;?></label>
               <select id="inputObs" class="form-control" name="inputObs">
-                <option value="">Whatever</option>
+                <option value=""><?php echo SEARCH_WHATEVER; ?></option>
                 <?php
                 foreach($observatoryNames as $observatory){
                   if($observatory == $_GET["inputObs"]){
@@ -91,7 +91,7 @@
             <div class="form-group col-md-4">
               <label for="inputFilter">Filter</label>
               <select id="inputFilter" class="form-control" name="inputFilter">
-                <option value="" <?php if($_GET["inputFilter"] == NULL) echo "selected" ?>>Whatever</option>
+                <option value="" <?php if($_GET["inputFilter"] == NULL) echo "selected" ?>><?php echo SEARCH_WHATEVER; ?></option>
                 <option <?php if($_GET["inputFilter"] == "halpha") echo "selected" ?>>halpha</option>
                 <option <?php if($_GET["inputFilter"] == "visible") echo "selected" ?>>visible</option>
               </select>
@@ -99,15 +99,15 @@
           </div>
           <div class="form-row">
             <div class="form-group col-md-2">
-              <button type="submit" class="btn btn-primary">Search</button>
+              <button type="submit" class="btn btn-primary"><?php echo SEARCH_SEARCH;?></button>
             </div>
             <div class="form-group col-md-3 form-check">
               <input type="checkbox" class="form-check-input" id="inputDark" name="inputDark" <?php if($_GET["inputDark"] == "on") echo "checked" ?>>
-              <label class="form-check-label" for="exampleCheck1" >Discard dark pictures</label>
+              <label class="form-check-label" for="exampleCheck1" ><?php echo SEARCH_DISCARD_DARK;?></label>
             </div>
             <div class="form-group col-md-3 form-check">
               <input type="checkbox" class="form-check-input" id="inputFeat" name="inputFeat" <?php if($_GET["inputFeat"] == "on") echo "checked" ?>>
-              <label class="form-check-label" for="exampleCheck1" >Only featured images</label>
+              <label class="form-check-label" for="exampleCheck1" ><?php echo SEARCH_ONLY_FEAT;?></label>
             </div>
           </div>
         </form>
@@ -141,7 +141,7 @@
         ?>
 
         <div class="float-left sub-text">
-          Obtained <?php echo number_format($count); ?> results
+          <?php echo SEARCH_OBTAINED . " " . number_format($count) . " " . SEARCH_RESULTS; ?>
         </div>
 
         <?php
@@ -149,33 +149,32 @@
         if($count > 0){
           switch($ord){
             case 0:
-              $ordText = "Order by Date DESC";
+              $ordText = SEARCH_ORDERDATEDESC;
               break;
             case 1:
-              $ordText = "Order by Date ASC";
+              $ordText = SEARCH_ORDERDATEASC;
               break;
             case 2:
-              $ordText = "Order by Rate DESC";
+              $ordText = SEARCH_ORDERRATEDESC;
               break;
             case 3:
-              $ordText = "Order by Rate ASC";
+              $ordText = SEARCH_ORDERRATEASC;
               break;
           }
-          echo <<<END
-          <div class="float-right">
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {$ordText}
+
+          echo "<div class=\"float-right\">
+            <div class=\"dropdown\">
+              <button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">
+                $ordText
               </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="{$dateDesc}">Date DESC</a>
-                <a class="dropdown-item" href="{$dateAsc}">Date ASC</a>
-                <a class="dropdown-item" href="{$rateDesc}">Rate DESC</a>
-                <a class="dropdown-item" href="{$rateAsc}">Rate ASC</a>
+              <div class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuButton\">
+                <a class=\"dropdown-item\" href=\"{$dateDesc}\">" . SEARCH_DATEDESC . "</a>
+                <a class=\"dropdown-item\" href=\"{$dateAsc}\">" . SEARCH_DATEASC . "</a>
+                <a class=\"dropdown-item\" href=\"{$rateDesc}\">" . SEARCH_RATEDESC . "</a>
+                <a class=\"dropdown-item\" href=\"{$rateAsc}\">" . SEARCH_RATEASC . "</a>
               </div>
             </div>
-          </div>
-END;
+          </div>";
         }
 
         ?>
@@ -189,12 +188,18 @@ END;
             foreach($data as $pic){
               $avrRate = $pic->getRate();
               $formatedRate = ($avrRate != "")?number_format($avrRate, 1): "";
+              $rateText = MODAL_RATE;
+              if(substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 ) == "es"){
+                $modalTitle = MODAL_TITLE1 . " " . $pic->getMetadata()->getSource() . " " . MODAL_TITLE2 . " " . $pic->getObservatory()->getName();
+              } else {
+                $modalTitle = $pic->getMetadata()->getSource() . " " . MODAL_TITLE . " " . $pic->getObservatory()->getName();
+              }
               echo <<<END
               <div class="col-lg-3 col-md-6">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-title="{$modalTitle}" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
                     data-date-updated="{$pic->getDateUpdated()}" data-observatory="{$pic->getObservatory()->getName()}" data-observatory-lat="{$pic->getMetadata()->getLatitude()}"
                     data-observatory-long="{$pic->getMetadata()->getLongitud()}" data-observatory-alt="{$pic->getMetadata()->getAltitude()}" data-telecop="{$pic->getMetadata()->getTelescop()}" data-instrume="{$pic->getMetadata()->getInstrume()}"
-                    data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}" data-rate="{$formatedRate}">
+                    data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}" data-rate="{$formatedRate}" data-rate-text="{$rateText}">
                 <div class="card" style="width: 15rem;">
                   <img class="card-img-top" src="{$pic->getExtSrc()}" alt="Card image cap">
                   <div class="card-body">
@@ -235,13 +240,12 @@ END;
 
       $previousDisabled = ($pg == 1)? "disabled":"";
       $nextDisabled = ($pg == $maxCounter)? "disabled":"";
-      echo <<<END
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item {$previousDisabled}">
-            <a class="page-link" href="{$prevPg}" tabindex="-1">Previous</a>
-          </li>
-END;
+
+      echo "<nav aria-label=\"Page navigation example\">
+        <ul class=\"pagination justify-content-center\">
+          <li class=\"page-item {$previousDisabled}\">
+            <a class=\"page-link\" href=\"{$prevPg}\" tabindex=\"-1\">" . PAGINATION_PREV . "</a>
+          </li>";
 
       // Last index button link
       $query = $_GET;
@@ -288,13 +292,11 @@ END;
         }
       }
 
-      echo <<<END
-        <li class="page-item {$nextDisabled}">
-          <a class="page-link" href="{$nextPg}">Next</a>
+      echo "<li class=\"page-item {$nextDisabled}\">
+          <a class=\"page-link\" href=\"{$nextPg}\">" . PAGINATION_NEXT . "</a>
         </li>
       </ul>
-    </nav>
-END;
+    </nav>";
     }
     ?>
   <!-- /.container -->
@@ -342,23 +344,23 @@ END;
               </div>
             </div>
             <div class="col-sm">
-              <ul class="list-group list-group-flush" id="properties">
-                <li class="list-group-item"><b>Date uploaded: </b> <a id="date-uploaded"></a></li>
-                <li class="list-group-item"><b>Telecope:</b> <a id="telescope"></a> </li>
-                <li class="list-group-item"><b>Filter:</b> <a id="filter"></a> </li>
-                <li class="list-group-item"><b>Camera:</b> <a id="instrume"></a></li>
-                <li class="list-group-item"><b>Time exposure:</b> <a id="exposure"></a></li>
-                <li class="list-group-item"><b>Latitude:</b> <a id="lat"></a></li>
-                <li class="list-group-item"><b>Longitude:</b> <a id="long"></a></li>
-                <li class="list-group-item"><b>Altitude:</b> <a id="alt"></a></li>
-                <li class="list-group-item" id="rateitem"><b>Rate:</b> <a id="ratetext"></a></li>
+              <ul class="list-group list-group-flush"  id="properties">
+                <li class="list-group-item"><b><?php echo MODAL_DATE;?>: </b> <a id="date-uploaded"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_TELESCOPE;?>:</b> <a id="telescope"></a> </li>
+                <li class="list-group-item"><b><?php echo MODAL_FILTER;?>:</b> <a id="filter"></a> </li>
+                <li class="list-group-item"><b><?php echo MODAL_CAMERA;?>:</b> <a id="instrume"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_TIME_EXP;?>:</b> <a id="exposure"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_LAT;?>:</b> <a id="lat"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_LONG;?>:</b> <a id="long"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_ALT;?>:</b> <a id="alt"></a></li>
+                <li class="list-group-item" id="rateitem"><b><?php echo MODAL_RATE;?>:</b> <a id="ratetext"></a></li>
               </ul>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <a href="#" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true">More info</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo MODAL_CLOSE; ?></button>
+          <a href="#" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true"><?php echo MODAL_MOREINFO; ?></a>
         </div>
       </div>
     </div>

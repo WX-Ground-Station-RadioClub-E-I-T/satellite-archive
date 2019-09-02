@@ -15,12 +15,14 @@ $(document).ready(function(){
     var filter = button.data('filter');
     var source = button.data('source');
     var rate = button.data('rate');
+    var rateText = button.data('rate-text');
+    var title = button.data('title');
 
     // Delete existing rate(previous modal) and generate it if there is a rate on the DB
     $(".rate").remove();      // Star ratet
     $("#rateitem").remove();  // Text with the rate
     if(rate != ""){
-      var rateprophtml = "<li class=\"list-group-item\" id=\"rateitem\"><b>Rate:</b> <a id=\"ratetext\">" + rate + "</a></li>";
+      var rateprophtml = "<li class=\"list-group-item\" id=\"rateitem\"><b>" + rateText + ":</b> <a id=\"ratetext\">" + rate + "</a></li>";
       $("#properties").append(rateprophtml);
       var ratehtml = "<div class=\"rate\" data-rate-value=" +  rate + "></div>";
       $('#ratetext').text(rate);
@@ -39,7 +41,7 @@ $(document).ready(function(){
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
     var modal = $(this);
-    modal.find('.modal-title').text(source + ' observation from ' + observatory);
+    modal.find('.modal-title').text(title);
     $("#date-uploaded").text(dateObs);
     $("#telescope").text(telescop);
     $("#instrume").text(instrume);

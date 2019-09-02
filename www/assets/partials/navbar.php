@@ -15,75 +15,48 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link active pb-0 pt-3" href="index.php">Home
+            <a class="nav-link active pb-0 pt-3" href="index.php"><?php echo HOME; ?>
               <span class="sr-only">(current)</span>
             </a>
           </div>
           <div class="menu_top_second">
-            Last observations
+            <?php echo HOME_SUB; ?>
           </div>
         </li>
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="videos.php">Videos</a>
+            <a class="nav-link pb-0 pt-3" href="videos.php"><?php echo VIDEOS; ?></a>
           </div>
           <div class="menu_top_second">
-            Daily videos
+            <?php echo VIDEOS_SUB; ?>
           </div>
         </li>
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="about.php">About</a>
+            <a class="nav-link pb-0 pt-3" href="about.php"><?php echo ABOUT; ?></a>
           </div>
           <div class="menu_top_second">
-            Helios observatory
+            <?php echo ABOUT_SUB; ?>
           </div>
         </li>
 
-        <!--
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="#">Services</a>
+            <a class="nav-link pb-0 pt-3" href="http://cesar.esa.int/index.php?Section=Contact&Origin=Archive_Viewer"><?php echo CONTACT; ?></a>
           </div>
           <div class="menu_top_second">
-            Communications
+            <?php echo CONTACT_SUB; ?>
           </div>
         </li>
-      -->
-
-        <li class="nav-item ml-3">
-          <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="http://cesar.esa.int/index.php?Section=Contact&Origin=Archive_Viewer">Contact</a>
-          </div>
-          <div class="menu_top_second">
-            Contact us
-          </div>
-        </li>
-<!--
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home
-            <span class="sr-only">(current)</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact</a>
-        </li>
-      -->
     </ul>
 
       <form class="form-inline my-2 my-lg-0 pt-3 float-right" action="simplesearch.php" method="GET">
         <i class="fas fa-search" style="color:#00a9e0"></i>
-        <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search..." name="query" id="inputQuery" <?php if($_GET[query] != ""){echo "value =\"" . $_GET[query] . "\"";} ?>>
+        <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="<?php echo SEARCH; ?>" name="query" id="inputQuery" <?php if($_GET[query] != ""){echo "value =\"" . $_GET[query] . "\"";} ?>>
         <small class="form-text text-muted">
-          Or <a href="search.php">advanced search</a>
+          <?php echo SEARCH_SUB; ?>
         </small>
       </form>
 

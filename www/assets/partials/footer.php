@@ -4,14 +4,11 @@
       <tbody>
         <tr>
           <td class="text-center ">
-            <span>Terms of Use | Privacy Policy | Legal Notice<br>
-            <span class="footer_secondary">Copyright 2011 - <?php echo date("Y"); ?> © CESAR - Cooperation through Education in Science and Astronomy Research</span></span><br>
+            <span><?php echo FOOT_MAIN; ?><br>
+            <span class="footer_secondary">Copyright 2011 - <?php echo date("Y"); ?> © <?php echo FOOT_SUB; ?></span></span><br>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-
-
-
 </footer>
