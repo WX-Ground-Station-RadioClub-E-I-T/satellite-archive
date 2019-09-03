@@ -48,7 +48,7 @@
 
   <!-- Page Features -->
   <div class="row main-block">
-    <div class="col-6">
+    <div class="col">
       <div class="xzoom-container">
         <img class="xzoom card-img-top" id="xzoom-default" src="<?php echo $pic->getExtSrc(); ?>" xoriginal="<?php echo $pic->getExtSrc(); ?>" />
       </div>
@@ -89,7 +89,7 @@
           </div>
         </div>
 
-        <div class="col-sm-6 mt-4 mr-4 rating-block">
+        <div class="col-sm-6 mt-4 mb-4 rating-block">
           <div class="card">
             <div class="card-body">
               <?php
