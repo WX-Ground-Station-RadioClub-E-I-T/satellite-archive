@@ -223,8 +223,11 @@ END;
     $displayPagination = ceil($count/12) > 1;
 
     if($displayPagination){
+
+      $pgCounterPerPage = ($ismobile)? 5: 1;    // Var on head for detect mobile
+
       // With count put the number above
-      $pgCounter = ($pg < 6)? 1: $pg - 5;
+      $pgCounter = ($pg < $pgCounterPerPage + 1)? 1: $pg - $pgCounterPerPage;
       $maxCounter = ceil($count/12);
 
       // Next Button
@@ -257,6 +260,7 @@ END;
       $query['pg'] = 1;
       $firstlink = "?" . http_build_query($query);
 
+
       for(; $pgCounter <= $maxCounter ; $pgCounter++){
         $query = $_GET;
         $query['pg'] = $pgCounter;
@@ -264,7 +268,7 @@ END;
 
 
         //If there are a lot of results then put a button and exit
-        if($pgCounter > $pg + 5){
+        if($pgCounter > $pg + $pgCounterPerPage){
           echo <<<END
           <li class="page-item"><a class="page-link">...</a></li>
 END;
@@ -274,18 +278,18 @@ END;
           break;
         }
 
-        if($pg == $pgCounter){
-          echo <<<END
-          <li class="page-item active"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
-END;
-        } elseif ($pgCounter == $pg - 5) {
+        if($pgCounter == $pg - $pgCounterPerPage){
           echo <<<END
           <li class="page-item"><a class="page-link" href="{$firstlink}">1</a></li>
 END;
           echo <<<END
           <li class="page-item"><a class="page-link">...</a></li>
 END;
-        } else {
+        } elseif ($pg == $pgCounter) {
+          echo <<<END
+          <li class="page-item active"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
+END;
+        } elseif($pgCounter != $pg + $pgCounterPerPage){
           echo <<<END
           <li class="page-item"><a class="page-link" href="{$link}">{$pgCounter}</a></li>
 END;
