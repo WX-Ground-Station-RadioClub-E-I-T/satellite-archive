@@ -97,18 +97,18 @@
               </select>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group col-md-2">
-              <button type="submit" class="btn btn-primary"><?php echo SEARCH_SEARCH;?></button>
-            </div>
-            <div class="form-group col-md-3 form-check">
+          <div class="form-group">
+            <div class="form-check form-check-inline">
               <input type="checkbox" class="form-check-input" id="inputDark" name="inputDark" <?php if($_GET["inputDark"] == "on") echo "checked" ?>>
               <label class="form-check-label" for="exampleCheck1" ><?php echo SEARCH_DISCARD_DARK;?></label>
             </div>
-            <div class="form-group col-md-3 form-check">
+            <div class="form-check form-check-inline">
               <input type="checkbox" class="form-check-input" id="inputFeat" name="inputFeat" <?php if($_GET["inputFeat"] == "on") echo "checked" ?>>
               <label class="form-check-label" for="exampleCheck1" ><?php echo SEARCH_ONLY_FEAT;?></label>
             </div>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary"><?php echo SEARCH_SEARCH;?></button>
           </div>
         </form>
       </div>
@@ -116,6 +116,7 @@
 
     <div class="card mt-2 mb-5">
       <div class="card-body">
+        <div class="row">
 
         <?php
 
@@ -140,7 +141,7 @@
         $rateAsc = "?" . http_build_query($query);
         ?>
 
-        <div class="float-left sub-text">
+        <div class="col-md-3 mr-md-auto sub-text">
           <?php echo SEARCH_OBTAINED . " " . number_format($count) . " " . SEARCH_RESULTS; ?>
         </div>
 
@@ -162,7 +163,7 @@
               break;
           }
 
-          echo "<div class=\"float-right\">
+          echo "<div class=\"col-md-3 ml-md-auto\">
             <div class=\"dropdown\">
               <button class=\"btn btn-secondary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">
                 $ordText
@@ -180,6 +181,8 @@
         ?>
 
         <br><br>
+
+      </div>
 
 
         <div class="row text-center">
