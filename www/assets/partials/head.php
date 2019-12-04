@@ -6,6 +6,7 @@
 <?php include 'lib/CesarImage.php' ?>
 <?php include 'lib/CesarMetadata.php' ?>
 <?php include 'lib/CesarObservatory.php' ?>
+<?php include 'lib/CesarVideo.php' ?>
 
 <?php
   switch(substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 )){
@@ -46,6 +47,8 @@ date_default_timezone_set('UTC');
 
 <link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "bootstrap/dist/css/bootstrap.min.css"; ?>"/>
 <link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css"; ?>"/>
+<link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "video.js/dist/video-js.min.css"; ?>"/>
+<link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "videojs-sublime-skin/dist/videojs-sublime-skin.min.css"; ?>"/>
 <link rel="stylesheet" href="assets/css/style.css">
 
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "jquery/dist/jquery.min.js"; ?>"></script>
@@ -54,7 +57,10 @@ date_default_timezone_set('UTC');
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "popper.js/dist/umd/popper.min.js"; ?>"></script>
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "bootstrap/dist/js/bootstrap.min.js"; ?>"></script>
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "video.js/dist/video.min.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "videojs-framebyframe/dist/videojs.framebyframe.min.js"; ?>"></script>
 <script type="text/javascript" src="lib/modal-triggers.js"></script>
+<script type="text/javascript" src="lib/modal-video-triggers.js"></script>
 <script type="text/javascript" src="assets/js/rater.min.js"></script>
 
 <link rel="apple-touch-icon" sizes="57x57" href="assets/images/apple-icon-57x57.png">

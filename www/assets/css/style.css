@@ -98,6 +98,14 @@ a {
   margin-top: 10px;
 }
 
+.vjs-subs-caps-button {
+  display: none;
+}
+
+.vjs-picture-in-picture-control {
+  display: none !important;
+}
+
 /* Compatibility styles for frameworks like bootstrap, foundation e.t.c */
 .xzoom-source img, .xzoom-preview img, .xzoom-lens img {
   display: block;

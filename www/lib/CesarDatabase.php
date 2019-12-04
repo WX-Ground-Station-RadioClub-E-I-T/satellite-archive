@@ -110,6 +110,52 @@ class CesarDatabase{
       return $res;
     }
 
+    public function getVideos($amount, $offset){
+      $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
+
+      $sql = "SELECT `id`, `path`, `filter`, `duration`, `numimages`, `datecreated`, `source`, `rate`, `visits`
+      FROM `cesar-archive-videos` ORDER BY `datecreated` DESC LIMIT " . $amount .
+       " OFFSET " . $offset;
+
+      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+      if (!$resultado = $this->conn->query($sql)) {
+        error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+        exit;
+      }
+      if ($resultado->num_rows > 0) {
+        while($row = $resultado->fetch_assoc()) {
+          $obj = new CesarVideo($row["id"], $row["path"], $row["filter"], $row["duration"], $row["numimages"], $row["datecreated"], $row["source"], $row["rate"], $row["visits"]);
+
+          array_push($res[0], $obj);
+        }
+      } else {
+        error_log("Ninguna coincidencia", 0);
+        return NULL;
+      }
+
+      // Then we have to count the results, the same query with a counter and without the limit
+      $sql = "SELECT COUNT(*) FROM `cesar-archive-videos` ";
+
+      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+      if (!$resultado = $this->conn->query($sql)) {
+        error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+        exit;
+      }
+      if ($resultado->num_rows > 0) {
+        while($row = $resultado->fetch_assoc()) {
+          $res[1] = $row["COUNT(*)"];
+        }
+      } else {
+        error_log("Ninguna coincidencia", 0);
+        return NULL;
+      }
+
+      return $res;
+    }
+
+
     public function &getMetadata($imageId){
       $res = new CesarMetadata();
 

@@ -74,3 +74,5 @@ RUN npm install --save-dev @fortawesome/fontawesome-free@5.9.0
 RUN npm install xzoom@1.0.14
 RUN npm install hammerjs@2.0.8
 RUN npm install foundation-sites@6.5.3
+RUN npm install video.js@7.6.5
+RUN npm install videojs-framebyframe@1.0.1

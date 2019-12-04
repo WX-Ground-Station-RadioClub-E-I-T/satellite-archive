@@ -21,6 +21,7 @@ services:
       - MYSQL_CESAR_USER=root
       - MYSQL_CESAR_PASSWORD=tiger
       - ARCHIVE_ENDPOINT=http://cesar.esa.int/sun_monitor/archive/
+      - ARCHIVE_VIDEOS_ENDPOINT=http://cesar.esa.int/archivetest/videos/
       - DEPENDENCIES_ENDPOINT= http://localhost/dep/
   mysql:
     build: ./bin/mysql
