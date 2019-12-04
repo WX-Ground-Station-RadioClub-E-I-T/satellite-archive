@@ -1,5 +1,8 @@
 FROM php:5.6.40-apache
 
+# https://stackoverflow.com/questions/15505775/debian-apt-packages-hash-sum-mismatch
+RUN printf 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy    true;' > /etc/apt/apt.conf.d/99fixbadproxy
+
 # https://askubuntu.com/questions/41605/trouble-downloading-packages-list-due-to-a-hash-sum-mismatch-error
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get -y update --fix-missing
