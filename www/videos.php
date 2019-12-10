@@ -29,14 +29,19 @@
           $avrRate = $video->getRate();
           $formatedRate = ($avrRate != "")?number_format($avrRate, 1): "";
           $rateText = MODAL_RATE;
+
+          // Get the best image of that day, if not, put a sample pic
+          $previewPic = $obj->getVideoPreviewPic($video->getId());
+          $previewPicSrc = ($previewPic != NULL)? $previewPic->getExtSrc() : (($video->getFilter() == 'visible')? VIDEO_PREVIEW_VISIBLE_PIC_SAMPLE : VIDEO_PREVIEW_HALPHA_PIC_SAMPLE);
+
           echo <<<END
           <div class="col-lg-3 col-md-6">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#videoModal" data-title="CHANGEME" data-video-id="{$video->getId()}" data-path={$video->getExtSrc()} data-date-created="{$video->getDatecreated()}"
-                data-date="CHANGEME" data-filter="{$video->getFilter()}" data-source="{$video->getSource()}" data-numimages="{$video->getNumimages()}" data-duration="{$video->getDuration()}" data-rate-text="{$rateText}" data-rate="{$formatedRate}" data-visits="{$rateText}">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#videoModal" data-title="{$video->getSource()} - {$video->getDateobs()}" data-video-id="{$video->getId()}" data-path={$video->getExtSrc()} data-date-created="{$video->getDatecreated()}"
+                data-date="{$video->getDateobs()}" data-filter="{$video->getFilter()}" data-source="{$video->getSource()}" data-numimages="{$video->getNumimages()}" data-duration="{$video->getDuration()}" data-rate-text="{$rateText}" data-rate="{$formatedRate}" data-visits="{$video->getVisits()}" data-avrrate="{$avrRate}" data-pic-preview="{$previewPicSrc}" data-ismobile="{$ismobile}">
             <div class="card" style="width: 15rem;">
-              <img class="card-img-top" src="http://cesar.esa.int/sun_monitor/archive/helios/visible/2018/201803/20180316/image_hel_visible_20180316T103051_processed_thumbnail.jpg" alt="Card image cap">
+              <img class="card-img-top" src="{$previewPicSrc}" alt="Card image cap">
               <div class="card-body">
-                <p class="card-text"> {$video->getSource()} - {$video->getDatecreated()}</p>
+                <p class="card-text"> {$video->getSource()} - {$video->getDateobs()}</p>
               </div>
             </div>
           </button>
@@ -154,27 +159,26 @@ END;
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-md">
+            <div class="col-md contain">
+              <div class="vertical-center">
+                <div class="video-item" id="card-video-item">
+                    <div class="video-here">
+                    </div>
+                  </div>
 
-              <div class="rate-item" id="ratecont">
-                <div class="rate"></div>
-              </div>
-
-              <div class="video-item" id="card-video-item">
-                  <div class="video-here">
+                  <div class="rate-item" id="ratecont">
+                    <div class="rate"></div>
                   </div>
               </div>
             </div>
             <div class="col-sm">
               <ul class="list-group list-group-flush"  id="properties">
-                <li class="list-group-item"><b><?php echo "CHANGEME DATE";?>: </b> <a id="date"></a></li>
-                <li class="list-group-item"><b><?php echo "CHANGEME DATECREATED";?>: </b> <a id="datecreated"></a></li>
-                <li class="list-group-item"><b><?php echo "DELETEME PATH";?>: </b> <a id="path"></a></li>
-                <li class="list-group-item"><b><?php echo "CHANGEME numimages";?>: </b> <a id="numimages"></a></li>
-                <li class="list-group-item"><b><?php echo "CHANGEME duration";?>: </b> <a id="duration"></a></li>
-                <li class="list-group-item"><b><?php echo "CHANGEME source";?>: </b> <a id="source"></a></li>
-                <li class="list-group-item"><b><?php echo "CHANGEME filter";?>: </b> <a id="filter"></a></li>
-                <li class="list-group-item"><b><?php echo "CHANGEME visits";?>: </b> <a id="visits"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_DATE_VIDEO;?>: </b> <a id="date"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_DATE;?>: </b> <a id="datecreated"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_NUMIMAGES_VIDEO;?>: </b> <a id="numimages"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_DURATION_VIDEO;?>: </b> <a id="duration"> s</a></li>
+                <li class="list-group-item"><b><?php echo MODAL_FILTER;?>: </b> <a id="filter"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_VISITS_VIDEO;?>: </b> <a id="visits"></a></li>
                 <li class="list-group-item" id="rateitem"><b><?php echo MODAL_RATE;?>:</b> <a id="ratetext"></a></li>
               </ul>
             </div>
@@ -182,7 +186,6 @@ END;
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo MODAL_CLOSE; ?></button>
-          <a href="#" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true"><?php echo MODAL_MOREINFO; ?></a>
         </div>
       </div>
     </div>

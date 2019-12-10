@@ -92,6 +92,22 @@ a {
   min-width: 230px !important;
 }
 
+.video-block {
+  min-width: 340px !important;
+}
+
+.contain {
+  position: relative;
+  min-height: 250px;
+}
+
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
 .rate-item{
   margin: auto;
   width: 50%;
@@ -103,6 +119,10 @@ a {
 }
 
 .vjs-picture-in-picture-control {
+  display: none !important;
+}
+
+.vjs-volume-panel {
   display: none !important;
 }
 

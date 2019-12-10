@@ -14,6 +14,18 @@ $(document).ready(function(){
     var rateText = button.data('rate-text');
     var rate = button.data('rate');
     var visits = button.data('visits');
+    var avrRate = button.data('avrrate');
+    var picPreview = button.data('pic-preview');
+    var ismobile = button.data('ismobile');
+
+    // Send a POST request for increment visit counter
+    var http = new XMLHttpRequest();
+    var url = 'video_addvisit.php';
+    var params = 'id=' + id;
+    http.open('POST', url, true);
+    //Send the proper header information along with the request
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    http.send(params);
 
     // Delete existing rate(previous modal) and generate it if there is a rate on the DB
     $(".rate").remove();      // Star ratet
@@ -28,8 +40,11 @@ $(document).ready(function(){
       $(".rate").rate({
         max_value: 5,
         step_size: 0.5,
-        readonly: true,
-        initial_value: rate
+        change_once: false, // Determines if the rating can only be set once
+        ajax_method: 'POST',
+        url: './video_addrate.php',
+        additional_data: {id: id},
+        initial_value: avrRate
       });
     }
 
@@ -37,8 +52,8 @@ $(document).ready(function(){
     $("#card-video").remove();      // Star ratet
     $(".video-here").remove();  // Text with the rate
     if(path != ""){
-
-      var videohtml = "<video id=\"card-video\" class=\"video video-js vjs-default-skin\" controls preload=\"auto\" width=\"400\" height=\"213\" poster=\"http://cesar.esa.int/sun_monitor/archive/helios/visible/2018/201803/20180316/image_hel_visible_20180316T103051_processed_thumbnail.jpg\" data-setup=\"{}\"> <source src=\"" + path + "\"type=\'video/mp4\' /> <p class=\"vjs-no-js\"> To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p></video>";
+      var videoheight = (ismobile == 0)? 175: 213; // Visual fix when using phone
+      var videohtml = "<video id=\"card-video\" class=\"video video-js vjs-default-skin\" muted autoplay loop controls preload=\"auto\" height=\"" + videoheight + "\" poster=\"" + picPreview + "\" data-setup=\"{}\"> <source src=\"" + path + "\"type=\'video/mp4\' /> <p class=\"vjs-no-js\"> To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p></video>";
 
       var othervar = "<source id=\"video-source\" src=\"20170124_halpha.mp4\" type=\'video/mp4\'/>"
       //$('#card-video').append(othervar);
@@ -78,7 +93,6 @@ $(document).ready(function(){
     $("#source").text(source);
     $("#rate").text(rate);
     $("#visits").text(visits);
-    $("#path").text(path);
 
     $('.modal-body .card-img-top').attr('src', "http://cesar.esa.int/sun_monitor/archive/helios/visible/2018/201803/20180316/image_hel_visible_20180316T103051_processed_thumbnail.jpg");
   });

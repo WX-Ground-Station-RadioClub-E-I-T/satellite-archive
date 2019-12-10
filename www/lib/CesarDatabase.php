@@ -113,7 +113,7 @@ class CesarDatabase{
     public function getVideos($amount, $offset){
       $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
 
-      $sql = "SELECT `id`, `path`, `filter`, `duration`, `numimages`, `datecreated`, `source`, `rate`, `visits`
+      $sql = "SELECT `id`, `path`, `filter`, `duration`, `numimages`, `dateobs`, `datecreated`, `source`, `rate`, `visits`
       FROM `cesar-archive-videos` ORDER BY `datecreated` DESC LIMIT " . $amount .
        " OFFSET " . $offset;
 
@@ -125,7 +125,7 @@ class CesarDatabase{
       }
       if ($resultado->num_rows > 0) {
         while($row = $resultado->fetch_assoc()) {
-          $obj = new CesarVideo($row["id"], $row["path"], $row["filter"], $row["duration"], $row["numimages"], $row["datecreated"], $row["source"], $row["rate"], $row["visits"]);
+          $obj = new CesarVideo($row["id"], $row["path"], $row["filter"], $row["duration"], $row["numimages"], $row["dateobs"], $row["datecreated"], $row["source"], $row["rate"], $row["visits"]);
 
           array_push($res[0], $obj);
         }
@@ -155,11 +155,100 @@ class CesarDatabase{
       return $res;
     }
 
+    /*
+    Get image by date obs. If $featured is true get the featured picture of the day, if not, the first.
+    */
+    private function getImageByDateobs($dateobs, $filter, $source, $featured){
+      $res = NULL;
+
+      $sql_base = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
+   `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` WHERE `date_obs` LIKE '" . $dateobs . "%'";
+
+
+      if($featured){
+        $sql = $sql_base . " AND `featured` = 1";
+      } else {
+        $sql = $sql_base . $sql_limit;
+      }
+
+      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+      if (!$resultado = $this->conn->query($sql)) {
+        error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+        exit;
+      }
+      if ($resultado->num_rows > 0) {
+        while($row = $resultado->fetch_assoc()) {
+          // Get only the picture with the filter and the source specified
+          $meta = $this->getMetadata($row["id"]);
+          if($meta->getFilter() == $filter && $meta->getSource() == $source){
+              $res = new CesarImage($row["id"], $row["path"], $row["filename_final"],
+                $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
+                $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
+
+              $res->setMetadata($meta);  //Adding metedata to obj
+
+              $res->setObservatory($this->getObservatoryById($row["observatory_id"]));
+          }
+        }
+      } else {
+        error_log("Ninguna coincidencia", 0);
+
+        // If there is no result with featured, try without, and if not, return null
+        if($featured){
+          return $this->getImageByDateobs($dateobs, $filter, $source, 0);
+        } else {
+          return null;
+        }
+
+      }
+
+      return $res;
+    }
+
+    /*
+      Get the featured picture of the video, if not, the firts picture
+    */
+    public function getVideoPreviewPic($videoid){
+      //First get the observation date
+      $res = NULL;
+      $dateobs = 0;
+      $filter = '';
+      $source = '';
+
+      $sql = "SELECT `dateobs`, `filter`, `source` FROM `cesar-archive-videos` WHERE `id` = " . $videoid;
+
+      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+      if (!$resultado = $this->conn->query($sql)) {
+        error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+        exit;
+      }
+      if ($resultado->num_rows > 0) {
+        while($row = $resultado->fetch_assoc()) {
+          $dateobs = $row["dateobs"];
+          $filter = $row["filter"];
+          $source = $row["source"];
+        }
+      } else {
+        error_log("Ninguna coincidencia", 0);
+        exit;
+      }
+
+      if($dateobs != 0){
+        return $this->getImageByDateobs($dateobs, $filter, $source, 1);
+      } else {
+        return null;
+      }
+    }
 
     public function &getMetadata($imageId){
       $res = new CesarMetadata();
 
       $sql = "SELECT `metadata_id`, `value` FROM `cesar-archive-images-metadata` WHERE `image_id` = " . $imageId;
+
+      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
       if (!$resultado = $this->conn->query($sql)) {
         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
         exit;
@@ -538,8 +627,42 @@ class CesarDatabase{
     return $res;
   }
 
+  // Return if there is a rate of a video with the given ip and video_id
+  public function existVideoRate($videoid, $ip){
+    $res = false;
+
+    $sql = "SELECT 1 FROM `cesar-archive-videos-rates` WHERE `video_id` = " . $videoid . " AND `ip` = \"" . $ip . "\" LIMIT 1";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+    if ($resultado->num_rows > 0) {
+      $res = true;
+    }
+
+    return $res;
+  }
+
+
   public function insertRate($imageid, $rate, $ip, $browser){
     $sql = "INSERT INTO `cesar-archive-images-rates` (`image_id`, `rate`, `ip`, `browser`) VALUES (" . $imageid .
+        ", \"" . $rate . "\", \"" . $ip . "\" , \"" . $browser .
+        "\")";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+  }
+
+  public function insertVideoRate($videoid, $rate, $ip, $browser){
+    $sql = "INSERT INTO `cesar-archive-videos-rates` (`video_id`, `rate`, `ip`, `browser`) VALUES (" . $videoid .
         ", \"" . $rate . "\", \"" . $ip . "\" , \"" . $browser .
         "\")";
 
@@ -554,6 +677,18 @@ class CesarDatabase{
   // Update an alredy set rate at `cesar-archive-images-rates`
   public function updateRate($imageid, $rate, $ip){
     $sql = "UPDATE `cesar-archive-images-rates` SET `rate` = " . $rate . " WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\"";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+  }
+
+  // Update an alredy set video rate at `cesar-archive-videos-rates`
+  public function updateVideoRate($videoid, $rate, $ip){
+    $sql = "UPDATE `cesar-archive-videos-rates` SET `rate` = " . $rate . " WHERE `video_id` = " . $videoid . " AND `ip` = \"" . $ip . "\"";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -593,6 +728,36 @@ class CesarDatabase{
     return $avr;
   }
 
+  // Update the video average rate at `cesar-archive-videos-rates`
+  public function updateVideoAvrRate($videoid){
+    $avr = -1;
+
+    $sql = "SELECT AVG(`rate`) FROM `cesar-archive-videos-rates` WHERE `video_id` = " . $videoid;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $avr = $row["AVG(`rate`)"];
+      }
+    }
+
+    $sql = "UPDATE `cesar-archive-videos` SET `rate`=" . $avr . " WHERE `id` = " . $videoid;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+
+    return $avr;
+  }
+
   // Get Avr Rate from `cesar-archive-images-rates`
   public function getAvrRate($imageid){
     $res = -1;
@@ -614,9 +779,45 @@ class CesarDatabase{
     return $res;
   }
 
+  // Get Avr video Rate from `cesar-archive-videos-rates`
+  public function getVideoAvrRate($videoid){
+    $res = -1;
+
+    $sql = "SELECT `rate` FROM `cesar-archive-videos` WHERE `id` = " . $videoid;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $res = $row["rate"];
+      }
+    }
+
+    return $res;
+  }
+
   // Update the visits of a observation, giving his ID
   public function addVisitObs($imageId){
     $sql = "UPDATE `cesar-archive-images` SET `visits` = `visits` + 1 WHERE `id` = " . $imageId;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         return false;
+         exit;
+    }
+
+    return true;
+  }
+
+  // Update the visits of a video, giving his ID
+  public function addVisitVideo($videoId){
+    $sql = "UPDATE `cesar-archive-videos` SET `visits` = `visits` + 1 WHERE `id` = " . $videoId;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 

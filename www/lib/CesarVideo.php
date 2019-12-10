@@ -13,6 +13,7 @@ class CesarVideo{
   private $filter;
   private $duration;
   private $numimages;
+  private $dateobs;
   private $datecreated;
   private $source;
   private $rate;
@@ -30,12 +31,13 @@ class CesarVideo{
    * @param $rate
    * @param $visits
    */
-  public function __construct($id, $path, $filter, $duration, $numimages, $datecreated, $source, $rate, $visits){
+  public function __construct($id, $path, $filter, $duration, $numimages, $dateobs, $datecreated, $source, $rate, $visits){
     $this->id = $id;
     $this->path = $path;
     $this->filter = $filter;
     $this->duration = $duration;
     $this->numimages = $numimages;
+    $this->dateobs = $dateobs;
     $this->datecreated = $datecreated;
     $this->source = $source;
     $this->rate = $rate;
@@ -111,6 +113,20 @@ class CesarVideo{
   public function setNumimages($numimages){
     $this->numimages = $numimages;
   }
+
+  /**
+    * @return mixed
+    */
+  public function getDateobs(){
+    return $this->dateobs;
+  }/**
+   * @param mixed $dateobs
+   */
+  public function setDateobs($dateobs){
+    $this->dateobs = $dateobs;
+  }
+
+
 
   /**
    * @return mixed
