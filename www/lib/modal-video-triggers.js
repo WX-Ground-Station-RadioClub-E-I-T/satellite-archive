@@ -55,9 +55,6 @@ $(document).ready(function(){
       var videoheight = (ismobile == 0)? 175: 213; // Visual fix when using phone
       var videohtml = "<video id=\"card-video\" class=\"video video-js vjs-default-skin\" muted autoplay loop controls preload=\"auto\" height=\"" + videoheight + "\" poster=\"" + picPreview + "\" data-setup=\"{}\"> <source src=\"" + path + "\"type=\'video/mp4\' /> <p class=\"vjs-no-js\"> To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"http://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p></video>";
 
-      var othervar = "<source id=\"video-source\" src=\"20170124_halpha.mp4\" type=\'video/mp4\'/>"
-      //$('#card-video').append(othervar);
-
       $('#card-video-item').append(videohtml);
 
       videojs(document.getElementById('card-video'), {
@@ -66,7 +63,7 @@ $(document).ready(function(){
         preload: 'auto',
         plugins: {
           framebyframe: {
-            fps: 23.98,
+            fps: 15,
             steps: [
               { text: '-5', step: -5 },
               { text: '-1', step: -1 },
