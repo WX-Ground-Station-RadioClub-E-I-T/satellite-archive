@@ -140,3 +140,4 @@ define("SEARCH_RATEASC", "Nota ASC");
 define("PAGINATION_PREV", "Anterior");
 define("PAGINATION_NEXT", "Siguiente");
 define("SUN", "Sun");
+define("VIDEO_APPEARS", "Aparece en este video!");

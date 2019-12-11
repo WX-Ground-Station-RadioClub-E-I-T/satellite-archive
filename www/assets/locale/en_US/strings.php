@@ -139,3 +139,4 @@ define("SEARCH_RATEASC", "Rate ASC");
 define("PAGINATION_PREV", "Previous");
 define("PAGINATION_NEXT", "Next");
 define("SUN", "Sun");
+define("VIDEO_APPEARS", "Appears on this video!");

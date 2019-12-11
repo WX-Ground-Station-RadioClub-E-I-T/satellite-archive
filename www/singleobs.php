@@ -25,7 +25,7 @@
                 step_size: 0.5,
                 change_once: false, // Determines if the rating can only be set once
                 ajax_method: 'POST',
-                url: 'http://localhost/addrate.php',
+                url: './addrate.php',
                 additional_data: {id: <?php echo $imageId ?>},
                 initial_value: "<?php echo $avrRate;?>"
             });
@@ -108,6 +108,63 @@
             </div>
       		</div>
         </div>
+
+
+        <?php
+
+        $video = $obj->getVideoFromPic($pic->getId());
+
+        // If that pic appears in a video
+        if($video!= null){
+          $card_title = VIDEO_APPEARS;
+          // Get the best image of that day, if not, put a sample pic
+          $previewPic = $obj->getVideoPreviewPic($video->getId());
+          $previewPicSrc = ($previewPic != NULL)? $previewPic->getExtSrc() : (($video->getFilter() == 'visible')? VIDEO_PREVIEW_VISIBLE_PIC_SAMPLE : VIDEO_PREVIEW_HALPHA_PIC_SAMPLE);
+
+          echo <<<END
+          <div class="col mt-4 mb-4 video-block">
+            <div class="card">
+              <div class="card-body">
+                <h4>{$card_title}</h4>
+                <video id="video" class="video-js vjs-default-skin" controls preload="auto" width="640" height="420"
+                poster="{$previewPicSrc}"
+                data-setup="{}">
+                  <source src="{$video->getExtSrc()}" type='video/mp4'/>
+                  <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a web browser that
+                    <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                  </p>
+                </video>
+                <script type='text/javascript'>
+                var video = videojs("video", {
+                  controls: true,
+                  autoplay: true,
+                  preload: 'auto',
+                  plugins: {
+                    framebyframe: {
+                      fps: 15,
+                      steps: [
+                        { text: '-5', step: -5 },
+                        { text: '-1', step: -1 },
+                        { text: '+1', step: 1 },
+                        { text: '+5', step: 5 },
+                      ]
+                    }
+                  }
+                });
+                vid=document.getElementById("video");
+                vid.disablePictureInPicture = true;
+                </script>
+              </div>
+            </div>
+          </div>
+END;
+        }
+
+        ?>
+
+
+
       </div>
     </div>
 

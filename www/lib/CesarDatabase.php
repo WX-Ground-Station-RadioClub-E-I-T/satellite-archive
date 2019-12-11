@@ -830,4 +830,67 @@ class CesarDatabase{
     return true;
   }
 
+  public function getVideoByDate($dateobs, $source, $filter){
+    $res = null;    // First its the results, and the second its the number of results that satifies
+
+    //Format date to lookup on that day
+    $dateobs = date('Y-m-d', strtotime($dateobs));
+
+    $sql = "SELECT `id`, `path`, `filter`, `duration`, `numimages`, `dateobs`, `datecreated`, `source`, `rate`, `visits`
+    FROM `cesar-archive-videos` WHERE `dateobs` = \"" . $dateobs . "\" AND `source` = \"" . $source . "\" AND `filter` = \"" . $filter . "\"";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+      error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+      exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $res = new CesarVideo($row["id"], $row["path"], $row["filter"], $row["duration"], $row["numimages"], $row["dateobs"], $row["datecreated"], $row["source"], $row["rate"], $row["visits"]);
+      }
+    } else {
+      error_log("Ninguna coincidencia", 0);
+      return NULL;
+    }
+
+    return $res;
+  }
+
+  // Get video giving a image id, if the picture has a video it returns a video object, if not, null
+  public function getVideoFromPic($imageId){
+    //Get date_obs, source and filter
+
+    $res = NULL;
+
+    $date_obs = null;
+    $source = null;
+    $filter = null;
+
+    $sql = "SELECT `id`, `date_obs` FROM `cesar-archive-images` WHERE `id` = " . $imageId;
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+      error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
+      exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $meta = $this->getMetadata($row["id"]);
+
+        $date_obs = $row["date_obs"];
+        $source = $meta->getSource();
+        $filter = $meta->getFilter();
+      }
+    } else {
+      error_log("Ninguna coincidencia", 0);
+      return null;
+    }
+
+    return $this->getVideoByDate($date_obs, $source, $filter);
+
+  }
+
+
 }
