@@ -4,6 +4,9 @@
       <img src="assets/images/logo.png" height="70" alt="" href="index.php">
     </a>
 
+    <?php
+    $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+    ?>
 
     <!-- Responsive button for tongle menu -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,7 +18,7 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link active pb-0 pt-3" href="index.php"><?php echo HOME; ?>
+            <a class="nav-link <?php if($uri_parts[0] == '/index.php' || $uri_parts[0] == '/'){ echo active; } ?> pb-0 pt-3" href="index.php"><?php echo HOME; ?>
               <span class="sr-only">(current)</span>
             </a>
           </div>
@@ -26,7 +29,7 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="videos.php"><?php echo VIDEOS; ?></a>
+            <a class="nav-link <?php if($uri_parts[0] == '/videos.php'){ echo active; } ?> pb-0 pt-3" href="videos.php"><?php echo VIDEOS; ?></a>
           </div>
           <div class="menu_top_second">
             <?php echo VIDEOS_SUB; ?>
@@ -35,7 +38,7 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="about.php"><?php echo ABOUT; ?></a>
+            <a class="nav-link <?php if($uri_parts[0] == '/about.php'){ echo active; } ?> pb-0 pt-3" href="about.php"><?php echo ABOUT; ?></a>
           </div>
           <div class="menu_top_second">
             <?php echo ABOUT_SUB; ?>
