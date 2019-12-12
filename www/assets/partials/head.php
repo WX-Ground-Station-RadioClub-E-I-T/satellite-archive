@@ -48,7 +48,6 @@ date_default_timezone_set('UTC');
 <link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "bootstrap/dist/css/bootstrap.min.css"; ?>"/>
 <link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css"; ?>"/>
 <link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "video.js/dist/video-js.min.css"; ?>"/>
-<link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "videojs-sublime-skin/dist/videojs-sublime-skin.min.css"; ?>"/>
 <link rel="stylesheet" href="assets/css/style.css">
 
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "jquery/dist/jquery.min.js"; ?>"></script>

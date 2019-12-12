@@ -28,7 +28,7 @@ Then, it will deploy:
 * **On port 8080**: PHPmyadmin connected to the database.
 * **On port 3306**: MySQL database.
 
-Then we have to import the `sample_database.sql` to MySQL. Run the following command:
+Then we have to import the `sample_database.sql` to MySQL. It can be do it accessing to PHPmyadmin on the port 8080, or by running the following command:
 
 ```
 $ docker exec -i cesar-archive-db bash -c 'mysql -u root sample_database --password=tiger < /home/sample_database.sql'
