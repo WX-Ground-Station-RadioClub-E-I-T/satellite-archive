@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql:3306
--- Generation Time: Dec 12, 2019 at 10:20 AM
+-- Generation Time: Dec 17, 2019 at 11:01 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.19
 
@@ -48348,7 +48348,7 @@ INSERT INTO `cesar-archive-videos` (`id`, `path`, `filter`, `duration`, `numimag
 (3, '20181210_visible.mp4', 'visible', 6, 93, '2018-12-10', '2019-12-04 15:00:35', 'Sun', '5.00000', 7),
 (4, '20181214_halpha.mp4', 'halpha', 21, 292, '2018-12-14', '2019-12-04 15:02:04', 'Sun', '5.00000', 3),
 (5, '20181214_visible.mp4', 'visible', 15, 205, '2018-12-14', '2019-12-04 15:02:46', 'Sun', '4.00000', 33),
-(6, '20181217_halpha.mp4', 'halpha', 8, 126, '2018-12-17', '2019-12-04 15:03:18', 'Sun', '3.50000', 26),
+(6, '20181217_halpha.mp4', 'halpha', 8, 126, '2018-12-17', '2019-12-04 15:03:18', 'Sun', '3.50000', 27),
 (7, '20181217_visible.mp4', 'visible', 8, 99, '2018-12-17', '2019-12-04 15:03:52', 'Sun', '3.00000', 35);
 
 -- --------------------------------------------------------
@@ -48378,6 +48378,28 @@ INSERT INTO `cesar-archive-videos-rates` (`video_id`, `dateinsert`, `rate`, `ip`
 (3, '2019-12-04 15:31:23', '5.00000', '172.25.0.1', 'Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'),
 (5, '2019-12-10 10:09:34', '3.00000', '172.26.0.1', 'Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'),
 (2, '2019-12-10 14:21:18', '3.00000', '172.26.0.1', 'Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cesar-section`
+--
+
+CREATE TABLE `cesar-section` (
+  `idsection` int(11) NOT NULL,
+  `nameid` varchar(100) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `title_es` varchar(100) NOT NULL,
+  `content` text NOT NULL,
+  `content_es` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `cesar-section`
+--
+
+INSERT INTO `cesar-section` (`idsection`, `nameid`, `title`, `title_es`, `content`, `content_es`) VALUES
+(1, 'Archive_About', 'About', 'Acerca de', '<p style=\"text-align: center;\">\r\n<img alt=\"\" src=\"http://www.cosmos.esa.int/documents/519784/951546/Sunspot1302-Flare-2011-09-22.jpg/26c45951-23ba-4028-a755-676324c2587e?t=1457968540165\" style=\"width: 174px; height: 149px;\"><img alt=\"\" src=\"http://www.cosmos.esa.int/documents/519784/951546/20130321_Solar_Telescope_Dome_Installed_ESA_2.jpg/10173354-e6ac-4a08-9489-9841f3de7c0e?t=1457968580384\" style=\"width: 500px; height: 149px;\"><img alt=\"\" src=\"assets/images/screen.png\" style=\"width: 192px; height: 149px;\"></p>\r\n\r\n<p><b>Cesar Archive Viewer</b> is a web tool for browsing the data obtained in the educational projet <b>Cesar</b>. All observations are classified and ordered so you can find the best images of our observatories.</p>\r\n\r\n<p>Every day, our observatories takes pictures of the stars and upload them to the <b>Cesar Archive</b> repository. In the videos section you can see a timelapse of all the pictures of that day.</p>\r\n\r\n<p>You can search the photos by <b>applying filters</b>. For example you can search for a specific date, get high quality images, get from a specific observatory. You can also <b>collaborate on the project</b> by voting the best observations and thus study the best quality observations.</p>\r\n\r\n<p> This tool will allow you to download the observations with the best quality, export all metadata, share and vote the observations.</p>\r\n\r\n<br>\r\n\r\n<div class=\"text-center mb-5\">\r\n  <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/YnZ0dS4y-v4\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>\r\n</div>\r\n\r\n<div class=\"text-center mb-5\">\r\n  <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/FWgNwK2CgFc\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>\r\n</div>\r\n\r\n<p style=\"text-align: center;\">\r\n<a href=\"http://cesar.esa.int/upload/201704/Zoom_to_the_Sun-mini.jpg\" target=\"_blank\"><img alt=\"\" src=\"http://cesar.esa.int/upload/201704/Zoom_to_the_Sun-mini.jpg\" style=\"width: 249px; height: 156px;\"></a><a href=\"http://cesar.esa.int/upload/201704/ISS_Transit_through_the_Sun-mini.jpg\" target=\"_blank\"><img alt=\"\" src=\"http://cesar.esa.int/upload/201704/ISS_Transit_through_the_Sun-mini.jpg\" style=\"width: 250px; height: 156px;\"></a><a href=\"http://cesar.esa.int/upload/201704/Detailed_Sun-mini.jpg\" target=\"_blank\"><img alt=\"\" src=\"http://cesar.esa.int/upload/201704/Detailed_Sun-mini.jpg\" style=\"width: 250px; height: 156px;\"></a><br>\r\n<span style=\"font-size:10px;\">Sun photos from CESAR observatory, proccesed by Abel de Burgos (ESA/CESAR)</span></p>', '<p style=\"text-align: center;\">\r\n<img alt=\"\" src=\"http://www.cosmos.esa.int/documents/519784/951546/Sunspot1302-Flare-2011-09-22.jpg/26c45951-23ba-4028-a755-676324c2587e?t=1457968540165\" style=\"width: 174px; height: 149px;\"><img alt=\"\" src=\"http://www.cosmos.esa.int/documents/519784/951546/20130321_Solar_Telescope_Dome_Installed_ESA_2.jpg/10173354-e6ac-4a08-9489-9841f3de7c0e?t=1457968580384\" style=\"width: 500px; height: 149px;\"><img alt=\"\" src=\"assets/images/screen.png\" style=\"width: 192px; height: 149px;\"></p>\r\n\r\n<p><b>Cesar Archive Viewer</b> es una herramienta web para navegar en los datos obtenidos en el proyecto educativo <b>Cesar</b>. Todas las observaciones están clasificadas y ordenadas para que puedas encontrar las mejores imágenes de nuestros observatorios.</p>\r\n\r\n\r\n<p>Cada día se toman imágenes de los cuerpos celestes y se suben al repositorio de <b>Cesar Archive</b>. En la sección de videos podrás ver un timelapse de todas las imágenes de ese día.</p>\r\n\r\n<p>Podrás buscar las fotos <b>aplicando filtros</b>. Como buscar una fecha concreta, obtener imágenes de buena calidad, o eligiendo el observatorio de donde quieres los datos. Además <b>puedes coolaborar en el proyecto</b> votando las mejores observaciones y así estudiar las observaciones de mejor calidad.</p>\r\n\r\n<p>Esta herramienta te permitirá descargar las observaciones en la máxima calidad, exportar todos los metadatos, compartir y votar.</p>\r\n\r\n<br>\r\n\r\n<div class=\"text-center mb-5\">\r\n  <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/YnZ0dS4y-v4\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>\r\n</div>\r\n\r\n<div class=\"text-center mb-5\">\r\n  <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/FWgNwK2CgFc\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>\r\n</div>\r\n\r\n<p style=\"text-align: center;\">\r\n<a href=\"http://cesar.esa.int/upload/201704/Zoom_to_the_Sun-mini.jpg\" target=\"_blank\"><img alt=\"\" src=\"http://cesar.esa.int/upload/201704/Zoom_to_the_Sun-mini.jpg\" style=\"width: 249px; height: 156px;\"></a><a href=\"http://cesar.esa.int/upload/201704/ISS_Transit_through_the_Sun-mini.jpg\" target=\"_blank\"><img alt=\"\" src=\"http://cesar.esa.int/upload/201704/ISS_Transit_through_the_Sun-mini.jpg\" style=\"width: 250px; height: 156px;\"></a><a href=\"http://cesar.esa.int/upload/201704/Detailed_Sun-mini.jpg\" target=\"_blank\"><img alt=\"\" src=\"http://cesar.esa.int/upload/201704/Detailed_Sun-mini.jpg\" style=\"width: 250px; height: 156px;\"></a><br>\r\n<span style=\"font-size:10px;\">Sun photos from CESAR observatory, proccesed by Abel de Burgos (ESA/CESAR)</span></p>');
 
 --
 -- Indexes for dumped tables
@@ -48429,6 +48451,13 @@ ALTER TABLE `cesar-archive-videos`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `cesar-section`
+--
+ALTER TABLE `cesar-section`
+  ADD PRIMARY KEY (`idsection`),
+  ADD UNIQUE KEY `nameid` (`nameid`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -48442,7 +48471,7 @@ ALTER TABLE `cesar-archive-albums`
 -- AUTO_INCREMENT for table `cesar-archive-images`
 --
 ALTER TABLE `cesar-archive-images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94372;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90014;
 
 --
 -- AUTO_INCREMENT for table `cesar-archive-metadata`
@@ -48461,6 +48490,12 @@ ALTER TABLE `cesar-archive-observatories`
 --
 ALTER TABLE `cesar-archive-videos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `cesar-section`
+--
+ALTER TABLE `cesar-section`
+  MODIFY `idsection` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
