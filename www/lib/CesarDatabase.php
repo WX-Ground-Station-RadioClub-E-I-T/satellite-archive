@@ -24,6 +24,12 @@ class CesarDatabase{
             error_log("Could not connect to mysql database", 0);
             die("Connection failed: " . $this->conn->connect_error);
         }
+
+        /* cambiar el conjunto de caracteres a utf8 */
+        if (!$this->conn->set_charset("utf8")) {
+          printf("Error cargando el conjunto de caracteres utf8: %s\n", $this->conn->error);
+          exit();
+        }
     }
 
     public function getLastImages($amount){
@@ -890,6 +896,72 @@ class CesarDatabase{
 
     return $this->getVideoByDate($date_obs, $source, $filter);
 
+  }
+
+  // Get section content from `cesar-section`
+  public function getSectionContent($nameid, $language){
+    $res = "";
+    $field = "";
+
+    switch($language){
+      case "en":
+        $field = "content";
+        break;
+      case "es":
+        $field = "content_es";
+        break;
+      default:
+        $field = "content";
+    }
+
+    $sql = "SELECT `" . $field . "` FROM `cesar-section` WHERE `nameid` = \"" . $nameid . "\"";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $res = $row[$field];
+      }
+    }
+
+    return $res;
+  }
+
+  // Get section Title from `cesar-section`
+  public function getSectionTitle($nameid, $language){
+    $res = "";
+    $field = "";
+
+    switch($language){
+      case "en":
+        $field = "title";
+        break;
+      case "es":
+        $field = "title_es";
+        break;
+      default:
+        $field = "title";
+    }
+
+    $sql = "SELECT `" . $field . "` FROM `cesar-section` WHERE `nameid` = \"" . $nameid . "\"";
+
+    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
+
+    if (!$resultado = $this->conn->query($sql)) {
+         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         exit;
+    }
+    if ($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $res = $row[$field];
+      }
+    }
+
+    return $res;
   }
 
 
