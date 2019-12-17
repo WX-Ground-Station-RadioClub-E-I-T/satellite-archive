@@ -9,16 +9,21 @@
 
   <!-- Page Content -->
   <div class="container">
-    <h1>About Us</h1>
 
-    <img style='float:left;width:200px;height:200px; margin-right:10px;' src="img/me.jpg" />
-    <p>Lots of text here...With the four tiers of grids available you're bound to run into issues where, at certain breakpoints, your columns don't clear quite right as one is taller than the other. To fix that, use a combination of a .clearfix and o</p>
-    <p>Lots of text here...With the four tiers of grids available you're bound to run into issues where, at certain breakpoints, your columns don't clear quite right as one is taller than the other. To fix that, use a combination of a .clearfix and o</p>
+    <?php
+    $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
 
-    <p>Lots of text here...With the four tiers of grids available you're bound to run into issues where, at certain breakpoints, your columns don't clear quite right as one is taller than the other. To fix that, use a combination of a .clearfix and o</p>
+    $nameid = "Archive_About";
+    $language = substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 );
 
-    <p>Lots of text here...With the four tiers of grids available you're bound to run into issues where, at certain breakpoints, your columns don't clear quite right as one is taller than the other. To fix that, use a combination of a .clearfix and o</p>
-    <p>Lots of text here...With the four tiers of grids available you're bound to run into issues where, at certain breakpoints, your columns don't clear quite right as one is taller than the other. To fix that, use a combination of a .clearfix and o</p>
+    ?>
+
+    <h1><?php echo  $obj->getSectionTitle($nameid, $language); ?></h1>
+
+    <!-- Content of about on the data base -->
+
+    <?php echo $obj->getSectionContent($nameid, $language); ?>
+
 
   </div>
   <!-- /.container -->
