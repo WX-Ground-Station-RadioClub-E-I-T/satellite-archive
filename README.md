@@ -28,7 +28,7 @@ Then, it will deploy:
 * **On port 8080**: PHPmyadmin connected to the database.
 * **On port 3306**: MySQL database.
 
-Then we have to import the `sample_database.sql` to MySQL. It can be do it accessing to PHPmyadmin on the port 8080, or by running the following command:
+Then we have to import the `sample_database.sql` to MySQL. It can be done by accessing to PHPmyadmin on the port 8080, or by running the following command:
 
 ```
 $ docker exec -i cesar-archive-db bash -c 'mysql -u root sample_database --password=tiger < /home/sample_database.sql'
@@ -56,6 +56,12 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## How it works
 
+Observations are uploaded [here](http://cesar.esa.int/sun_monitor/archive/helios/). When a observation is made, the pipeline insert into the database the information to be displayed on the Archive Viewer. See `sample_database` to see the structure followed.
+
 The whole project is configured by *Docker* in the **Dockerfile** on `./bin`.
 
 Npm modules are installed when the container starts, saved on `/var/www/node_modules` inside the Docker machine. With Apache, modules are redirected on `localhost/dep/`. See [index.php](./www/index.php) for more information.
+
+### Debug mode
+
+You can turn on `debug mode` to display the queries from the database. It can be turned on by changing the constant `DEBUG` on `./www/lib/conf.php` to true.
