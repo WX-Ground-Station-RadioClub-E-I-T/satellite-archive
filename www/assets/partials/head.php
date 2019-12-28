@@ -2,11 +2,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <?php include 'lib/conf.php' ?>
-<?php include 'lib/CesarDatabase.php' ?>
-<?php include 'lib/CesarImage.php' ?>
-<?php include 'lib/CesarMetadata.php' ?>
-<?php include 'lib/CesarObservatory.php' ?>
-<?php include 'lib/CesarVideo.php' ?>
+<?php include 'lib/ArchiveDatabase.php' ?>
+<?php include 'lib/ArchiveImage.php' ?>
+<?php include 'lib/ArchiveMetadata.php' ?>
+<?php include 'lib/ArchiveObservatory.php' ?>
 
 <?php
   switch(substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 )){
@@ -32,14 +31,14 @@ date_default_timezone_set('UTC');
 
 ?>
 
-<title>Cesar Archive Viewer</title>
+<title>Archive Archive Viewer</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta property="og:title" content="Cesar Archive Viewer" />
-<meta name="twitter:title" content="Cesar Archive Viewer" />
+<meta property="og:title" content="Archive Archive Viewer" />
+<meta name="twitter:title" content="Archive Archive Viewer" />
 <meta name="author" content=""/>
-<meta property="og:site_name" content="Cesar Archive Viewer" />
-<meta property="og:description"   content="CESAR Educational Initiative sky observations database" />
+<meta property="og:site_name" content="Archive Viewer" />
+<meta property="og:description"   content="Archive Viewer" />
 <meta property="og:url" content="<?php echo "https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}"?>" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
@@ -47,7 +46,6 @@ date_default_timezone_set('UTC');
 
 <link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "bootstrap/dist/css/bootstrap.min.css"; ?>"/>
 <link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css"; ?>"/>
-<link rel="stylesheet" href="<?php echo DEPENDENCIES_ENDPOINT . "video.js/dist/video-js.min.css"; ?>"/>
 <link rel="stylesheet" href="assets/css/style.css">
 
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "jquery/dist/jquery.min.js"; ?>"></script>
@@ -56,10 +54,7 @@ date_default_timezone_set('UTC');
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "popper.js/dist/umd/popper.min.js"; ?>"></script>
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "bootstrap/dist/js/bootstrap.min.js"; ?>"></script>
 <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js"; ?>"></script>
-<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "video.js/dist/video.min.js"; ?>"></script>
-<script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "videojs-framebyframe/dist/videojs.framebyframe.min.js"; ?>"></script>
 <script type="text/javascript" src="lib/modal-triggers.js"></script>
-<script type="text/javascript" src="lib/modal-video-triggers.js"></script>
 <script type="text/javascript" src="assets/js/rater.min.js"></script>
 
 <link rel="apple-touch-icon" sizes="57x57" href="assets/images/apple-icon-57x57.png">

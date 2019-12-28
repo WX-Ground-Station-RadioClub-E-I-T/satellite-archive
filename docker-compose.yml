@@ -3,7 +3,7 @@ version: "3"
 services:
   webserver:
     build: ./bin/webserver
-    container_name: 'cesar-archive'
+    container_name: 'archive-web'
     restart: 'always'
     ports:
       - "80:80"
@@ -16,16 +16,16 @@ services:
       - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
       - ${LOG_DIR-./logs/apache2}:/var/log/apache2
     environment:
-      - MYSQL_HOST=cesar-archive-db
-      - MYSQL_CESAR_DATABASE=sample_database
-      - MYSQL_CESAR_USER=root
-      - MYSQL_CESAR_PASSWORD=tiger
+      - MYSQL_HOST=archive-db
+      - MYSQL_ARCHIVE_DATABASE=sample_database
+      - MYSQL_ARCHIVE_USER=root
+      - MYSQL_ARCHIVE_PASSWORD=tiger
       - ARCHIVE_ENDPOINT=http://cesar.esa.int/sun_monitor/archive/
       - ARCHIVE_VIDEOS_ENDPOINT=http://cesar.esa.int/archivetest/videos/
       - DEPENDENCIES_ENDPOINT= http://localhost/dep/
   mysql:
     build: ./bin/mysql
-    container_name: 'cesar-archive-db'
+    container_name: 'archive-db'
     restart: 'always'
     ports:
       - "3306:3306"
@@ -36,11 +36,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: tiger
       MYSQL_DATABASE: sample_database
-      MYSQL_USER: cesar
+      MYSQL_USER: archive
       MYSQL_PASSWORD: archive
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: 'cesar-archive-phpmyadmin'
+    container_name: 'archive-phpmyadmin'
     links:
       - mysql
     environment:

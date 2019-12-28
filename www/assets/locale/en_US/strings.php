@@ -1,7 +1,7 @@
 <?php
-define("JUMBOTRON", "CESAR Educational Initiative sky observations database");
+define("JUMBOTRON", "Sky observations database");
 define("JUMBO_IM", "Total images");
-define("JUMBO_IM_TOOLTIP", "Images captured and processed by the CESAR observatories");
+define("JUMBO_IM_TOOLTIP", "Images captured and processed");
 define("HOME", "Home");
 define("HOME_SUB", "Last observations");
 define("VIDEOS", "Videos");
@@ -13,7 +13,7 @@ define("CONTACT_SUB", "Contact us");
 define("SEARCH", "Search...");
 define("SEARCH_SUB", "Or <a href=\"search.php\">advanced search</a>");
 define("FOOT_MAIN", "Terms of Use | Privacy Policy | Legal Notice");
-define("FOOT_SUB", "CESAR - Cooperation through Education in Science and Astronomy Research");
+define("FOOT_SUB", "Free open source Archive");
 define("MODAL_DATE", "Date uploaded");
 define("MODAL_DATE_VIDEO", "Date");
 define("MODAL_NUMIMAGES_VIDEO", "Number of pictures");
@@ -140,3 +140,5 @@ define("PAGINATION_PREV", "Previous");
 define("PAGINATION_NEXT", "Next");
 define("SUN", "Sun");
 define("VIDEO_APPEARS", "Appears on this video!");
+define("ABOUT_TITLE", "About");
+define("ABOUT_CONTENT", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");

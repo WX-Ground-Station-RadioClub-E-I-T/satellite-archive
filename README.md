@@ -1,16 +1,16 @@
-# Cesar Archive
+# Archive Viewer
 
 ![Home screen picture](./pics/screen.png)
 
-Cesar Archive Viewer it's a web tool to navigate the data obtained in CESAR project. It's developed in `PHP` with `mySQL`, to filter and display the pictures obtained with the telescopes.
+Archive Viewer is a open source web tool for navigate the data of solar observations. And easily you can migrate it for other study cases.
 
-[ESAC Solar Observatory Helios](http://cesar.esa.int/index.php?Section=Observatories_ESAC_Sun) obtain pictures of the sun every day. They are proccessed and uploaded to Cesar Archive.
+Archive Viewer it's a was originally a web tool to navigate the data obtained in CESAR project. It's developed in `PHP` with `mySQL`, to filter and display the pictures obtained with the telescopes.
 
 ## Getting Started
 
 ### Prerequisites
 
-Cesar Archive is built with **Docker**. In order to start the web application, you must have installed:
+Archive Viewer is built with **Docker**. In order to start the web application, you must have installed:
 
 * [Docker](https://docs.docker.com/install/)
 * [Docker-compose](https://docs.docker.com/compose/install/)
@@ -31,7 +31,7 @@ Then, it will deploy:
 Then we have to import the `sample_database.sql` to MySQL. It can be done by accessing to PHPmyadmin on the port 8080, or by running the following command:
 
 ```
-$ docker exec -i cesar-archive-db bash -c 'mysql -u root sample_database --password=tiger < /home/sample_database.sql'
+$ docker exec -i archive-db bash -c 'mysql -u root sample_database --password=tiger < /home/sample_database.sql'
 ```
 
 ## Built With

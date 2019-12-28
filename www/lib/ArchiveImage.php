@@ -1,12 +1,12 @@
 <?php
 /**
-  * Class cesarDatabase
-  * cesarImage class that holds the information from the database of each image.
+  * Class archiveDatabase
+  * archiveImage class that holds the information from the database of each image.
   *
   * @author Fran Acien (https://github.com/acien101)
   */
 
-class CesarImage implements JsonSerializable{
+class ArchiveImage implements JsonSerializable{
     private $id;
     private $path;
     private $filename_final;
@@ -24,7 +24,7 @@ class CesarImage implements JsonSerializable{
     private $observatory;
 
     /**
-     * cesarImage constructor.
+     * archiveImage constructor.
      * @param $id
      * @param $path
      * @param $filename_final
@@ -265,7 +265,7 @@ class CesarImage implements JsonSerializable{
   /**
    * @param mixed $metadata
    */
-  public function setMetadata(CesarMetadata &$metadata){
+  public function setMetadata(ArchiveMetadata &$metadata){
     $this->metadata = $metadata;
   }
 

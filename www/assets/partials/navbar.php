@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <a href="index.php">
       <img src="assets/images/logo.png" height="70" alt="" href="index.php">
@@ -24,15 +24,6 @@
           </div>
           <div class="menu_top_second">
             <?php echo HOME_SUB; ?>
-          </div>
-        </li>
-
-        <li class="nav-item ml-3">
-          <div class="menu_top_main text-left">
-            <a class="nav-link <?php if($uri_parts[0] == '/videos.php'){ echo active; } ?> pb-0 pt-3" href="videos.php"><?php echo VIDEOS; ?></a>
-          </div>
-          <div class="menu_top_second">
-            <?php echo VIDEOS_SUB; ?>
           </div>
         </li>
 

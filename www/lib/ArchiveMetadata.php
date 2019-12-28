@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Class CesarMetadata
+ * Class ArchiveMetadata
  *
  * Metadata of each picture
  *
  * @author Fran Acien (https://github.com/acien101)
  */
-class CesarMetadata{
+class ArchiveMetadata{
   private $sun_xy_px;       //Position of the center of the Sun, e.g.(horizontal, vertical), in pixels relative to the top left corner
   private $bitpix;          //Bits per pixel component
   private $naxis;           //Number of Axis, i.e. dimensions, should be 2 or 3

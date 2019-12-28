@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CesarDatabase
+ * Class ArchiveDatabase
  *
  * Class for accessing the database
  *
@@ -9,12 +9,12 @@
  */
 
 
-class CesarDatabase{
+class ArchiveDatabase{
 
     private $conn;
 
     /**
-     * cesarDatabase constructor.
+     * archiveDatabase constructor.
      */
     public function __construct($host, $user, $pass, $database){
         // Create connection
@@ -36,7 +36,7 @@ class CesarDatabase{
       $res = array();
 
       $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` ORDER BY `date_obs` DESC LIMIT " . $amount;
+ `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `archive-images` ORDER BY `date_obs` DESC LIMIT " . $amount;
       if (!$resultado = $this->conn->query($sql)) {
         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
         exit;
@@ -44,7 +44,7 @@ class CesarDatabase{
       if ($resultado->num_rows > 0) {
           while($row = $resultado->fetch_assoc()) {
 
-              $obj = new CesarImage($row["id"], $row["path"], $row["filename_final"],
+              $obj = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
                 $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
                 $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
@@ -68,8 +68,8 @@ class CesarDatabase{
       $filterFeatured = ($onlyFeatured)? "WHERE `featured` = true ": "";
 
       $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` " . $filterFeatured .
- "AND `id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata`
+ `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `archive-images` " . $filterFeatured .
+ "AND `id` IN (SELECT `image_id` FROM `archive-images-metadata`
    WHERE (`metadata_id` = 23 AND `value` = 'False') ) ORDER BY `date_obs` DESC LIMIT " . $amount .
  " OFFSET " . $offset;
 
@@ -81,7 +81,7 @@ class CesarDatabase{
       }
       if ($resultado->num_rows > 0) {
         while($row = $resultado->fetch_assoc()) {
-          $obj = new CesarImage($row["id"], $row["path"], $row["filename_final"],
+          $obj = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
             $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
             $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
@@ -96,52 +96,7 @@ class CesarDatabase{
       }
 
       // Then we have to count the results, the same query with a counter and without the limit
-      $sql = "SELECT COUNT(*) FROM `cesar-archive-images` " . $filterFeatured;
-
-      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-      if (!$resultado = $this->conn->query($sql)) {
-        error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
-        exit;
-      }
-      if ($resultado->num_rows > 0) {
-        while($row = $resultado->fetch_assoc()) {
-          $res[1] = $row["COUNT(*)"];
-        }
-      } else {
-        error_log("Ninguna coincidencia", 0);
-        return NULL;
-      }
-
-      return $res;
-    }
-
-    public function getVideos($amount, $offset){
-      $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
-
-      $sql = "SELECT `id`, `path`, `filter`, `duration`, `numimages`, `dateobs`, `datecreated`, `source`, `rate`, `visits`
-      FROM `cesar-archive-videos` ORDER BY `datecreated` DESC LIMIT " . $amount .
-       " OFFSET " . $offset;
-
-      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-      if (!$resultado = $this->conn->query($sql)) {
-        error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
-        exit;
-      }
-      if ($resultado->num_rows > 0) {
-        while($row = $resultado->fetch_assoc()) {
-          $obj = new CesarVideo($row["id"], $row["path"], $row["filter"], $row["duration"], $row["numimages"], $row["dateobs"], $row["datecreated"], $row["source"], $row["rate"], $row["visits"]);
-
-          array_push($res[0], $obj);
-        }
-      } else {
-        error_log("Ninguna coincidencia", 0);
-        return NULL;
-      }
-
-      // Then we have to count the results, the same query with a counter and without the limit
-      $sql = "SELECT COUNT(*) FROM `cesar-archive-videos` ";
+      $sql = "SELECT COUNT(*) FROM `archive-images` " . $filterFeatured;
 
       if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -168,7 +123,7 @@ class CesarDatabase{
       $res = NULL;
 
       $sql_base = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
-   `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` WHERE `date_obs` LIKE '" . $dateobs . "%'";
+   `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `archive-images` WHERE `date_obs` LIKE '" . $dateobs . "%'";
 
 
       if($featured){
@@ -188,7 +143,7 @@ class CesarDatabase{
           // Get only the picture with the filter and the source specified
           $meta = $this->getMetadata($row["id"]);
           if($meta->getFilter() == $filter && $meta->getSource() == $source){
-              $res = new CesarImage($row["id"], $row["path"], $row["filename_final"],
+              $res = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
                 $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
                 $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
@@ -212,46 +167,10 @@ class CesarDatabase{
       return $res;
     }
 
-    /*
-      Get the featured picture of the video, if not, the firts picture
-    */
-    public function getVideoPreviewPic($videoid){
-      //First get the observation date
-      $res = NULL;
-      $dateobs = 0;
-      $filter = '';
-      $source = '';
-
-      $sql = "SELECT `dateobs`, `filter`, `source` FROM `cesar-archive-videos` WHERE `id` = " . $videoid;
-
-      if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-      if (!$resultado = $this->conn->query($sql)) {
-        error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
-        exit;
-      }
-      if ($resultado->num_rows > 0) {
-        while($row = $resultado->fetch_assoc()) {
-          $dateobs = $row["dateobs"];
-          $filter = $row["filter"];
-          $source = $row["source"];
-        }
-      } else {
-        error_log("Ninguna coincidencia", 0);
-        exit;
-      }
-
-      if($dateobs != 0){
-        return $this->getImageByDateobs($dateobs, $filter, $source, 1);
-      } else {
-        return null;
-      }
-    }
-
     public function &getMetadata($imageId){
-      $res = new CesarMetadata();
+      $res = new ArchiveMetadata();
 
-      $sql = "SELECT `metadata_id`, `value` FROM `cesar-archive-images-metadata` WHERE `image_id` = " . $imageId;
+      $sql = "SELECT `metadata_id`, `value` FROM `archive-images-metadata` WHERE `image_id` = " . $imageId;
 
       if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -275,14 +194,14 @@ class CesarDatabase{
     $res = NULL;
 
     $sql = " SELECT `id`, `name`, `shortdescription`, `sectionurl`, `datecreated`, `dateupdated`, `iduserupdate`,
-            `loginuserupdate` FROM `cesar-archive-observatories` WHERE `id` = " . $observatoryId;
+            `loginuserupdate` FROM `archive-observatories` WHERE `id` = " . $observatoryId;
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
     }
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
-        $res = new CesarObservatory($row["id"], $row["name"], $row["shortdescription"], $row["sectionurl"],
+        $res = new ArchiveObservatory($row["id"], $row["name"], $row["shortdescription"], $row["sectionurl"],
           $row["datecreated"], $row["dateupdated"], $row["iduserupdate"], $row["loginuserupdate"]);
       }
     } else {
@@ -297,14 +216,14 @@ class CesarDatabase{
     $res = NULL;
 
     $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` WHERE `id` = " . $id;
+ `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `archive-images` WHERE `id` = " . $id;
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
     }
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
-        $res = new CesarImage($row["id"], $row["path"], $row["filename_final"],
+        $res = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
           $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
           $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
@@ -323,7 +242,7 @@ class CesarDatabase{
   public function getObservatoryNames(){
     $res = array();
 
-    $sql = "SELECT `name` FROM `cesar-archive-observatories` ORDER BY `name`;";
+    $sql = "SELECT `name` FROM `archive-observatories` ORDER BY `name`;";
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
@@ -343,7 +262,7 @@ class CesarDatabase{
   public function getFiltersNames(){
     $res = array();
 
-    $sql = "SELECT `name` FROM `cesar-archive-observatories` ORDER BY `name`;";
+    $sql = "SELECT `name` FROM `archive-observatories` ORDER BY `name`;";
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
@@ -368,22 +287,22 @@ class CesarDatabase{
 
     // Ensure that if some parameters are NULL, there is not in the query
     // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
-    $sqlMeta = "`id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` ";
+    $sqlMeta = "`id` IN (SELECT `image_id` FROM `archive-images-metadata` ";
     $sqlMeta .= ($discardDark)? "WHERE (`metadata_id` = 23 AND `value` = 'False') ":"" ;
-    $sqlMetaSourceBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "')) ";
+    $sqlMetaSourceBase = "`image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "')) ";
     $sqlMeta .= ($source != NULL) ? (($discardDark) ? "AND " . $sqlMetaSourceBase :  "WHERE " . $sqlMetaSourceBase) : "";
-    $sqlMetaFilterBase = "`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
+    $sqlMetaFilterBase = "`image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
     $sqlMeta .= ($filter != NULL) ? (($source != NULL || $discardDark) ? "AND " . $sqlMetaFilterBase . ")" :  "WHERE " . $sqlMetaFilterBase . ")") : ")";
 
     if($query){
-      $sqlMetaQuery .= "`id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%')))) ";
+      $sqlMetaQuery .= "`id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%')))) ";
     }
 
     if(DEBUG){ echo "<p>" . $sqlMeta . "</p>"; }
@@ -391,8 +310,8 @@ class CesarDatabase{
 
     $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
       `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
-      `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` ";
-    $sqlCount = "SELECT COUNT(*) FROM `cesar-archive-images`";
+      `date_upload`, `date_updated`, `rate` FROM `archive-images` ";
+    $sqlCount = "SELECT COUNT(*) FROM `archive-images`";
     $sqlPar = ($onlyFeatured)? "WHERE `featured` = true ":"";
     $sqlPar .= ($obsId) ? ($onlyFeatured)? "AND `observatory_id` = " . $obsId . " " : "WHERE `observatory_id` = " . $obsId . " " : "";
     $sqlPar .= ($onlyFeatured || $obsId)? "AND " . $sqlMeta . " " : "WHERE " . $sqlMeta . " ";
@@ -452,7 +371,7 @@ class CesarDatabase{
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
 
-        $obj = new CesarImage($row["id"], $row["path"], $row["filename_final"],
+        $obj = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
           $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
           $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
@@ -492,23 +411,23 @@ class CesarDatabase{
 
     // Ensure that if some parameters are NULL, there is not in the query
     // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
-    $sqlMeta = "SELECT `image_id` FROM `cesar-archive-images-metadata` ";
+    $sqlMeta = "SELECT `image_id` FROM `archive-images-metadata` ";
     if($query){
-      $sqlMeta .= " WHERE `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `cesar-archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " WHERE `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%'))";
     }
 
     if(DEBUG){ echo "<p>" . $sqlMeta . "</p>"; }
 
     $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
       `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
-      `date_upload`, `date_updated`, `rate` FROM `cesar-archive-images` ";
+      `date_upload`, `date_updated`, `rate` FROM `archive-images` ";
     $sqlWhe = "WHERE `id` IN (" . $sqlMeta . ") ";
 
     // In this case we have to format the date as the webpage
@@ -529,7 +448,7 @@ class CesarDatabase{
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
 
-        $obj = new CesarImage($row["id"], $row["path"], $row["filename_final"],
+        $obj = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
           $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
           $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
 
@@ -543,7 +462,7 @@ class CesarDatabase{
       return NULL;
     }
 
-    $sqlSel = "SELECT COUNT(*) FROM `cesar-archive-images` ";
+    $sqlSel = "SELECT COUNT(*) FROM `archive-images` ";
     // Then we have to count the results, the same query with a counter and without the limit
     $sql = $sqlSel . $sqlWhe . $sqlDate;
 
@@ -569,7 +488,7 @@ class CesarDatabase{
     $res = array();
 
     // First get sources names
-    $sql = "SELECT DISTINCT `value` FROM `cesar-archive-images-metadata` WHERE `metadata_id` = 34";
+    $sql = "SELECT DISTINCT `value` FROM `archive-images-metadata` WHERE `metadata_id` = 34";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -590,7 +509,7 @@ class CesarDatabase{
     // Now we have to put the amount of pictures in every source
     $length = count($res);
     for($i = 0; $i < $length; $i++){
-      $sql = "SELECT COUNT(*) FROM `cesar-archive-images-metadata` WHERE `value` = \"" . $res[$i][0] . "\";";
+      $sql = "SELECT COUNT(*) FROM `archive-images-metadata` WHERE `value` = \"" . $res[$i][0] . "\";";
 
       if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -617,7 +536,7 @@ class CesarDatabase{
   public function existRate($imageid, $ip){
     $res = false;
 
-    $sql = "SELECT 1 FROM `cesar-archive-images-rates` WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\" LIMIT 1";
+    $sql = "SELECT 1 FROM `archive-images-rates` WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\" LIMIT 1";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -632,30 +551,9 @@ class CesarDatabase{
 
     return $res;
   }
-
-  // Return if there is a rate of a video with the given ip and video_id
-  public function existVideoRate($videoid, $ip){
-    $res = false;
-
-    $sql = "SELECT 1 FROM `cesar-archive-videos-rates` WHERE `video_id` = " . $videoid . " AND `ip` = \"" . $ip . "\" LIMIT 1";
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         exit;
-    }
-    if ($resultado->num_rows > 0) {
-      $res = true;
-    }
-
-    return $res;
-  }
-
 
   public function insertRate($imageid, $rate, $ip, $browser){
-    $sql = "INSERT INTO `cesar-archive-images-rates` (`image_id`, `rate`, `ip`, `browser`) VALUES (" . $imageid .
+    $sql = "INSERT INTO `archive-images-rates` (`image_id`, `rate`, `ip`, `browser`) VALUES (" . $imageid .
         ", \"" . $rate . "\", \"" . $ip . "\" , \"" . $browser .
         "\")";
 
@@ -667,22 +565,9 @@ class CesarDatabase{
     }
   }
 
-  public function insertVideoRate($videoid, $rate, $ip, $browser){
-    $sql = "INSERT INTO `cesar-archive-videos-rates` (`video_id`, `rate`, `ip`, `browser`) VALUES (" . $videoid .
-        ", \"" . $rate . "\", \"" . $ip . "\" , \"" . $browser .
-        "\")";
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         exit;
-    }
-  }
-
-  // Update an alredy set rate at `cesar-archive-images-rates`
+  // Update an alredy set rate at `archive-images-rates`
   public function updateRate($imageid, $rate, $ip){
-    $sql = "UPDATE `cesar-archive-images-rates` SET `rate` = " . $rate . " WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\"";
+    $sql = "UPDATE `archive-images-rates` SET `rate` = " . $rate . " WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\"";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -692,23 +577,11 @@ class CesarDatabase{
     }
   }
 
-  // Update an alredy set video rate at `cesar-archive-videos-rates`
-  public function updateVideoRate($videoid, $rate, $ip){
-    $sql = "UPDATE `cesar-archive-videos-rates` SET `rate` = " . $rate . " WHERE `video_id` = " . $videoid . " AND `ip` = \"" . $ip . "\"";
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         exit;
-    }
-  }
-
-  // Update the average rate at `cesar-archive-images-rates`
+  // Update the average rate at `archive-images-rates`
   public function updateAvrRate($imageid){
     $avr = -1;
 
-    $sql = "SELECT AVG(`rate`) FROM `cesar-archive-images-rates` WHERE `image_id` = " . $imageid;
+    $sql = "SELECT AVG(`rate`) FROM `archive-images-rates` WHERE `image_id` = " . $imageid;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -722,7 +595,7 @@ class CesarDatabase{
       }
     }
 
-    $sql = "UPDATE `cesar-archive-images` SET `rate`=" . $avr . " WHERE `id` = " . $imageid;
+    $sql = "UPDATE `archive-images` SET `rate`=" . $avr . " WHERE `id` = " . $imageid;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -734,62 +607,11 @@ class CesarDatabase{
     return $avr;
   }
 
-  // Update the video average rate at `cesar-archive-videos-rates`
-  public function updateVideoAvrRate($videoid){
-    $avr = -1;
-
-    $sql = "SELECT AVG(`rate`) FROM `cesar-archive-videos-rates` WHERE `video_id` = " . $videoid;
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         exit;
-    }
-    if ($resultado->num_rows > 0) {
-      while($row = $resultado->fetch_assoc()) {
-        $avr = $row["AVG(`rate`)"];
-      }
-    }
-
-    $sql = "UPDATE `cesar-archive-videos` SET `rate`=" . $avr . " WHERE `id` = " . $videoid;
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         exit;
-    }
-
-    return $avr;
-  }
-
-  // Get Avr Rate from `cesar-archive-images-rates`
+  // Get Avr Rate from `archive-images-rates`
   public function getAvrRate($imageid){
     $res = -1;
 
-    $sql = "SELECT `rate` FROM `cesar-archive-images` WHERE `id` = " . $imageid;
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         exit;
-    }
-    if ($resultado->num_rows > 0) {
-      while($row = $resultado->fetch_assoc()) {
-        $res = $row["rate"];
-      }
-    }
-
-    return $res;
-  }
-
-  // Get Avr video Rate from `cesar-archive-videos-rates`
-  public function getVideoAvrRate($videoid){
-    $res = -1;
-
-    $sql = "SELECT `rate` FROM `cesar-archive-videos` WHERE `id` = " . $videoid;
+    $sql = "SELECT `rate` FROM `archive-images` WHERE `id` = " . $imageid;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -808,7 +630,7 @@ class CesarDatabase{
 
   // Update the visits of a observation, giving his ID
   public function addVisitObs($imageId){
-    $sql = "UPDATE `cesar-archive-images` SET `visits` = `visits` + 1 WHERE `id` = " . $imageId;
+    $sql = "UPDATE `archive-images` SET `visits` = `visits` + 1 WHERE `id` = " . $imageId;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -820,149 +642,4 @@ class CesarDatabase{
 
     return true;
   }
-
-  // Update the visits of a video, giving his ID
-  public function addVisitVideo($videoId){
-    $sql = "UPDATE `cesar-archive-videos` SET `visits` = `visits` + 1 WHERE `id` = " . $videoId;
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         return false;
-         exit;
-    }
-
-    return true;
-  }
-
-  public function getVideoByDate($dateobs, $source, $filter){
-    $res = null;    // First its the results, and the second its the number of results that satifies
-
-    //Format date to lookup on that day
-    $dateobs = date('Y-m-d', strtotime($dateobs));
-
-    $sql = "SELECT `id`, `path`, `filter`, `duration`, `numimages`, `dateobs`, `datecreated`, `source`, `rate`, `visits`
-    FROM `cesar-archive-videos` WHERE `dateobs` = \"" . $dateobs . "\" AND `source` = \"" . $source . "\" AND `filter` = \"" . $filter . "\"";
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-      error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
-      exit;
-    }
-    if ($resultado->num_rows > 0) {
-      while($row = $resultado->fetch_assoc()) {
-        $res = new CesarVideo($row["id"], $row["path"], $row["filter"], $row["duration"], $row["numimages"], $row["dateobs"], $row["datecreated"], $row["source"], $row["rate"], $row["visits"]);
-      }
-    } else {
-      error_log("Ninguna coincidencia", 0);
-      return NULL;
-    }
-
-    return $res;
-  }
-
-  // Get video giving a image id, if the picture has a video it returns a video object, if not, null
-  public function getVideoFromPic($imageId){
-    //Get date_obs, source and filter
-
-    $res = NULL;
-
-    $date_obs = null;
-    $source = null;
-    $filter = null;
-
-    $sql = "SELECT `id`, `date_obs` FROM `cesar-archive-images` WHERE `id` = " . $imageId;
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-      error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
-      exit;
-    }
-    if ($resultado->num_rows > 0) {
-      while($row = $resultado->fetch_assoc()) {
-        $meta = $this->getMetadata($row["id"]);
-
-        $date_obs = $row["date_obs"];
-        $source = $meta->getSource();
-        $filter = $meta->getFilter();
-      }
-    } else {
-      error_log("Ninguna coincidencia", 0);
-      return null;
-    }
-
-    return $this->getVideoByDate($date_obs, $source, $filter);
-
-  }
-
-  // Get section content from `cesar-section`
-  public function getSectionContent($nameid, $language){
-    $res = "";
-    $field = "";
-
-    switch($language){
-      case "en":
-        $field = "content";
-        break;
-      case "es":
-        $field = "content_es";
-        break;
-      default:
-        $field = "content";
-    }
-
-    $sql = "SELECT `" . $field . "` FROM `cesar-section` WHERE `nameid` = \"" . $nameid . "\"";
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         exit;
-    }
-    if ($resultado->num_rows > 0) {
-      while($row = $resultado->fetch_assoc()) {
-        $res = $row[$field];
-      }
-    }
-
-    return $res;
-  }
-
-  // Get section Title from `cesar-section`
-  public function getSectionTitle($nameid, $language){
-    $res = "";
-    $field = "";
-
-    switch($language){
-      case "en":
-        $field = "title";
-        break;
-      case "es":
-        $field = "title_es";
-        break;
-      default:
-        $field = "title";
-    }
-
-    $sql = "SELECT `" . $field . "` FROM `cesar-section` WHERE `nameid` = \"" . $nameid . "\"";
-
-    if(DEBUG){ echo "<p>" . $sql . "</p>"; }
-
-    if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
-         exit;
-    }
-    if ($resultado->num_rows > 0) {
-      while($row = $resultado->fetch_assoc()) {
-        $res = $row[$field];
-      }
-    }
-
-    return $res;
-  }
-
-
 }

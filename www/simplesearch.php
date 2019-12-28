@@ -6,7 +6,7 @@
 <body>
 
   <?php
-  $db = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+  $db = new ArchiveDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
 
   $observatoryNames = $db->getObservatoryNames();
   ?>
@@ -18,7 +18,7 @@
 
   $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
 
-  $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+  $obj = new ArchiveDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
   $dateOrd = ($_GET["dateOrd"] == NULL)? "desc": $_GET["dateOrd"];    // Current oder
   $res = $obj->simpleSearch($_GET["query"], $dateOrd, 12, 12 * ($pg - 1));
   $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
@@ -27,7 +27,7 @@
   ?>
 
   <!-- Page Content -->
-  <div class="container">
+  <div class="container  mt-3">
     <nav aria-label="breadcrumb">
       <div class="breadcrumb sub-text">
         Looking for <i>"<?php echo $_GET["query"]?>" </i>

@@ -1,8 +1,5 @@
 FROM php:5.6.40-apache
 
-# https://stackoverflow.com/questions/15505775/debian-apt-packages-hash-sum-mismatch
-RUN printf 'Acquire::http::Pipeline-Depth 0;\nAcquire::http::No-Cache true;\nAcquire::BrokenProxy    true;' > /etc/apt/apt.conf.d/99fixbadproxy
-
 # https://askubuntu.com/questions/41605/trouble-downloading-packages-list-due-to-a-hash-sum-mismatch-error
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get -y update --fix-missing
@@ -74,5 +71,3 @@ RUN npm install --save-dev @fortawesome/fontawesome-free@5.9.0
 RUN npm install xzoom@1.0.14
 RUN npm install hammerjs@2.0.8
 RUN npm install foundation-sites@6.5.3
-RUN npm install video.js@7.6.5
-RUN npm install videojs-framebyframe@1.0.1

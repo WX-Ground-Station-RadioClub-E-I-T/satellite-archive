@@ -1,6 +1,6 @@
 <?php
 
-class CesarObservatory{
+class ArchiveObservatory{
   private $id;
   private $name;
   private $shortdescription;
@@ -11,7 +11,7 @@ class CesarObservatory{
   private $loginuserupdate;
 
   /**
-   * CesarObservatory constructor.
+   * ArchiveObservatory constructor.
    * @param $id
    * @param $name
    * @param $shortdescription

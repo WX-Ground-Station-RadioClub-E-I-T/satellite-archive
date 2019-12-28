@@ -8,7 +8,7 @@
 
   $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
 
-  $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+  $obj = new ArchiveDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
   $res = $obj->getImages(True, 12, 12 * ($pg - 1));
   $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
   $data = $res[0];
@@ -40,13 +40,13 @@
 
 
 
-      <h1 class="display-4">CESAR Archive Viewer</h1>
+      <h1 class="display-4">Archive Viewer</h1>
       <p class="lead"><?php echo JUMBOTRON; ?></p>
     </div>
   </div>
 
   <!-- Page Content -->
-  <div class="container">
+  <div class="container mt-3">
     <!-- Page Features -->
     <div class="row text-center main-block">
       <?php

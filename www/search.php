@@ -10,7 +10,7 @@
 <body>
 
   <?php
-  $db = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+  $db = new ArchiveDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
 
   $observatoryNames = $db->getObservatoryNames();
   ?>
@@ -22,7 +22,7 @@
 
   $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
 
-  $obj = new CesarDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
+  $obj = new ArchiveDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
   $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
 
   // Ordenation modes can be {"0" -> date desc, "1" -> date asc, "2" -> rate desc, "3" rate asc}
@@ -37,7 +37,7 @@
   ?>
 
   <!-- Page Content -->
-  <div class="container">
+  <div class="container  mt-3">
     <div class="card main-block">
       <div class="card-body">
         <form action="search.php" method="get">
