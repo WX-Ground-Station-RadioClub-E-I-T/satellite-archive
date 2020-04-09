@@ -8,7 +8,7 @@
   <?php
   $db = new ArchiveDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
 
-  $observatoryNames = $db->getObservatoryNames();
+  $StationsNames = $db->getStationsNames();
   ?>
 
   <!-- Navigation -->
@@ -79,16 +79,24 @@
 
           if($res != NULL){
             foreach($data as $pic){
+              $avrRate = $pic->getRate();
+              $formatedRate = ($avrRate != "")?number_format($avrRate, 1): "";
+              $rateText = MODAL_RATE;
+              if(substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 ) == "es"){
+                $modalTitle = MODAL_TITLE1 . " " . $pic->getMetadata()->getSatellite() . " " . MODAL_TITLE2 . " " . $pic->getStation()->getName();
+              } else {
+                $modalTitle = $pic->getMetadata()->getSatellite() . " " . MODAL_TITLE . " " . $pic->getStation()->getName();
+              }
               echo <<<END
               <div class="col-lg-3 col-md-6">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
-                    data-date-updated="{$pic->getDateUpdated()}" data-observatory="{$pic->getObservatory()->getName()}" data-observatory-lat="{$pic->getMetadata()->getLatitude()}"
-                    data-observatory-long="{$pic->getMetadata()->getLongitud()}" data-observatory-alt="{$pic->getMetadata()->getAltitude()}" data-telecop="{$pic->getMetadata()->getTelescop()}" data-instrume="{$pic->getMetadata()->getInstrume()}"
-                    data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}">
+              <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-title="{$modalTitle}" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
+                  data-date-updated="{$pic->getDateUpdated()}" data-station="{$pic->getStation()->getName()}" data-station-lat="{$pic->getStation()->getLatitude()}"
+                  data-station-long="{$pic->getStation()->getLongitude()}" data-station-ele="{$pic->getStation()->getElevation()}" data-radio="{$pic->getMetadata()->getRadio()}"
+                  data-satellite="{$pic->getMetadata()->getSatellite()}" data-rate="{$formatedRate}" data-rate-text="{$rateText}">
                 <div class="card" style="width: 15rem;">
                   <img class="card-img-top" src="{$pic->getExtSrc()}" alt="Card image cap">
                   <div class="card-body">
-                    <p class="card-text"> {$pic->getMetadata()->getSource()} - {$pic->getDateObs()}</p>
+                    <p class="card-text"> {$pic->getMetadata()->getSatellite()} - {$pic->getDateObs()}</p>
                   </div>
                 </div>
               </button>
@@ -206,24 +214,25 @@ END;
           <div class="row">
             <div class="col-md">
               <img class="card-img-top" src="#" alt="">
+              <div class="rate-item" id="ratecont">
+                <div class="rate"></div>
+              </div>
             </div>
             <div class="col-sm">
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item"><b>Date uploaded: </b> <a id="date-uploaded"></a></li>
-                <li class="list-group-item"><b>Telecope:</b> <a id="telescope"></a> </li>
-                <li class="list-group-item"><b>Filter:</b> <a id="filter"></a> </li>
-                <li class="list-group-item"><b>Camera:</b> <a id="instrume"></a></li>
-                <li class="list-group-item"><b>Time exposure:</b> <a id="exposure"></a></li>
-                <li class="list-group-item"><b>Latitude:</b> <a id="lat"></a></li>
-                <li class="list-group-item"><b>Longitude:</b> <a id="long"></a></li>
-                <li class="list-group-item"><b>Altitude:</b> <a id="alt"></a></li>
+              <ul class="list-group list-group-flush"  id="properties">
+                <li class="list-group-item"><b><?php echo MODAL_DATE;?>: </b> <a id="date-uploaded"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_RADIO;?>:</b> <a id="radio"></a> </li>
+                <li class="list-group-item"><b><?php echo MODAL_LAT;?>:</b> <a id="lat"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_LONG;?>:</b> <a id="long"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_ALT;?>:</b> <a id="ele"></a></li>
+                <li class="list-group-item" id="rateitem"><b><?php echo MODAL_RATE;?>:</b> <a id="ratetext"></a></li>
               </ul>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <a href="#" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true">More info</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo MODAL_CLOSE; ?></button>
+          <a href="#" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true"><?php echo MODAL_MOREINFO; ?></a>
         </div>
       </div>
     </div>

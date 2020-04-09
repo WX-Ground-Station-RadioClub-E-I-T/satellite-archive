@@ -12,7 +12,7 @@
   <?php
   $db = new ArchiveDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
 
-  $observatoryNames = $db->getObservatoryNames();
+  $stationsNames = $db->getStationsNames();
   ?>
 
   <!-- Navigation -->
@@ -23,14 +23,14 @@
   $pg = ($_GET["pg"] == NULL)? 1: $_GET["pg"];
 
   $obj = new ArchiveDatabase(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DATABASE);
-  $obsId = ($_GET['inputObs'] == "Helios Observatory")? 1 : 1;    // There is only one observatory, doesnt make sense
+  $stationId = ($_GET['inputStation'] == "EA4RCT VHF/UHF Satellite Station")? 1 : 1;    // There is only one groundstation, doesnt make sense
 
   // Ordenation modes can be {"0" -> date desc, "1" -> date asc, "2" -> rate desc, "3" rate asc}
   $ord = ($_GET["ord"] == NULL)? "0": $_GET["ord"];    // Current oder
 
   $discardDark = ($_GET["inputDark"] == "on")? True: False;
   $onlyFeatured = ($_GET["inputFeat"] == "on")? True: False;
-  $res = $obj->advanceSearch($_GET["inputQuery"], $_GET["inputSource"], $obsId, $_GET["inputFilter"], $_GET["inputSince"], $_GET["inputUntil"], $discardDark, $onlyFeatured, $ord ,12, 12 * ($pg - 1));
+  $res = $obj->advanceSearch($_GET["inputQuery"], $_GET["inputSatellite"], $stationId, $_GET["inputSince"], $_GET["inputUntil"], $onlyFeatured, $ord ,12, 12 * ($pg - 1));
   $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
   $data = $res[0];
 
@@ -47,7 +47,7 @@
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label for="inputSource"><?php echo SEARCH_SINCE; ?></label>
+              <label for="inputSince"><?php echo SEARCH_SINCE; ?></label>
               <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" name="inputSince"/>
                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
@@ -56,7 +56,7 @@
                </div>
             </div>
             <div class="form-group col-md-6">
-              <label for="inputSource"><?php echo SEARCH_UNTIL; ?></label>
+              <label for="inputUntil"><?php echo SEARCH_UNTIL; ?></label>
               <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker8" name="inputUntil"/>
                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
@@ -67,41 +67,29 @@
           </div>
           <div class="form-row">
             <div class="form-group col-md-4">
-              <label for="inputSource"><?php echo SEARCH_SOURCE;?></label>
-              <select id="inputsource" class="form-control" name="inputSource">
-                <option value="" <?php if($_GET["inputSource"] == NULL) echo "selected"; ?>><?php echo SEARCH_WHATEVER; ?></option>
-                <option <?php if($_GET["inputSource"] == "Sun") echo "selected" ?>><?php echo SUN;?></option>
+              <label for="inputSatellite"><?php echo SEARCH_SATELLITE;?></label>
+              <select id="inputsatellite" class="form-control" name="inputSatellite">
+                <option value="" <?php if($_GET["inputSatellite"] == NULL) echo "selected"; ?>><?php echo SEARCH_WHATEVER; ?></option>
+                <option <?php if($_GET["inputSatellite"] == "NOAA 19") echo "selected" ?>><?php echo "NOAA 19";?></option>
               </select>
             </div>
             <div class="form-group col-md-4">
-              <label for="inputObs"><?php echo SEARCH_OBSERVATORY;?></label>
-              <select id="inputObs" class="form-control" name="inputObs">
+              <label for="inputStation"><?php echo SEARCH_STATION;?></label>
+              <select id="inputStation" class="form-control" name="inputStation">
                 <option value=""><?php echo SEARCH_WHATEVER; ?></option>
                 <?php
-                foreach($observatoryNames as $observatory){
-                  if($observatory == $_GET["inputObs"]){
-                    echo "<option selected>" . $observatory . "</option>";
+                foreach($stationsNames as $station){
+                  if($station == $_GET["inputStation"]){
+                    echo "<option selected>" . $station . "</option>";
                   } else{
-                    echo "<option>" . $observatory . "</option>";
+                    echo "<option>" . $station . "</option>";
                   }
                 }
                 ?>
               </select>
             </div>
-            <div class="form-group col-md-4">
-              <label for="inputFilter">Filter</label>
-              <select id="inputFilter" class="form-control" name="inputFilter">
-                <option value="" <?php if($_GET["inputFilter"] == NULL) echo "selected" ?>><?php echo SEARCH_WHATEVER; ?></option>
-                <option <?php if($_GET["inputFilter"] == "halpha") echo "selected" ?>>halpha</option>
-                <option <?php if($_GET["inputFilter"] == "visible") echo "selected" ?>>visible</option>
-              </select>
-            </div>
           </div>
           <div class="form-group">
-            <div class="form-check form-check-inline">
-              <input type="checkbox" class="form-check-input" id="inputDark" name="inputDark" <?php if($_GET["inputDark"] == "on") echo "checked" ?>>
-              <label class="form-check-label" for="exampleCheck1" ><?php echo SEARCH_DISCARD_DARK;?></label>
-            </div>
             <div class="form-check form-check-inline">
               <input type="checkbox" class="form-check-input" id="inputFeat" name="inputFeat" <?php if($_GET["inputFeat"] == "on") echo "checked" ?>>
               <label class="form-check-label" for="exampleCheck1" ><?php echo SEARCH_ONLY_FEAT;?></label>
@@ -193,20 +181,20 @@
               $formatedRate = ($avrRate != "")?number_format($avrRate, 1): "";
               $rateText = MODAL_RATE;
               if(substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 ) == "es"){
-                $modalTitle = MODAL_TITLE1 . " " . $pic->getMetadata()->getSource() . " " . MODAL_TITLE2 . " " . $pic->getObservatory()->getName();
+                $modalTitle = MODAL_TITLE1 . " " . $pic->getMetadata()->getSatellite() . " " . MODAL_TITLE2 . " " . $pic->getStation()->getName();
               } else {
-                $modalTitle = $pic->getMetadata()->getSource() . " " . MODAL_TITLE . " " . $pic->getObservatory()->getName();
+                $modalTitle = $pic->getMetadata()->getSatellite() . " " . MODAL_TITLE . " " . $pic->getStation()->getName();
               }
               echo <<<END
               <div class="col-lg-3 col-md-6">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-title="{$modalTitle}" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
-                    data-date-updated="{$pic->getDateUpdated()}" data-observatory="{$pic->getObservatory()->getName()}" data-observatory-lat="{$pic->getMetadata()->getLatitude()}"
-                    data-observatory-long="{$pic->getMetadata()->getLongitud()}" data-observatory-alt="{$pic->getMetadata()->getAltitude()}" data-telecop="{$pic->getMetadata()->getTelescop()}" data-instrume="{$pic->getMetadata()->getInstrume()}"
-                    data-exposure="{$pic->getMetadata()->getExposure()}" data-filter="{$pic->getMetadata()->getFilter()}" data-source="{$pic->getMetadata()->getSource()}" data-rate="{$formatedRate}" data-rate-text="{$rateText}">
+              <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-title="{$modalTitle}" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
+                  data-date-updated="{$pic->getDateUpdated()}" data-station="{$pic->getStation()->getName()}" data-station-lat="{$pic->getStation()->getLatitude()}"
+                  data-station-long="{$pic->getStation()->getLongitude()}" data-station-ele="{$pic->getStation()->getElevation()}" data-radio="{$pic->getMetadata()->getRadio()}"
+                  data-satellite="{$pic->getMetadata()->getSatellite()}" data-rate="{$formatedRate}" data-rate-text="{$rateText}">
                 <div class="card" style="width: 15rem;">
                   <img class="card-img-top" src="{$pic->getExtSrc()}" alt="Card image cap">
                   <div class="card-body">
-                    <p class="card-text"> {$pic->getMetadata()->getSource()} - {$pic->getDateObs()}</p>
+                    <p class="card-text"> {$pic->getMetadata()->getSatellite()} - {$pic->getDateObs()}</p>
                   </div>
                 </div>
               </button>
@@ -353,13 +341,10 @@ END;
             <div class="col-sm">
               <ul class="list-group list-group-flush"  id="properties">
                 <li class="list-group-item"><b><?php echo MODAL_DATE;?>: </b> <a id="date-uploaded"></a></li>
-                <li class="list-group-item"><b><?php echo MODAL_TELESCOPE;?>:</b> <a id="telescope"></a> </li>
-                <li class="list-group-item"><b><?php echo MODAL_FILTER;?>:</b> <a id="filter"></a> </li>
-                <li class="list-group-item"><b><?php echo MODAL_CAMERA;?>:</b> <a id="instrume"></a></li>
-                <li class="list-group-item"><b><?php echo MODAL_TIME_EXP;?>:</b> <a id="exposure"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_RADIO;?>:</b> <a id="radio"></a> </li>
                 <li class="list-group-item"><b><?php echo MODAL_LAT;?>:</b> <a id="lat"></a></li>
                 <li class="list-group-item"><b><?php echo MODAL_LONG;?>:</b> <a id="long"></a></li>
-                <li class="list-group-item"><b><?php echo MODAL_ALT;?>:</b> <a id="alt"></a></li>
+                <li class="list-group-item"><b><?php echo MODAL_ALT;?>:</b> <a id="ele"></a></li>
                 <li class="list-group-item" id="rateitem"><b><?php echo MODAL_RATE;?>:</b> <a id="ratetext"></a></li>
               </ul>
             </div>

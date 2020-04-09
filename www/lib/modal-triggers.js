@@ -2,18 +2,15 @@ $(document).ready(function(){
   $('#imageModal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
 
-    var observatory = button.data('observatory');
+    var station = button.data('station');
     var dateObs = button.data('date-obs');
-    var telescop = button.data('telecop');
-    var instrume = button.data('instrume');
-    var lat = button.data('observatory-lat');
-    var long = button.data('observatory-long');
-    var alt = button.data('observatory-alt');
-    var exposure = button.data('exposure');
+    var radio = button.data('radio');
+    var lat = button.data('station-lat');
+    var long = button.data('station-long');
+    var ele = button.data('station-ele');
     var id = button.data('image-id');
     var src = button.data('image-src');
-    var filter = button.data('filter');
-    var source = button.data('source');
+    var satellite = button.data('satellite');
     var rate = button.data('rate');
     var rateText = button.data('rate-text');
     var title = button.data('title');
@@ -43,13 +40,10 @@ $(document).ready(function(){
     var modal = $(this);
     modal.find('.modal-title').text(title);
     $("#date-uploaded").text(dateObs);
-    $("#telescope").text(telescop);
-    $("#instrume").text(instrume);
-    $("#exposure").text(exposure + " s");
+    $("#radio").text(radio);
     $("#lat").text(lat + "°");
     $("#long").text(long + "°");
-    $("#alt").text(alt + " m");
-    $("#filter").text(filter);
+    $("#ele").text(ele + " m");
     $('.modal-body .card-img-top').attr('src', src);
     $('.modal-footer a[href]').attr('href', 'singleobs.php?id=' + id);
   });

@@ -1,62 +1,50 @@
 <?php
-/**
-  * Class archiveDatabase
-  * archiveImage class that holds the information from the database of each image.
-  *
-  * @author Fran Acien (https://github.com/acien101)
-  */
 
-class ArchiveImage implements JsonSerializable{
+
+class ArchiveImage{
     private $id;
     private $path;
-    private $filename_final;
-    private $filename_original;
-    private $filename_thumb;
+    private $filekey;
     private $date_obs;
-    private $observatory_id;
-    private $filesize_processed;
+    private $station_id;
     private $date_updated;
     private $date_upload;
     private $visits;
     private $tags;
+    private $featured;
     private $rate;
     private $metadata;
-    private $observatory;
+    private $station;
 
     /**
-     * archiveImage constructor.
+     * ArchiveImage constructor.
      * @param $id
      * @param $path
-     * @param $filename_final
-     * @param $filename_original
-     * @param $ext_src
-     * @param $filename_thumb
+     * @param $filekey
      * @param $date_obs
-     * @param $filesize_processed
+     * @param $station_id
      * @param $date_updated
+     * @param $date_upload
      * @param $visits
      * @param $tags
+     * @param $featured
+     * @param $rate
      */
-    public function __construct($id, $path, $filename_final, $filename_original, $filename_thumb, $date_obs, $filesize_processed, $date_updated, $visits, $tags, $date_upload, $rate)
+    public function __construct($id, $path, $filekey, $date_obs, $station_id, $date_updated, $date_upload, $visits, $tags, $featured, $rate)
     {
         $this->id = $id;
         $this->path = $path;
-        $this->filename_final = $filename_final;
-        $this->filename_original = $filename_original;
-        $this->filename_thumb = $filename_thumb;
+        $this->filekey = $filekey;
         $this->date_obs = $date_obs;
-        $this->filesize_processed = $filesize_processed;
+        $this->station_id = $station_id;
         $this->date_updated = $date_updated;
+        $this->date_upload = $date_upload;
         $this->visits = $visits;
         $this->tags = $tags;
-        $this->date_upload = $date_upload;
+        $this->featured = $featured;
         $this->rate = $rate;
     }
 
-
-    public function mostrarVar() {
-        echo $this->var;
-    }
 
     /**
      * @return mixed
@@ -93,70 +81,30 @@ class ArchiveImage implements JsonSerializable{
     /**
      * @return mixed
      */
-    public function getFilenameFinal()
+    public function getFilekey()
     {
-        return $this->filename_final;
+        return $this->filekey;
     }
 
     /**
-     * @param mixed $filename_final
+     * @param mixed $filekey
      */
-    public function setFilenameFinal($filename_final)
+    public function setFilekey($filekey)
     {
-        $this->filename_final = $filename_final;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFilenameOriginal()
-    {
-        return $this->filename_original;
-    }
-
-    /**
-     * @param mixed $filename_original
-     */
-    public function setFilenameOriginal($filename_original)
-    {
-        $this->filename_original = $filename_original;
+        $this->filekey = $filekey;
     }
 
     /**
      * @return mixed
      */
     public function getExtSrc(){
-        return ARCHIVE_ENDPOINT . $this->path . $this->filename_thumb;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getExtSrcLarge(){
-        return ARCHIVE_ENDPOINT . $this->path . $this->filename_final;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getExtSrcBitmap(){
-        return ARCHIVE_ENDPOINT . $this->path . $this->filename_original;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFilenameThumb()
-    {
-        return $this->filename_thumb;
-    }
-
-    /**
-     * @param mixed $filename_thumb
-     */
-    public function setFilenameThumb($filename_thumb)
-    {
-        $this->filename_thumb = $filename_thumb;
+      $satellite = $this->metadata->getSatellite();
+      if($satellite == "NOAA 19" || $satellite == "NOAA 19" || $satellite == "NOAA 19") {
+        return ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MCIR.png";
+      }
+      elseif ($satellite == "METEOR-M 2"){
+        return ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".png";
+      }
     }
 
     /**
@@ -179,17 +127,17 @@ class ArchiveImage implements JsonSerializable{
     /**
      * @return mixed
      */
-    public function getFilesizeProcessed()
+    public function getStationId()
     {
-        return $this->filesize_processed;
+        return $this->station_id;
     }
 
     /**
-     * @param mixed $filesize_processed
+     * @param mixed $station_id
      */
-    public function setFilesizeProcessed($filesize_processed)
+    public function setStationId($station_id)
     {
-        $this->filesize_processed = $filesize_processed;
+        $this->station_id = $station_id;
     }
 
     /**
@@ -197,8 +145,8 @@ class ArchiveImage implements JsonSerializable{
      */
     public function getDateUpdated()
     {
-      $date = strtotime($this->date_updated);
-      return date('d-m-Y H:i:s', $date);
+        $date = strtotime($this->date_updated);
+        return date('d-m-Y H:i:s', $date);
     }
 
     /**
@@ -207,6 +155,22 @@ class ArchiveImage implements JsonSerializable{
     public function setDateUpdated($date_updated)
     {
         $this->date_updated = $date_updated;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateUpload()
+    {
+        return $this->date_upload;
+    }
+
+    /**
+     * @param mixed $date_upload
+     */
+    public function setDateUpload($date_upload)
+    {
+        $this->date_upload = $date_upload;
     }
 
     /**
@@ -241,131 +205,110 @@ class ArchiveImage implements JsonSerializable{
         $this->tags = $tags;
     }
 
-  /**
-   * @return mixed
-   */
-  public function getRate(){
-    return $this->rate;
-  }
+    /**
+     * @return mixed
+     */
+    public function getFeatured()
+    {
+        return $this->featured;
+    }
 
-  /**
-   * @param mixed $rate
-   */
-  public function setRate($rate){
-    $this->rate = $rate;
-  }
+    /**
+     * @param mixed $featured
+     */
+    public function setFeatured($featured)
+    {
+        $this->featured = $featured;
+    }
 
-  /**
-   * @return mixed
-   */
-  public function &getMetadata(){
-    return $this->metadata;
-  }
+    /**
+     * @return mixed
+     */
+    public function getRate()
+    {
+        return $this->rate;
+    }
 
-  /**
-   * @param mixed $metadata
-   */
-  public function setMetadata(ArchiveMetadata &$metadata){
-    $this->metadata = $metadata;
-  }
+    /**
+     * @param mixed $rate
+     */
+    public function setRate($rate)
+    {
+        $this->rate = $rate;
+    }
 
-  /**
-   * @return mixed
-   */
-  public function &getObservatory(){
-    return $this->observatory;
-  }
+    /**
+     * @return mixed
+     */
+    public function &getMetadata()
+    {
+        return $this->metadata;
+    }
 
-  /**
-   * @param mixed $observatory
-   */
-  public function setObservatory(&$observatory){
-    $this->observatory = $observatory;
-  }
+    /**
+     * @param ArchiveMetadata $metadata
+     */
+    public function setMetadata(ArchiveMetadata &$metadata)
+    {
+        $this->metadata = $metadata;
+    }
 
-  /**
-   * @return mixed
-   */
-  public function getObservatoryId(){
-    return $this->observatory_id;
-  }
+    /**
+     * @return mixed
+     */
+    public function &getStation()
+    {
+        return $this->station;
+    }
 
-  /**
-   * @param mixed $observatory_id
-   */
-  public function setObservatoryId($observatory_id){
-    $this->observatory_id = $observatory_id;
-  }
+    /**
+     * @param mixed $station
+     */
+    public function setStation(&$station)
+    {
+        $this->station = $station;
+    }
 
-  /**
-   * @return mixed
-   */
-  public function getDateUpload(){
-    $date = strtotime($this->date_upload);
-    return date('d-m-Y H:i:s', $date);
-  }
 
-  /**
-   * @param mixed $date_upload
-   */
-  public function setDateUpload($date_upload){
-    $this->date_upload = $date_upload;
-  }
-
-  public function jsonSerialize(){
-    return [
-      'id' => $this->id,
-      'path' => $this->path,
-      'extSrc' => $this->getExtSrc(),
-      'filename_final' => $this->filename_final,
-      'filename_original' => $this->filename_original,
-      'filename_thumb' => $this->filename_thumb,
-      'date_obs' => $this->date_obs,
-      'filesize_processed' => $this->filesize_processed,
-      'date_updated' => $this->date_updated,
-      'visits' => $this->visits,
-      'tags' => $this->tags,
-      'date_upload' => $this->date_upload,
-      'sun_xy_px' => $this->metadata->getSunXyPx(),
-      'bitpix' => $this->metadata->getBitpix(),
-      'naxis' => $this->metadata->getNaxis(),
-      'naxis1' => $this->metadata->getNaxis1(),
-      'naxis2' => $this->metadata->getNaxis2(),
-      'history' => $this->metadata->getHistory(),
-      'exposure' => $this->metadata->getExposure(),
-      'origin' => $this->metadata->getOrigin(),
-      'telescop' => $this->metadata->getTelescop(),
-      'instrume' => $this->metadata->getInstrume(),
-      'script' => $this->metadata->getScript(),
-      'mnt_name' => $this->metadata->getMntName(),
-      'latitude' => $this->metadata->getLatitude(),
-      'longitud' => $this->metadata->getLongitud(),
-      'altitude' => $this->metadata->getAltitude(),
-      'tel_ra' => $this->metadata->getTelRa(),
-      'tel_dec' => $this->metadata->getTelDec(),
-      'tel_az' => $this->metadata->getTelAz(),
-      'tel_alt' => $this->metadata->getTelAlt(),
-      'lst' => $this->metadata->getLst(),
-      'mnt_flip' => $this->metadata->getMntFlip(),
-      'black' => $this->metadata->getBlack(),
-      'eph_sun_diam_px' => $this->metadata->getEphSunDiamPx(),
-      'original_shape' => $this->metadata->getOriginalShape(),
-      'color_gamma' => $this->metadata->getColorGamma(),
-      'unsharp_gamma' => $this->metadata->getUnsharpGamma(),
-      'filter' =>$this->metadata->getFilter(),
-      'pipeline-config-mode' =>$this->metadata->getPipelineConfigMode(),
-      'unsharp-flag' =>$this->metadata->getUnsharpFlag(),
-      'mask-low' =>$this->metadata->getMaskLow(),
-      'stretch-input' =>$this->metadata->getStretchInput(),
-      'source' =>$this->metadata->getSource(),
-      'observatory_id' => $this->observatory->getId(),
-      'observatory_name' => $this->observatory->getName(),
-      'observatory_shortdescription' => $this->observatory->getShortDescription(),
-      'observatory_sectionurl' => $this->observatory->getSectionUrl(),
-      'observatory_datecreated' => $this->observatory->getDateCreated(),
-      'observatory_dateupdated' => $this->observatory->getDateUpdated(),
-      'observatory_iduserupdate' => $this->observatory->getIdUserUpdate(),
-      'observatory_loginuserupdate' => $this->observatory->getLoginUserUpdate()
-    ];
-  }
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'path' => $this->path,
+            'filekey' => $this->filekey,
+            'extSrc' => $this->getExtSrc(),
+            'date_obs' => $this->date_obs,
+            'station_id' => $this->station_id,
+            'date_updated' => $this->date_updated,
+            'date_upload' => $this->date_upload,
+            'visits' => $this->visits,
+            'tags' => $this->tags,
+            'featured' => $this->featured,
+            'rate' => $this->rate,
+            'satellite' => $this->metadata->getSatellite(),
+            'norad_id' => $this->metadata->getNoradId(),
+            'freq' => $this->metadata->getFreq(),
+            'transponder' => $this->metadata->getTransponder(),
+            'bandwidth' => $this->metadata->getBandwidth(),
+            'deviation' => $this->metadata->getDeviation(),
+            'codification' => $this->metadata->getCodification(),
+            'tle' => $this->metadata->getTle(),
+            'tle_date' => $this->metadata->getTleDate(),
+            'azi_rise' => $this->metadata->getAziRise(),
+            'azi_set' => $this->metadata->getAziSet(),
+            'start_epoch' => $this->metadata->getStartEpoch(),
+            'end_epoch' => $this->metadata->getEndEpoch(),
+            'duration' => $this->metadata->getDuration(),
+            'max_elev' => $this->metadata->getMaxElev(),
+            'decod_software' => $this->metadata->getDecodSoftware(),
+            'radio' => $this->metadata->getRadio(),
+            'station_id' => $this->station->getId(),
+            'station_name' => $this->station->getName(),
+            'station_shordescription' => $this->station->getShortDescription(),
+            'station_latitude' => $this->station->getLatitude(),
+            'station_longitude' => $this->station->getLongitude(),
+            'station_elevation' => $this->station->getElevation(),
+            'station_date_created' => $this->station->getDatecreated()
+        ];
+    }
 }

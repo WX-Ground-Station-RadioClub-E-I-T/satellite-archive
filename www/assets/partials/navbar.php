@@ -38,7 +38,7 @@
 
         <li class="nav-item ml-3">
           <div class="menu_top_main text-left">
-            <a class="nav-link pb-0 pt-3" href="http://cesar.esa.int/index.php?Section=Contact&Origin=Archive_Viewer"><?php echo CONTACT; ?></a>
+            <a class="nav-link pb-0 pt-3" href="https://radio.clubs.etsit.upm.es/about/"><?php echo CONTACT; ?></a>
           </div>
           <div class="menu_top_second">
             <?php echo CONTACT_SUB; ?>

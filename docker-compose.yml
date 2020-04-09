@@ -17,11 +17,10 @@ services:
       - ${LOG_DIR-./logs/apache2}:/var/log/apache2
     environment:
       - MYSQL_HOST=archive-db
-      - MYSQL_ARCHIVE_DATABASE=sample_database
+      - MYSQL_ARCHIVE_DATABASE=satellite_database
       - MYSQL_ARCHIVE_USER=root
       - MYSQL_ARCHIVE_PASSWORD=tiger
-      - ARCHIVE_ENDPOINT=http://cesar.esa.int/sun_monitor/archive/
-      - ARCHIVE_VIDEOS_ENDPOINT=http://cesar.esa.int/archivetest/videos/
+      - ARCHIVE_ENDPOINT=https://ftp.ea4rct.org/ftp/radioclub/WX_RECEPTIONS/
       - DEPENDENCIES_ENDPOINT= http://localhost/dep/
   mysql:
     build: ./bin/mysql

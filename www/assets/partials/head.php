@@ -5,7 +5,7 @@
 <?php include 'lib/ArchiveDatabase.php' ?>
 <?php include 'lib/ArchiveImage.php' ?>
 <?php include 'lib/ArchiveMetadata.php' ?>
-<?php include 'lib/ArchiveObservatory.php' ?>
+<?php include 'lib/ArchiveStation.php' ?>
 
 <?php
   switch(substr ( $_SERVER [ "HTTP_ACCEPT_LANGUAGE" ], 0 , 2 )){

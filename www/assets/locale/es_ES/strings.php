@@ -20,6 +20,7 @@ define("MODAL_NUMIMAGES_VIDEO", "Número de imágenes");
 define("MODAL_DURATION_VIDEO", "Duración");
 define("MODAL_VISITS_VIDEO", "Visitas");
 define("MODAL_TELESCOPE", "Telecopio");
+define("MODAL_RADIO", "Radio");
 define("MODAL_FILTER", "Filtro");
 define("MODAL_CAMERA", "Cámara");
 define("MODAL_TIME_EXP", "Tiempo de exposición");

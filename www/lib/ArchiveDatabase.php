@@ -35,8 +35,8 @@ class ArchiveDatabase{
     public function getLastImages($amount){
       $res = array();
 
-      $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `archive-images` ORDER BY `date_obs` DESC LIMIT " . $amount;
+      $sql = "SELECT `ID`, `PATH`, `FILEKEY`, `DATE_OBS`, `STATION_ID`, `DATE_UPDATED`, `DATE_UPLOAD`, `VISITS`, `TAGS`,
+                `FEATURED`, `RATE` FROM `archive-images` ORDER BY `date_obs` DESC LIMIT " . $amount;
       if (!$resultado = $this->conn->query($sql)) {
         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
         exit;
@@ -44,13 +44,12 @@ class ArchiveDatabase{
       if ($resultado->num_rows > 0) {
           while($row = $resultado->fetch_assoc()) {
 
-              $obj = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
-                $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-                $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
+              $obj = new ArchiveImage($row["ID"], $row["PATH"], $row["FILEKEY"], $row["DATE_OBS"], $row["STATION_ID"],
+                  $row["DATE_UPDATED"], $row["DATE_UPLOAD"], $row["VISITS"], $row["TAGS"], $row["FEATURED"], $row["RATE"]);
 
-              $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
+              $obj->setMetadata($this->getMetadata($row["ID"]));  //Adding metedata to obj
 
-              $obj->setObservatory($this->getObservatoryById($row["observatory_id"]));
+              $obj->setStation($this->getStationById($row["STATION_ID"]));
               array_push($res, $obj);
           }
       } else {
@@ -65,13 +64,12 @@ class ArchiveDatabase{
     public function getImages($onlyFeatured ,$amount, $offset){
       $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
 
-      $filterFeatured = ($onlyFeatured)? "WHERE `featured` = true ": "";
+      $filterFeatured = ($onlyFeatured)? "WHERE `FEATURED` = true ": "";
 
-      $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `archive-images` " . $filterFeatured .
- "AND `id` IN (SELECT `image_id` FROM `archive-images-metadata`
-   WHERE (`metadata_id` = 23 AND `value` = 'False') ) ORDER BY `date_obs` DESC LIMIT " . $amount .
- " OFFSET " . $offset;
+      $sql = "SELECT `ID`, `PATH`, `FILEKEY`, `DATE_OBS`, `STATION_ID`, `DATE_UPDATED`, `DATE_UPLOAD`, `VISITS`,
+                `TAGS`, `FEATURED`, `RATE` FROM `archive-images` " . $filterFeatured .
+                " ORDER BY `DATE_OBS` DESC LIMIT " . $amount .
+                " OFFSET " . $offset;
 
       if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -81,13 +79,12 @@ class ArchiveDatabase{
       }
       if ($resultado->num_rows > 0) {
         while($row = $resultado->fetch_assoc()) {
-          $obj = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
-            $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-            $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
+          $obj = new ArchiveImage($row["ID"], $row["PATH"], $row["FILEKEY"], $row["DATE_OBS"], $row["STATION_ID"],
+            $row["DATE_UPDATED"], $row["DATE_UPLOAD"], $row["VISITS"], $row["TAGS"], $row["FEATURED"], $row["RATE"]);
 
-          $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
+          $obj->setMetadata($this->getMetadata($row["ID"]));  //Adding metedata to obj
 
-          $obj->setObservatory($this->getObservatoryById($row["observatory_id"]));
+          $obj->setStation($this->getStationById($row["STATION_ID"]));
           array_push($res[0], $obj);
         }
       } else {
@@ -119,17 +116,15 @@ class ArchiveDatabase{
     /*
     Get image by date obs. If $featured is true get the featured picture of the day, if not, the first.
     */
-    private function getImageByDateobs($dateobs, $filter, $source, $featured){
+    private function getImageByDateobs($dateobs, $satellite, $featured){
       $res = NULL;
 
-      $sql_base = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
-   `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `archive-images` WHERE `date_obs` LIKE '" . $dateobs . "%'";
+      $sql_base = "SELECT `ID`, `PATH`, `FILEKEY`, `DATE_OBS`, `STATION_ID`, `DATE_UPDATED`, `DATE_UPLOAD`, `VISITS`,
+                `TAGS`, `FEATURED`, `RATE` FROM `archive-images` WHERE `DATE_OBS` LIKE '" . $dateobs . "%'";
 
 
       if($featured){
-        $sql = $sql_base . " AND `featured` = 1";
-      } else {
-        $sql = $sql_base . $sql_limit;
+        $sql = $sql_base . " AND `FEATURED` = 1";
       }
 
       if(DEBUG){ echo "<p>" . $sql . "</p>"; }
@@ -141,15 +136,14 @@ class ArchiveDatabase{
       if ($resultado->num_rows > 0) {
         while($row = $resultado->fetch_assoc()) {
           // Get only the picture with the filter and the source specified
-          $meta = $this->getMetadata($row["id"]);
-          if($meta->getFilter() == $filter && $meta->getSource() == $source){
-              $res = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
-                $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-                $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
+          $meta = $this->getMetadata($row["ID"]);
+          if($meta->getSatellite() == $satellite){
+            $obj = new ArchiveImage($row["ID"], $row["PATH"], $row["FILEKEY"], $row["DATE_OBS"], $row["STATION_ID"],
+              $row["DATE_UPDATED"], $row["DATE_UPLOAD"], $row["VISITS"], $row["TAGS"], $row["FEATURED"], $row["RATE"]);
 
               $res->setMetadata($meta);  //Adding metedata to obj
 
-              $res->setObservatory($this->getObservatoryById($row["observatory_id"]));
+              $res->setObservatory($this->getStationById($row["STATION_ID"]));
           }
         }
       } else {
@@ -157,7 +151,7 @@ class ArchiveDatabase{
 
         // If there is no result with featured, try without, and if not, return null
         if($featured){
-          return $this->getImageByDateobs($dateobs, $filter, $source, 0);
+          return $this->getImageByDateobs($dateobs, $satellite, 0);
         } else {
           return null;
         }
@@ -170,7 +164,7 @@ class ArchiveDatabase{
     public function &getMetadata($imageId){
       $res = new ArchiveMetadata();
 
-      $sql = "SELECT `metadata_id`, `value` FROM `archive-images-metadata` WHERE `image_id` = " . $imageId;
+      $sql = "SELECT `IMAGE_ID`, `METADATA_ID`, `VALUE` FROM `archive-images-metadata` WHERE `IMAGE_ID` = " . $imageId;
 
       if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -180,7 +174,7 @@ class ArchiveDatabase{
       }
       if ($resultado->num_rows > 0) {
         while($row = $resultado->fetch_assoc()) {
-          $res ->setById($row["metadata_id"], $row["value"]);
+          $res->setById($row["METADATA_ID"], $row["VALUE"]);
         }
       } else {
         error_log("Ninguna coincidencia", 0);
@@ -190,19 +184,19 @@ class ArchiveDatabase{
       return $res;
     }
 
-  public function &getObservatoryById($observatoryId){
+  public function &getStationById($stationId){
     $res = NULL;
 
-    $sql = " SELECT `id`, `name`, `shortdescription`, `sectionurl`, `datecreated`, `dateupdated`, `iduserupdate`,
-            `loginuserupdate` FROM `archive-observatories` WHERE `id` = " . $observatoryId;
+    $sql = " SELECT `ID`, `NAME`, `SHORTDESCRIPTION`, `LATITUDE`, `LONGITUDE`, `ELEVATION`, `SECTIONURL`, `DATECREATED`,
+            `DATEUPDATED` FROM `archive-stations` WHERE `id` = " . $stationId;
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
     }
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
-        $res = new ArchiveObservatory($row["id"], $row["name"], $row["shortdescription"], $row["sectionurl"],
-          $row["datecreated"], $row["dateupdated"], $row["iduserupdate"], $row["loginuserupdate"]);
+        $res = new ArchiveStation($row["ID"], $row["NAME"], $row["SHORTDESCRIPTION"], $row["LATITUDE"], $row["LONGITUDE"],
+                                $row["ELEVATION"], $row["SECTIONURL"], $row["DATECREATED"], $row["DATECREATED"]);
       }
     } else {
       error_log("Ninguna coincidencia", 0);
@@ -215,21 +209,20 @@ class ArchiveDatabase{
   public function &getImageById($id){
     $res = NULL;
 
-    $sql = "SELECT `id`, `path`, `filename_final`, `filename_original`, `filename_thumb`, `date_obs`, `observatory_id`,
- `filesize_processed`, `date_upload`, `date_updated`, `rate` FROM `archive-images` WHERE `id` = " . $id;
+    $sql = "SELECT `ID`, `PATH`, `FILEKEY`, `DATE_OBS`, `STATION_ID`, `DATE_UPDATED`, `DATE_UPLOAD`, `VISITS`, `TAGS`,
+            `FEATURED`, `RATE` FROM `archive-images` WHERE `ID` = " . $id;
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
     }
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
-        $res = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
-          $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
+        $res = new ArchiveImage($row["ID"], $row["PATH"], $row["FILEKEY"], $row["DATE_OBS"], $row["STATION_ID"],
+          $row["DATE_UPDATED"], $row["DATE_UPLOAD"], $row["VISITS"], $row["TAGS"], $row["FEATURED"], $row["RATE"]);
 
-        $res->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
+        $res->setMetadata($this->getMetadata($row["ID"]));  //Adding metedata to obj
 
-        $res->setObservatory($this->getObservatoryById($row["observatory_id"]));
+        $res->setStation($this->getStationById($row["STATION_ID"]));
       }
     } else {
       error_log("Ninguna coincidencia", 0);
@@ -239,17 +232,17 @@ class ArchiveDatabase{
     return $res;
   }
 
-  public function getObservatoryNames(){
+  public function getStationsNames(){
     $res = array();
 
-    $sql = "SELECT `name` FROM `archive-observatories` ORDER BY `name`;";
+    $sql = "SELECT `NAME` FROM `archive-stations` ORDER BY `NAME`;";
     if (!$resultado = $this->conn->query($sql)) {
       error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
       exit;
     }
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
-        array_push($res, $row['name']);
+        array_push($res, $row['NAME']);
       }
     } else {
       error_log("Ninguna coincidencia", 0);
@@ -259,73 +252,51 @@ class ArchiveDatabase{
     return $res;
   }
 
-  public function getFiltersNames(){
-    $res = array();
-
-    $sql = "SELECT `name` FROM `archive-observatories` ORDER BY `name`;";
-    if (!$resultado = $this->conn->query($sql)) {
-      error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
-      exit;
-    }
-    if ($resultado->num_rows > 0) {
-      while($row = $resultado->fetch_assoc()) {
-        array_push($res, $row['name']);
-      }
-    } else {
-      error_log("Ninguna coincidencia", 0);
-      exit;
-    }
-
-    return $res;
-  }
-
-
-  public function advanceSearch($query, $source, $obsId, $filter, $since, $until, $discardDark, $onlyFeatured, $order, $amount, $offset){      // Return the requested image ID's
+  public function advanceSearch($query, $satellite, $stationId, $since, $until, $onlyFeatured, $order, $amount, $offset){      // Return the requested image ID's
     $res = [array(), 0];    // First its the results, and the second its the number of results that satifies
     $since = str_replace('/', '-', $since);    // Format date, SRC: https://bit.ly/2YRdKAw
     $until = str_replace('/', '-', $until);
 
     // Ensure that if some parameters are NULL, there is not in the query
     // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
-    $sqlMeta = "`id` IN (SELECT `image_id` FROM `archive-images-metadata` ";
-    $sqlMeta .= ($discardDark)? "WHERE (`metadata_id` = 23 AND `value` = 'False') ":"" ;
-    $sqlMetaSourceBase = "`image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` = '" . ucfirst($source ). "')) ";
-    $sqlMeta .= ($source != NULL) ? (($discardDark) ? "AND " . $sqlMetaSourceBase :  "WHERE " . $sqlMetaSourceBase) : "";
-    $sqlMetaFilterBase = "`image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` =  '" . strtolower($filter) . "')) ";
-    $sqlMeta .= ($filter != NULL) ? (($source != NULL || $discardDark) ? "AND " . $sqlMetaFilterBase . ")" :  "WHERE " . $sqlMetaFilterBase . ")") : ")";
+    $sqlMeta = "`ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` ";
+    $sqlMetaSourceBase = "`IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 1 AND `VALUE` = '" . ucfirst($satellite ). "')) ";
+    $sqlMeta .= ($satellite != NULL) ? "WHERE " . $sqlMetaSourceBase . ")": ")";
 
     if($query){
-      $sqlMetaQuery .= "`id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%')) ";
-      $sqlMetaQuery .= "OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%')))) ";
+      $sqlMetaQuery = "`ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 2 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 3 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 4 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 5 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 6 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 7 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 14 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 15 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 16 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 1 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMetaQuery .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 17 AND `VALUE` LIKE '%" . $query . "%')))) ";
     }
 
     if(DEBUG){ echo "<p>" . $sqlMeta . "</p>"; }
     if(DEBUG){ echo "<p>" . $sqlMetaQuery . "</p>"; }
 
-    $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
-      `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
-      `date_upload`, `date_updated`, `rate` FROM `archive-images` ";
+    $sqlSel = "SELECT `ID`, `PATH`, `FILEKEY`, `DATE_OBS`, `STATION_ID`, `DATE_UPDATED`, `DATE_UPLOAD`, `VISITS`,
+    `TAGS`, `FEATURED`, `RATE` FROM `archive-images` ";
     $sqlCount = "SELECT COUNT(*) FROM `archive-images`";
-    $sqlPar = ($onlyFeatured)? "WHERE `featured` = true ":"";
-    $sqlPar .= ($obsId) ? ($onlyFeatured)? "AND `observatory_id` = " . $obsId . " " : "WHERE `observatory_id` = " . $obsId . " " : "";
-    $sqlPar .= ($onlyFeatured || $obsId)? "AND " . $sqlMeta . " " : "WHERE " . $sqlMeta . " ";
+    $sqlPar = ($onlyFeatured)? "WHERE `FEATURED` = true ":"";
+    $sqlPar .= ($stationId) ? ($onlyFeatured)? "AND `STATION_ID` = " . $stationId . " " : "WHERE `STATION_ID` = " . $stationId . " " : "";
+    $sqlPar .= ($onlyFeatured || $stationId)? "AND " . $sqlMeta . " " : "WHERE " . $sqlMeta . " ";
 
 
     // Then filter by date
     if($since == NULL && $until == NULL){
       $sqlDate = "";
     } elseif ($since == NULL && $until != NULL) {
-      $sqlDate = "AND `date_obs` < '" . date( 'Y-m-d H:i:s', strtotime($until)) ."' ";
+      $sqlDate = "AND `DATE_OBS` < '" . date( 'Y-m-d H:i:s', strtotime($until)) ."' ";
     } elseif ($since != NULL && $until == NULL) {
-      $sqlDate = "AND `date_obs` > '" . date( 'Y-m-d H:i:s', strtotime($since)) . "' ";
+      $sqlDate = "AND `DATE_OBS` > '" . date( 'Y-m-d H:i:s', strtotime($since)) . "' ";
     } else {
-      $sqlDate = "AND `date_obs` BETWEEN '" . date( 'Y-m-d H:i:s', strtotime($since)) . "'
+      $sqlDate = "AND `DATE_OBS` BETWEEN '" . date( 'Y-m-d H:i:s', strtotime($since)) . "'
       AND '" .  date( 'Y-m-d H:i:s', strtotime($until)) . "' ";
     }
 
@@ -335,31 +306,31 @@ class ArchiveDatabase{
       $sqlPar .= "AND (";
       $sqlPar .= $sqlMetaQuery;
       $sqlPar .= "OR ";
-      $sqlPar .= "(`date_obs` LIKE '%" . date( 'Y-m-d', strtotime($query)) . "%' OR `date_obs` LIKE '%" . $query . "%')";
+      $sqlPar .= "(`DATE_OBS` LIKE '%" . date( 'Y-m-d', strtotime($query)) . "%' OR `DATE_OBS` LIKE '%" . $query . "%')";
       $sqlPar .= ") ";
     }
 
     // Ordenation modes can be {"0" -> date desc, "1" -> date asc, "2" -> rate desc, "3" rate asc}
     switch($order){
       case 0:
-        $sqlOrd = "ORDER BY `date_obs` DESC ";
+        $sqlOrd = "ORDER BY `DATE_OBS` DESC ";
         break;
       case 1:
-        $sqlOrd = "ORDER BY `date_obs` ASC ";
+        $sqlOrd = "ORDER BY `DATE_OBS` ASC ";
         break;
       case 2:
-        $sqlOrd = "ORDER BY `rate` DESC ";
+        $sqlOrd = "ORDER BY `RATE` DESC ";
         break;
       case 3:
-        $sqlOrd = "ORDER BY `rate` ASC ";
+        $sqlOrd = "ORDER BY `RATE` ASC ";
         break;
       default:
-        $sqlOrd = "ORDER BY `date_obs` DESC ";
+        $sqlOrd = "ORDER BY `DATE_OBS` DESC ";
     }
 
     $sql = $sqlSel . $sqlPar . $sqlOrd;
 
-    $sql .= ($amount != NULL) ? "LIMIT " . $amount . " " : "LIMIT 12";
+    $sql .= ($amount != NULL) ? "LIMIT " . $amount . " " : "LIMIT 12 ";
     $sql .= ($offset != NULL) ? "OFFSET " . $offset : "";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
@@ -371,13 +342,12 @@ class ArchiveDatabase{
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
 
-        $obj = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
-          $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
+        $obj = new ArchiveImage($row["ID"], $row["PATH"], $row["FILEKEY"], $row["DATE_OBS"], $row["STATION_ID"],
+          $row["DATE_UPDATED"], $row["DATE_UPLOAD"], $row["VISITS"], $row["TAGS"], $row["FEATURED"], $row["RATE"]);
 
-        $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
+        $obj->setMetadata($this->getMetadata($row["ID"]));  //Adding metedata to obj
 
-        $obj->setObservatory($this->getObservatoryById($row["observatory_id"]));
+        $obj->setStation($this->getStationById($row["STATION_ID"]));
         array_push($res[0], $obj);
       }
     } else {
@@ -411,29 +381,31 @@ class ArchiveDatabase{
 
     // Ensure that if some parameters are NULL, there is not in the query
     // Creating queries like these are difficult to read, but easy to control it parameters are NULL, consider changing this in the future
-    $sqlMeta = "SELECT `image_id` FROM `archive-images-metadata` ";
+    $sqlMeta = "SELECT `IMAGE_ID` FROM `archive-images-metadata` ";
     if($query){
-      $sqlMeta .= " WHERE `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 7 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 9 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 10 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 11 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 12 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 13 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 28 AND `value` LIKE '%" . $query . "%'))";
-      $sqlMeta .= " OR `image_id` IN (SELECT `image_id` FROM `archive-images-metadata` WHERE (`metadata_id` = 34 AND `value` LIKE '%" . $query . "%'))";
+      $sqlMeta .= " WHERE `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 2 AND `VALUE` LIKE '%" . $query . "%'))";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 3 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 4 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 5 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 6 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 7 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 14 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 15 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 16 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 17 AND `VALUE` LIKE '%" . $query . "%')) ";
+      $sqlMeta .= "OR `IMAGE_ID` IN (SELECT `IMAGE_ID` FROM `archive-images-metadata` WHERE (`METADATA_ID` = 1 AND `VALUE` LIKE '%" . $query . "%')) ";
     }
 
     if(DEBUG){ echo "<p>" . $sqlMeta . "</p>"; }
 
-    $sqlSel = "SELECT `id`, `path`, `filename_final`, `filename_original`,
-      `filename_thumb`, `date_obs`, `observatory_id`, `filesize_processed`,
-      `date_upload`, `date_updated`, `rate` FROM `archive-images` ";
-    $sqlWhe = "WHERE `id` IN (" . $sqlMeta . ") ";
+    $sqlSel = "SELECT `ID`, `PATH`, `FILEKEY`, `DATE_OBS`, `STATION_ID`, `DATE_UPDATED`, `DATE_UPLOAD`, `VISITS`,
+                `TAGS`, `FEATURED`, `RATE` FROM `archive-images` ";
+    $sqlWhe = "WHERE `ID` IN (" . $sqlMeta . ") ";
 
     // In this case we have to format the date as the webpage
-    $sqlDate = "OR `date_obs` LIKE '%" . date( 'Y-m-d', strtotime($query)) . "%' ";
-    $sqlDate = "OR `date_obs` LIKE '%" . $query . "%' ";
-    $sqlOrd = ($order != NULL) ? (($order == "asc")? "ORDER BY `date_obs` ASC ": "ORDER BY `date_obs` DESC "): "";
+    $sqlDate = "OR `DATE_OBS` LIKE '%" . date( 'Y-m-d', strtotime($query)) . "%' ";
+    $sqlDate = "OR `DATE_OBS` LIKE '%" . $query . "%' ";
+    $sqlOrd = ($order != NULL) ? (($order == "asc")? "ORDER BY `DATE_OBS` ASC ": "ORDER BY `DATE_OBS` DESC "): "";
     $sqlLimit = ($amount != NULL) ? "LIMIT " . $amount . " " : "LIMIT 12";
     $sqlOffset = ($offset != NULL) ? "OFFSET " . $offset : "";
 
@@ -448,13 +420,12 @@ class ArchiveDatabase{
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
 
-        $obj = new ArchiveImage($row["id"], $row["path"], $row["filename_final"],
-          $row["filename_original"], $row["filename_thumb"], $row["date_obs"], $row["filesize_processed"],
-          $row["date_updated"], $row["vists"], $row["tags"], $row["date_upload"], $row["rate"]);
+        $obj = new ArchiveImage($row["ID"], $row["PATH"], $row["FILEKEY"], $row["DATE_OBS"], $row["STATION_ID"],
+          $row["DATE_UPDATED"], $row["DATE_UPLOAD"], $row["VISITS"], $row["TAGS"], $row["FEATURED"], $row["RATE"]);
 
-        $obj->setMetadata($this->getMetadata($row["id"]));  //Adding metedata to obj
+        $obj->setMetadata($this->getMetadata($row["ID"]));  //Adding metedata to obj
 
-        $obj->setObservatory($this->getObservatoryById($row["observatory_id"]));
+        $obj->setStation($this->getStationById($row["STATION_ID"]));
         array_push($res[0], $obj);
       }
     } else {
@@ -488,7 +459,7 @@ class ArchiveDatabase{
     $res = array();
 
     // First get sources names
-    $sql = "SELECT DISTINCT `value` FROM `archive-images-metadata` WHERE `metadata_id` = 34";
+    $sql = "SELECT DISTINCT `VALUE` FROM `archive-images-metadata` WHERE `METADATA_ID` = 1";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -499,7 +470,7 @@ class ArchiveDatabase{
 
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
-        array_push($res, array(0 => $row['value'], 1 => -1));
+        array_push($res, array(0 => $row['VALUE'], 1 => -1));
       }
     } else {
       error_log("Ninguna coincidencia", 0);
@@ -509,7 +480,7 @@ class ArchiveDatabase{
     // Now we have to put the amount of pictures in every source
     $length = count($res);
     for($i = 0; $i < $length; $i++){
-      $sql = "SELECT COUNT(*) FROM `archive-images-metadata` WHERE `value` = \"" . $res[$i][0] . "\";";
+      $sql = "SELECT COUNT(*) FROM `archive-images-metadata` WHERE `VALUE` = \"" . $res[$i][0] . "\";";
 
       if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
@@ -536,13 +507,13 @@ class ArchiveDatabase{
   public function existRate($imageid, $ip){
     $res = false;
 
-    $sql = "SELECT 1 FROM `archive-images-rates` WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\" LIMIT 1";
+    $sql = "SELECT 1 FROM `archive-images-rates` WHERE `IMAGE_ID` = " . $imageid . " AND `IP` = \"" . $ip . "\" LIMIT 1";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
 
     if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
          exit;
     }
     if ($resultado->num_rows > 0) {
@@ -553,26 +524,26 @@ class ArchiveDatabase{
   }
 
   public function insertRate($imageid, $rate, $ip, $browser){
-    $sql = "INSERT INTO `archive-images-rates` (`image_id`, `rate`, `ip`, `browser`) VALUES (" . $imageid .
+    $sql = "INSERT INTO `archive-images-rates` (`IMAGE_ID`, `RATE`, `IP`, `BROWSER`) VALUES (" . $imageid .
         ", \"" . $rate . "\", \"" . $ip . "\" , \"" . $browser .
         "\")";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
     if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
          exit;
     }
   }
 
   // Update an alredy set rate at `archive-images-rates`
   public function updateRate($imageid, $rate, $ip){
-    $sql = "UPDATE `archive-images-rates` SET `rate` = " . $rate . " WHERE `image_id` = " . $imageid . " AND `ip` = \"" . $ip . "\"";
+    $sql = "UPDATE `archive-images-rates` SET `RATE` = " . $rate . " WHERE `IMAGE_ID` = " . $imageid . " AND `IP` = \"" . $ip . "\"";
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
     if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
          exit;
     }
   }
@@ -581,26 +552,26 @@ class ArchiveDatabase{
   public function updateAvrRate($imageid){
     $avr = -1;
 
-    $sql = "SELECT AVG(`rate`) FROM `archive-images-rates` WHERE `image_id` = " . $imageid;
+    $sql = "SELECT AVG(`RATE`) FROM `archive-images-rates` WHERE `IMAGE_ID` = " . $imageid;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
     if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
          exit;
     }
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
-        $avr = $row["AVG(`rate`)"];
+        $avr = $row["AVG(`RATE`)"];
       }
     }
 
-    $sql = "UPDATE `archive-images` SET `rate`=" . $avr . " WHERE `id` = " . $imageid;
+    $sql = "UPDATE `archive-images` SET `RATE`=" . $avr . " WHERE `ID` = " . $imageid;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
     if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
          exit;
     }
 
@@ -611,17 +582,17 @@ class ArchiveDatabase{
   public function getAvrRate($imageid){
     $res = -1;
 
-    $sql = "SELECT `rate` FROM `archive-images` WHERE `id` = " . $imageid;
+    $sql = "SELECT `RATE` FROM `archive-images` WHERE `ID` = " . $imageid;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
     if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
          exit;
     }
     if ($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
-        $res = $row["rate"];
+        $res = $row["RATE"];
       }
     }
 
@@ -630,12 +601,12 @@ class ArchiveDatabase{
 
   // Update the visits of a observation, giving his ID
   public function addVisitObs($imageId){
-    $sql = "UPDATE `archive-images` SET `visits` = `visits` + 1 WHERE `id` = " . $imageId;
+    $sql = "UPDATE `archive-images` SET `VISITS` = `VISITS` + 1 WHERE `ID` = " . $imageId;
 
     if(DEBUG){ echo "<p>" . $sql . "</p>"; }
 
     if (!$resultado = $this->conn->query($sql)) {
-         error_log("Could not connect to mysql database. Errno:" . $conn->errno, 0);
+         error_log("Could not connect to mysql database. Errno:" . $this->conn->errno, 0);
          return false;
          exit;
     }
