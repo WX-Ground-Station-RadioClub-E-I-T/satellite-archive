@@ -34,6 +34,13 @@ Then we have to import the `sample_database.sql` to MySQL. It can be done by acc
 $ docker exec -i archive-db bash -c 'mysql -u root sample_database --password=tiger < /home/sample_database.sql'
 ```
 
+### Building image
+
+```
+$ cd www
+$ docker build -f ../bin/webserver/Dockerfile -t USERNAME/satellite-archive .
+```
+
 ## Built With
 
 * [Docker](https://www.docker.com/) - Contanier platform

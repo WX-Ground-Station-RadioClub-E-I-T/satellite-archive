@@ -2,7 +2,9 @@ version: "3"
 
 services:
   webserver:
-    build: ./bin/webserver
+    build:
+      context: ./www
+      dockerfile: ../bin/webserver/Dockerfile
     container_name: 'archive-web'
     restart: 'always'
     ports:

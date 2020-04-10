@@ -99,7 +99,7 @@ class ArchiveImage{
      */
     public function getExtSrc(){
       $satellite = $this->metadata->getSatellite();
-      if($satellite == "NOAA 19" || $satellite == "NOAA 19" || $satellite == "NOAA 19") {
+      if($satellite == "NOAA 19" || $satellite == "NOAA 15" || $satellite == "NOAA 18") {
         return ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MCIR.png";
       }
       elseif ($satellite == "METEOR-M 2"){

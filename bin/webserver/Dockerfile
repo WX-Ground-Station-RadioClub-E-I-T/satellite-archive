@@ -1,5 +1,7 @@
 FROM php:5.6.40-apache
 
+COPY . /var/www/html
+
 # https://askubuntu.com/questions/41605/trouble-downloading-packages-list-due-to-a-hash-sum-mismatch-error
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get -y update --fix-missing
