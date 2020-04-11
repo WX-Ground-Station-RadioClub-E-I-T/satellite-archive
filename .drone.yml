@@ -1,0 +1,52 @@
+kind: pipeline
+name: default
+
+clone:
+  depth: 50
+
+steps:
+- name: submodules
+  image: docker:git
+  commands:
+  - git submodule update --init --recursive
+
+- name: docker
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: hub_user
+    password:
+      from_secret: hub_password
+    auto_tag: true
+    repo: acien101/satellite-archive
+    context: ./www
+    dockerfile: ./bin/webserver/Dockerfile
+
+- name: deploy
+  image: mullnerz/ansible-playbook
+  environment:
+    ANSIBLE_VAULT_PASSWORD_FILE: /bin/vault-env
+    ANSIBLE_VAULT_PASSWORD:
+      from_secret: vault_pass
+    USER:
+      from_secret: ssh_username
+    SSH_KEY:
+      from_secret: ssh_key
+    PORT:
+      from_secret: ssh_port
+    HOST:
+      from_secret: ssh_host
+  commands:
+    - pwd
+    - echo "#\!/bin/bash\\n\\necho $ANSIBLE_VAULT_PASSWORD" > /bin/vault-env
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa && chmod 700 ~/.ssh
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -p $PORT -H $HOST >> ~/.ssh/known_hosts
+    - ansible-playbook -i .deploy/custom/ea4rct/hosts.yml --limit "zulu" .deploy/full.yml
+
+trigger:
+  event:
+  - tag

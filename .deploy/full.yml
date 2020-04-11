@@ -1,0 +1,9 @@
+---
+
+# Restart systemd service
+
+- name: restart archive webserver systemd service to pull docker image
+  systemd:
+    state: restarted:
+    daemon_reload: yes
+    name: docker.archive_webserver.service
