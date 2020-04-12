@@ -1,9 +1,184 @@
 ---
 
-# Restart systemd service
+## Deploy Archive FTP https://github.com/acien101/docker-alpine-apache-ftp-server
 
-- name: restart archive webserver systemd service to pull docker image
-  systemd:
-    state: restarted:
-    daemon_reload: yes
-    name: docker.archive_webserver.service
+- name: Deploy archive ftp in docker
+  hosts: zulu
+  become: true
+  gather_facts: false
+  vars:
+    service_name: archive_ftp
+    create_network: false
+    enable_db: false
+    docker_image: "{{ archive_ftp_image }}"
+    docker_command: |
+      /usr/bin/docker run --rm --name "{{ service_name }}" \
+      -v "{{ arhive_ftp_data_directory }}":/web/html/ftp \
+      -p "{{ archive_ftp_port}}:21" \
+      -p "{{ archive_ftp_web_port }}:80" \
+      -p "{{ archive_ftp_passive_min_port }}-{{ archive_ftp_passive_max_port }}:21000-21010" \
+      -e USERS="{{ archive_ftp_users }}" \
+      -e ADDRESS="{{ archive_ftp_domain }}" \
+      "{{ docker_image }}"
+  pre_tasks:
+    - name: Create archive ftp directories 755
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+      with_items:
+        - "{{ arhive_ftp_data_directory }}"
+  roles:
+    - role: generic_docker_systemd
+  tags: [ never, archive_ftp ]
+
+- name: Get archive ftp subdomain Let's Encrypt certificate
+  hosts: zulu
+  become: true
+  gather_facts: false
+  vars:
+    domain: "{{ archive_ftp_domain }}"
+    letsencrypt_renew_hook: /usr/sbin/service nginx reload
+  roles:
+    - role: letsencrypt-request
+      tags: letsecrypt_request
+  tags: [ never, archive_ftp ]
+
+- name: Configure nginx proxy for archive ftp
+  hosts: zulu
+  become: true
+  gather_facts: false
+  vars:
+    domain: "{{ archive_ftp_domain }}"
+    binded_port: "{{ archive_ftp_web_port }}"
+  roles:
+    - role: add_nginx_proxy_conf
+      tags: proxy
+  tags: [ never, archive_ftp ]
+
+# Deploy Archive DB (MYSQL WITH phpmyadmin)
+
+- name: Deploy archive db in docker
+  hosts: zulu
+  become: true
+  gather_facts: false
+  vars:
+    service_name: archive-phpmyadmin
+    create_network: true
+    docker_network_name: "{{ archive_network_name }}"
+    service_db_name: archive-db
+    enable_db: true
+    db_type: mariadb
+    docker_service_directory_db: "{{ archive_db_directory.db }}"
+    docker_image: "{{ archive_db_phpmyadmin_image }}"
+    docker_db_image: "{{ archive_db_image }}"
+    docker_command: |
+      /usr/bin/docker run --rm --name "{{ service_name }}" \
+      -p "{{ archive_db_web_port }}:80" \
+      -e PMA_HOST="{{ service_db_name }}" \
+      -e PMA_PORT=3306 \
+      --network "{{ archive_network_name }}" \
+      "{{ docker_image }}"
+    db_pass: "{{ archive_db_pass }}"
+    db_user_pass: "{{ archive_db_user_pass }}"
+    db_name: "{{ archive_db_name }}"
+    db_user: "{{ archive_db_user }}"
+    db_config_port: 3306
+    db_expose_port: 3306
+
+  pre_tasks:
+    - name: Create archive directories 755
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ user_uid_1000 }}"
+        group: "{{ group_gid_1000 }}"
+        mode: 0700
+      with_items:
+        - "{{ archive_directory.data }}"
+        - "{{ archive_db_directory.db }}"
+  roles:
+    - role: generic_docker_systemd
+  tags: [ never, archive_db ]
+
+## Deploy Archive webpage
+
+- name: Deploy archive webserver in docker
+  hosts: zulu
+  become: true
+  gather_facts: false
+  vars:
+    service_name: archive_webserver
+    create_network: false
+    enable_db: false
+    docker_image: "{{ lookup('env','ARCHIVE_WEBSERVER_IMAGE') | default(archive_webserver_image, true) }}"
+    docker_command: |
+      /usr/bin/docker run --rm --name "{{ service_name }}" \
+      -v "{{ archive_webserver_directory.php_ini }}":/usr/local/etc/php/php.ini \
+      -v "{{ archive_webserver_directory.conf_vhosts }}":/etc/apache2/sites-enabled \
+      -v "{{ archive_webserver_directory.logs }}":/var/log/apache2 \
+      -p "{{ archive_webserver_external_port }}:80" \
+      --network "{{ archive_network_name }}" \
+      -e MYSQL_HOST="archive-db" \
+      -e MYSQL_ARCHIVE_DATABASE="{{ archive_db_name }}" \
+      -e MYSQL_ARCHIVE_USER="{{ archive_db_user }}" \
+      -e MYSQL_ARCHIVE_PASSWORD="{{ archive_db_user_pass }}" \
+      -e ARCHIVE_ENDPOINT="https://ftp.ea4rct.org/ftp/radioclub/WX_RECEPTIONS/" \
+      -e DEPENDENCIES_ENDPOINT="https://archive.ea4rct.org/dep/" \
+      "{{ docker_image }}"
+  pre_tasks:
+    - name: Create archive webserver directories 755
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+      with_items:
+        - "{{ archive_webserver_directory.logs }}"
+        - "{{ archive_webserver_directory.conf }}"
+        - "{{ archive_webserver_directory.conf_php }}"
+        - "{{ archive_webserver_directory.conf_vhosts }}"
+    - name: Copy php configuration
+      copy:
+        src: ./files/php.ini
+        dest: "{{ archive_webserver_directory.php_ini }}"
+        owner: "{{ user_uid_1000 }}"
+        group: "{{ group_gid_1000 }}"
+        mode: '0644'
+    - name: Copy vhost configuration
+      copy:
+        src: ./files/default.conf
+        dest: "{{ archive_webserver_directory.vhosts }}"
+        owner: "{{ user_uid_1000 }}"
+        group: "{{ group_gid_1000 }}"
+        mode: '0644'
+  roles:
+    - role: generic_docker_systemd
+  tags: [ never, archive_webserver ]
+
+- name: Get archive webserver subdomain Let's Encrypt certificate
+  hosts: zulu
+  become: true
+  gather_facts: false
+  vars:
+    domain: "{{ archive_webserver_domain }}"
+    letsencrypt_renew_hook: /usr/sbin/service nginx reload
+  roles:
+    - role: letsencrypt-request
+      tags: letsecrypt_request
+  tags: [ never, archive_webserver ]
+
+- name: Configure nginx proxy for archive ftp
+  hosts: zulu
+  become: true
+  gather_facts: false
+  vars:
+    domain: "{{ archive_webserver_domain }}"
+    binded_port: "{{ archive_webserver_external_port }}"
+  roles:
+    - role: add_nginx_proxy_conf
+      tags: proxy
+  tags: [ never, archive_webserver ]

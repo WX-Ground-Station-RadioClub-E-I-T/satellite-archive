@@ -4,6 +4,9 @@ name: default
 clone:
   depth: 50
 
+environment:
+  HUB_REPO: acien101/satellite-archive
+
 steps:
 - name: submodules
   image: docker:git
@@ -18,7 +21,7 @@ steps:
     password:
       from_secret: hub_password
     auto_tag: true
-    repo: acien101/satellite-archive
+    repo: $HUB_REPO
     context: ./www
     dockerfile: ./bin/webserver/Dockerfile
 
@@ -45,8 +48,10 @@ steps:
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -p $PORT -H $HOST >> ~/.ssh/known_hosts
-    - ansible-playbook -i .deploy/custom/ea4rct/hosts.yml --limit "zulu" .deploy/full.yml
-
-trigger:
-  event:
-  - tag
+    - cd .deploy
+    - export ARCHIVE_WEBSERVER_IMAGE=$HUB_REPO:$DRONE_TAG
+    - echo "Deploying $ARCHIVE_WEBSERVER_IMAGE"
+    - ansible-playbook -i .deploy/custom/ea4rct/hosts.yml --limit "zulu" --tags "archive_ftp, archive_db, archive_webserver" full.yml
+  when:
+    event:
+    -tag
