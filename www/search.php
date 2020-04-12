@@ -34,6 +34,7 @@
   $count = $res[1];   // Advance search return an array, with the number of results in #1 and the data on #0
   $data = $res[0];
 
+  $picsCounter = $obj->getObservationCount();
   ?>
 
   <!-- Page Content -->
@@ -69,8 +70,16 @@
             <div class="form-group col-md-4">
               <label for="inputSatellite"><?php echo SEARCH_SATELLITE;?></label>
               <select id="inputsatellite" class="form-control" name="inputSatellite">
-                <option value="" <?php if($_GET["inputSatellite"] == NULL) echo "selected"; ?>><?php echo SEARCH_WHATEVER; ?></option>
-                <option <?php if($_GET["inputSatellite"] == "NOAA 19") echo "selected" ?>><?php echo "NOAA 19";?></option>
+                <option value=""><?php echo SEARCH_WHATEVER; ?></option>
+                <?php
+                foreach($picsCounter as $sat){
+                  if(strpos($_GET["inputSatellite"], $sat[0]) !== false){
+                    echo "<option selected>" . $sat[0]  . "</option>";
+                  } else{
+                    echo "<option>" . $sat[0] . "</option>";
+                  }
+                }
+                ?>
               </select>
             </div>
             <div class="form-group col-md-4">
