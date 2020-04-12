@@ -9,4 +9,4 @@
 	url = https://github.com/anarres-org/add_nginx_proxy_conf.git
 [submodule ".deploy/custom/ea4rct"]
 	path = .deploy/custom/ea4rct
-	url = git@git.radio.clubs.etsit.upm.es:junta/anarres_conf.git
+	url = https://git.radio.clubs.etsit.upm.es/junta/anarres_conf.git
