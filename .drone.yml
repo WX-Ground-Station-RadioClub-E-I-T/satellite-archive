@@ -54,4 +54,4 @@ steps:
     - ansible-playbook -i .deploy/custom/ea4rct/hosts.yml --limit "zulu" --tags "archive_ftp, archive_db, archive_webserver" full.yml
   when:
     event:
-    -tag
+    - tag
