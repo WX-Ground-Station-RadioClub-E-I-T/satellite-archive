@@ -51,7 +51,7 @@ steps:
     - cd .deploy
     - export ARCHIVE_WEBSERVER_IMAGE=$HUB_REPO:$DRONE_TAG
     - echo "Deploying $ARCHIVE_WEBSERVER_IMAGE"
-    - ansible-playbook -i .deploy/custom/ea4rct/hosts.yml --limit "zulu" --tags "archive_ftp, archive_db, archive_webserver" full.yml
+    - ansible-playbook -i custom/ea4rct/hosts.yml --limit "zulu" --tags "archive_ftp, archive_db, archive_webserver" full.yml
   when:
     event:
     - tag
