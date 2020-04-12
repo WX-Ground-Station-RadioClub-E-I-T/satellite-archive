@@ -4,9 +4,6 @@ name: default
 clone:
   depth: 50
 
-environment:
-  HUB_REPO: acien101/satellite-archive
-
 steps:
 - name: submodules
   image: docker:git
@@ -21,7 +18,8 @@ steps:
     password:
       from_secret: hub_password
     auto_tag: true
-    repo: $HUB_REPO
+    repo:
+      from_secret: hub_repo
     context: ./www
     dockerfile: ./bin/webserver/Dockerfile
 
@@ -39,6 +37,8 @@ steps:
       from_secret: ssh_port
     HOST:
       from_secret: ssh_host
+    HUB_REPO:
+      from_secret: hub_repo
   commands:
     - pwd
     - echo "#\!/bin/bash\\n\\necho $ANSIBLE_VAULT_PASSWORD" > /bin/vault-env
