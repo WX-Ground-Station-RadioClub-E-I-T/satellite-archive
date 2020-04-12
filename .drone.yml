@@ -26,7 +26,6 @@ steps:
 - name: deploy
   image: mullnerz/ansible-playbook
   environment:
-    ANSIBLE_VAULT_PASSWORD_FILE: /bin/vault-env
     ANSIBLE_VAULT_PASSWORD:
       from_secret: vault_pass
     USER:
@@ -40,8 +39,7 @@ steps:
     HUB_REPO:
       from_secret: hub_repo
   commands:
-    - pwd
-    - echo "#\!/bin/bash\\n\\necho $ANSIBLE_VAULT_PASSWORD" > /bin/vault-env
+    - echo $ANSIBLE_VAULT_PASSWORD > ~/.vault_pass.txt
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa && chmod 700 ~/.ssh
@@ -51,7 +49,7 @@ steps:
     - cd .deploy
     - export ARCHIVE_WEBSERVER_IMAGE=$HUB_REPO:$DRONE_TAG
     - echo "Deploying $ARCHIVE_WEBSERVER_IMAGE"
-    - ansible-playbook -i custom/ea4rct/hosts.yml --limit "zulu" --tags "archive_ftp, archive_db, archive_webserver" full.yml
+    - ansible-playbook --vault-password-file ~/.vault_pass.txt -i custom/ea4rct/hosts.yml --limit "zulu" --tags "archive_ftp, archive_db, archive_webserver" full.yml
   when:
     event:
     - tag
