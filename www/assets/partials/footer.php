@@ -3,9 +3,9 @@
     <table class="footer_table">
       <tbody>
         <tr>
-          <td class="text-center ">
+          <td class="text-center sub">
             <span><?php echo FOOT_MAIN; ?><br>
-            <span class="footer_secondary">Copyright 2011 - <?php echo date("Y"); ?> © <?php echo FOOT_SUB; ?></span></span><br>
+            <span class="footer_secondary">Satellite-Archive <?php if(!empty(ARCHIVE_VERSION)) echo "V".ARCHIVE_VERSION; ?> - Copyright 2011 - <?php echo date("Y"); ?> © <?php echo FOOT_SUB; ?></span></span><br>
           </td>
         </tr>
       </tbody>

@@ -127,6 +127,7 @@
       -e MYSQL_ARCHIVE_PASSWORD="{{ archive_db_user_pass }}" \
       -e ARCHIVE_ENDPOINT="https://ftp.ea4rct.org/ftp/radioclub/WX_RECEPTIONS/" \
       -e DEPENDENCIES_ENDPOINT="https://archive.ea4rct.org/dep/" \
+      -e GIT_TAG="{{ lookup('env','DRONE_TAG') }}" \
       "{{ docker_image }}"
   pre_tasks:
     - name: Create archive webserver directories 755

@@ -27,6 +27,11 @@ a {
   text-decoration: none;
 }
 
+.sub a{
+  text-decoration: underline;
+  color: #FFFFFF!important;
+}
+
 * {
   font-family: 'Roboto Slab', serif;
 }
@@ -46,7 +51,7 @@ a {
 }
 
 .active {
-  color: #54778f!important;
+  color: #007bff!important;
 }
 
 .menu_top_second {
