@@ -183,3 +183,13 @@
     - role: add_nginx_proxy_conf
       tags: proxy
   tags: [ never, archive_webserver ]
+
+- name: Reload systemd
+  hosts: zulu
+  become: true
+  gather_facts: false
+  systemd:
+    name: docker.archive_webserver.service
+    state: reload
+    daemon_reload: yes
+  tags: [ never, archive_webserver ]
