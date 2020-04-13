@@ -44,7 +44,10 @@
             <?php echo CONTACT_SUB; ?>
           </div>
         </li>
-    </ul>
+      </ul>
+      <div class="mr-4">
+        <iframe src="https://freesecure.timeanddate.com/clock/i78n11e3/tles4/fn14/fs22/fc6d93ad/tct/pct/ts1/ta1" frameborder="0" width="107" height="28" allowTransparency="true"></iframe>
+      </div>
 
       <form class="form-inline my-2 my-lg-0 pt-3 float-right" action="simplesearch.php" method="GET">
         <i class="fas fa-search" style="color:#00a9e0"></i>
@@ -53,7 +56,6 @@
           <?php echo SEARCH_SUB; ?>
         </small>
       </form>
-
     </div>
   </div>
 </nav>
