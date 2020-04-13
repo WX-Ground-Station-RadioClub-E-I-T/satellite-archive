@@ -14,6 +14,12 @@
     $avrRate = $obj->getAvrRate($imageId);
 
     $pic = $obj->getImageById($imageId);
+
+    $localDate = new DateTime();
+    $interval = $localDate->diff($pic->getDateObsDatetime());
+    $delta =($interval->format('%d') > 0)? $interval->format('%d') . " days ":"";
+    $delta .=($interval->format('%h') > 0)? $interval->format('%h') . " hours ":"";
+    $delta .=($interval->format('%i') > 0)? $interval->format('%i') . " minutes ":"";
     ?>
 
     <meta property="og:image"         content="<?php  echo $pic->getExtSrc()?>" />
@@ -119,7 +125,7 @@
           <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_MAX_ELEV_TOOLTIP; ?>"><b class="float-left"><?php echo META_MAX_ELEV; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getMaxElev(); ?></a></li>
           <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_DURATION_TOOLTIP; ?>"><b class="float-left"><?php echo META_DURATION; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getDuration(); ?></a></li>
           <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_RADIO_TOOLTIP; ?>"><b class="float-left"><?php echo META_RADIO; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getRadio(); ?></a></li>
-          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_DATE_OBS_TOOLTIP; ?>"><b class="float-left"><?php echo META_DATE_OBS; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getDateObs(); ?></a></li>
+          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo $delta . " ago"; ?>"><b class="float-left"><?php echo META_DATE_OBS; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getDateObs(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_SHORT_DESC_TOOLTIP; ?>"><b class="float-left"><?php echo META_SHORT_DESC; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getStation()->getShortDescription(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_IMG_ID_TOOLTIP; ?>"><b class="float-left"><?php echo META_IMG_ID; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getId(); ?></a></li>
           <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_OBS_NAME_TOOLTIP; ?>"><b class="float-left"><?php echo META_OBS_NAME; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getStation()->getName(); ?></a></li>

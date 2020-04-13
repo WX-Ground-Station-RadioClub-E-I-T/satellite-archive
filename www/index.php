@@ -51,6 +51,7 @@
     <div class="row text-center main-block">
 
       <?php
+      $localDate = new DateTime();
       if($res != NULL){
         foreach($data as $pic){
           $avrRate = $pic->getRate();
@@ -61,6 +62,11 @@
           } else {
             $modalTitle = $pic->getMetadata()->getSatellite() . " " . MODAL_TITLE . " " . $pic->getStation()->getName();
           }
+
+          $interval = $localDate->diff($pic->getDateObsDatetime());
+          $delta =($interval->format('%d') > 0)? $interval->format('%d') . " days ":"";
+          $delta .=($interval->format('%h') > 0)? $interval->format('%h') . " hours ":"";
+          $delta .=($interval->format('%i') > 0)? $interval->format('%i') . " minutes ":"";
           echo <<<END
           <div class="col-lg-3 col-md-6">
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal" data-title="{$modalTitle}" data-image-id="{$pic->getId()}" data-image-src={$pic->getExtSrc()} data-date-obs="{$pic->getDateObs()}"
@@ -69,7 +75,7 @@
                 data-satellite="{$pic->getMetadata()->getSatellite()}" data-rate="{$formatedRate}" data-rate-text="{$rateText}">
             <div class="card" style="width: 15rem;">
               <img class="card-img-top" src="{$pic->getExtSrc()}" alt="Card image cap">
-              <div class="card-body">
+              <div class="card-body" data-toggle="tooltip" data-placement="top" title="{$delta} ago">
                 <p class="card-text"> {$pic->getMetadata()->getSatellite()} - {$pic->getDateObs()}</p>
               </div>
             </div>

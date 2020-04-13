@@ -117,6 +117,15 @@ class ArchiveImage{
     }
 
     /**
+     * @return mixed
+     */
+    public function getDateObsDatetime()
+    {
+        return  new DateTime($this->date_obs);
+    }
+
+
+    /**
      * @param mixed $date_obs
      */
     public function setDateObs($date_obs)
