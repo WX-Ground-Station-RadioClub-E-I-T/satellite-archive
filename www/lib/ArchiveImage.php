@@ -110,6 +110,33 @@ class ArchiveImage{
     /**
      * @return mixed
      */
+    public function getImagesSrc(){
+      $satellite = $this->metadata->getSatellite();
+      $result = array();
+      if($satellite == "NOAA 19" || $satellite == "NOAA 15" || $satellite == "NOAA 18") {
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MCIR.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MSA.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HVCT.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-THERM.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-NO.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MB.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HF.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HE.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-EC.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-CC.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MD.png";
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-ZA.png";
+      }
+      elseif ($satellite == "METEOR-M 2"){
+        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".png";
+      }
+      return $result;
+    }
+
+
+    /**
+     * @return mixed
+     */
     public function getDateObs()
     {
         $date = strtotime($this->date_obs);

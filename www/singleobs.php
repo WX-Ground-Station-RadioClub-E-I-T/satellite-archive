@@ -13,16 +13,16 @@
     $obj->addVisitObs($imageId);    // Adding a new visit to observation
     $avrRate = $obj->getAvrRate($imageId);
 
-    $pic = $obj->getImageById($imageId);
+    $pass = $obj->getImageById($imageId);
 
     $localDate = new DateTime();
-    $interval = $localDate->diff($pic->getDateObsDatetime());
+    $interval = $localDate->diff($pass->getDateObsDatetime());
     $delta =($interval->format('%d') > 0)? $interval->format('%d') . " days ":"";
     $delta .=($interval->format('%h') > 0)? $interval->format('%h') . " hours ":"";
     $delta .=($interval->format('%i') > 0)? $interval->format('%i') . " minutes ":"";
     ?>
 
-    <meta property="og:image"         content="<?php  echo $pic->getExtSrc()?>" />
+    <meta property="og:image"         content="<?php  echo $pass->getExtSrc()?>" />
 
     <script>
         $(document).ready(function(){
@@ -56,14 +56,24 @@
   <div class="row main-block">
     <div class="col">
       <div class="xzoom-container">
-        <img class="xzoom card-img-top" id="xzoom-default" src="<?php echo $pic->getExtSrc(); ?>" xoriginal="<?php echo $pic->getExtSrc(); ?>" />
+        <img class="xzoom card-img-top" id="xzoom-default" src="<?php echo $pass->getExtSrc(); ?>" xoriginal="<?php echo $pass->getExtSrc(); ?>" />
+        <!-- Thumbnails -->
+        <?php
+        foreach ($pass->getImagesSrc() as $pic) {
+          echo <<<END
+          <a href="{$pic}">
+            <img class="xzoom-gallery" width="80" src="{$pic}" xpreview="{$pic}">
+          </a>
+END;
+        }
+        ?>
       </div>
 
       <div class="card bg-secondary icons-sub-logo">
         <div class="card-header">
-          <a href="generatecsv.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_CSV_TOOLTIP; ?>"><i class="fas fa-file-csv icon" style="color:#00a9e0"></i></a>
-          <a href="generatejson.php?id=<?php echo $pic->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_JSON_TOOLTIP; ?>"><i class="far fa-file-code icon" style="color:#00a9e0"></i></a>
-          <a href="<?php echo $pic->getExtSrc(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_THUMB_TOOLTIP; ?>"><i class="far fa-image icon" style="color:#00a9e0"></i></a>
+          <a href="generatecsv.php?id=<?php echo $pass->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_CSV_TOOLTIP; ?>"><i class="fas fa-file-csv icon" style="color:#00a9e0"></i></a>
+          <a href="generatejson.php?id=<?php echo $pass->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_JSON_TOOLTIP; ?>"><i class="far fa-file-code icon" style="color:#00a9e0"></i></a>
+          <a href="<?php echo $pass->getExtSrc(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_THUMB_TOOLTIP; ?>"><i class="far fa-image icon" style="color:#00a9e0"></i></a>
         </div>
       </div>
 
@@ -118,31 +128,31 @@
     <div class="col">
       <div class="col-sm">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item list-group-item-primary" data-toggle="tooltip" data-placement="top" title="<?php echo META_SOURCE_TOOLTIP; ?>"><b class="float-left"><?php echo META_SATELLITE; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getSatellite(); ?></a></li>
-          <li class="list-group-item list-group-item-primary" data-toggle="tooltip" data-placement="top" title="<?php echo META_NORAD_ID_TOOLTIP; ?>"><b class="float-left"><?php echo META_NORAD_ID; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getNoradId(); ?></a></li>
-          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_FREQ_TOOLTIP; ?>"><b class="float-left"><?php echo META_FREQ; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getFreq(); ?></a></li>
-          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_TRANSPONDER_TOOLTIP; ?>"><b class="float-left"><?php echo META_TRANSPONDER; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTransponder(); ?></a></li>
-          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_MAX_ELEV_TOOLTIP; ?>"><b class="float-left"><?php echo META_MAX_ELEV; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getMaxElev(); ?></a></li>
-          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_DURATION_TOOLTIP; ?>"><b class="float-left"><?php echo META_DURATION; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getDuration(); ?></a></li>
-          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_RADIO_TOOLTIP; ?>"><b class="float-left"><?php echo META_RADIO; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getRadio(); ?></a></li>
-          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo $delta . " ago"; ?>"><b class="float-left"><?php echo META_DATE_OBS; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getDateObs(); ?></a></li>
-          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_SHORT_DESC_TOOLTIP; ?>"><b class="float-left"><?php echo META_SHORT_DESC; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getStation()->getShortDescription(); ?></a></li>
-          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_IMG_ID_TOOLTIP; ?>"><b class="float-left"><?php echo META_IMG_ID; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getId(); ?></a></li>
-          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_OBS_NAME_TOOLTIP; ?>"><b class="float-left"><?php echo META_OBS_NAME; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getStation()->getName(); ?></a></li>
-          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_OPR_SIN_TOOLTIP; ?>"><b class="float-left"><?php echo META_OPR_SIN; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getStation()->getDateCreated(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_LAT_TOOLTIP; ?>"><b class="float-left"><?php echo META_LAT; ?>:</b> <a class="float-right" id="alt" align="right"><?php echo $pic->getStation()->getLatitude(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_LAT_TOOLTIP; ?>"><b class="float-left"><?php echo META_LONG; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getStation()->getLongitude(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_ALT_TOOLTIP; ?>"><b class="float-left"><?php echo META_ALT; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getStation()->getElevation(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_BANDWIDTH_TOOLTIP; ?>"><b class="float-left"><?php echo META_BANDWIDTH; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getBandwidth(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_DEVIATION_TOOLTIP; ?>"><b class="float-left"><?php echo META_DEVIATION; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getDeviation(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_CODIFICATION_TOOLTIP; ?>"><b class="float-left"><?php echo META_CODIFICATION; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getCodification(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_TLE_TOOLTIP; ?>"><b class="float-left"><?php echo META_TLE; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTle(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_TLE_DATE_TOOLTIP; ?>"><b class="float-left"><?php echo META_TLE_DATE; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getTleDate(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_AZI_RISE_TOOLTIP; ?>"><b class="float-left"><?php echo META_AZI_RISE; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getAziRise(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_AZI_SET_TOOLTIP; ?>"><b class="float-left"><?php echo META_AZI_SET; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getAziSet(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_EPOCH_STARTS_TOOLTIP; ?>"><b class="float-left"><?php echo META_EPOCH_STARTS; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getStartEpoch(); ?></a></li>
-          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_EPOCH_ENDS_TOOLTIP; ?>"><b class="float-left"><?php echo META_EPOCH_ENDS; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getEndEpoch(); ?></a></li>
-          <li class="list-group-item list-group-item-dark" data-toggle="tooltip" data-placement="top" title="<?php echo META_DECOD_SOFTWARE_TOOLTIP; ?>"><b class="float-left"><?php echo META_DECOD_SOFTWARE; ?>:</b> <a class="float-right" id="alt"><?php echo $pic->getMetadata()->getDecodSoftware(); ?></a></li>
+          <li class="list-group-item list-group-item-primary" data-toggle="tooltip" data-placement="top" title="<?php echo META_SOURCE_TOOLTIP; ?>"><b class="float-left"><?php echo META_SATELLITE; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getSatellite(); ?></a></li>
+          <li class="list-group-item list-group-item-primary" data-toggle="tooltip" data-placement="top" title="<?php echo META_NORAD_ID_TOOLTIP; ?>"><b class="float-left"><?php echo META_NORAD_ID; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getNoradId(); ?></a></li>
+          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_FREQ_TOOLTIP; ?>"><b class="float-left"><?php echo META_FREQ; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getFreq(); ?></a></li>
+          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_TRANSPONDER_TOOLTIP; ?>"><b class="float-left"><?php echo META_TRANSPONDER; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getTransponder(); ?></a></li>
+          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_MAX_ELEV_TOOLTIP; ?>"><b class="float-left"><?php echo META_MAX_ELEV; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getMaxElev(); ?></a></li>
+          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_DURATION_TOOLTIP; ?>"><b class="float-left"><?php echo META_DURATION; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getDuration(); ?></a></li>
+          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo META_RADIO_TOOLTIP; ?>"><b class="float-left"><?php echo META_RADIO; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getRadio(); ?></a></li>
+          <li class="list-group-item list-group-item-success" data-toggle="tooltip" data-placement="top" title="<?php echo $delta . " ago"; ?>"><b class="float-left"><?php echo META_DATE_OBS; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getDateObs(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_SHORT_DESC_TOOLTIP; ?>"><b class="float-left"><?php echo META_SHORT_DESC; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getStation()->getShortDescription(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_IMG_ID_TOOLTIP; ?>"><b class="float-left"><?php echo META_IMG_ID; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getId(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_OBS_NAME_TOOLTIP; ?>"><b class="float-left"><?php echo META_OBS_NAME; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getStation()->getName(); ?></a></li>
+          <li class="list-group-item list-group-item-secondary" data-toggle="tooltip" data-placement="top" title="<?php echo META_OPR_SIN_TOOLTIP; ?>"><b class="float-left"><?php echo META_OPR_SIN; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getStation()->getDateCreated(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_LAT_TOOLTIP; ?>"><b class="float-left"><?php echo META_LAT; ?>:</b> <a class="float-right" id="alt" align="right"><?php echo $pass->getStation()->getLatitude(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_LAT_TOOLTIP; ?>"><b class="float-left"><?php echo META_LONG; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getStation()->getLongitude(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_ALT_TOOLTIP; ?>"><b class="float-left"><?php echo META_ALT; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getStation()->getElevation(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_BANDWIDTH_TOOLTIP; ?>"><b class="float-left"><?php echo META_BANDWIDTH; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getBandwidth(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_DEVIATION_TOOLTIP; ?>"><b class="float-left"><?php echo META_DEVIATION; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getDeviation(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_CODIFICATION_TOOLTIP; ?>"><b class="float-left"><?php echo META_CODIFICATION; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getCodification(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_TLE_TOOLTIP; ?>"><b class="float-left"><?php echo META_TLE; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getTle(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_TLE_DATE_TOOLTIP; ?>"><b class="float-left"><?php echo META_TLE_DATE; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getTleDate(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_AZI_RISE_TOOLTIP; ?>"><b class="float-left"><?php echo META_AZI_RISE; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getAziRise(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_AZI_SET_TOOLTIP; ?>"><b class="float-left"><?php echo META_AZI_SET; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getAziSet(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_EPOCH_STARTS_TOOLTIP; ?>"><b class="float-left"><?php echo META_EPOCH_STARTS; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getStartEpoch(); ?></a></li>
+          <li class="list-group-item list-group-item-info" data-toggle="tooltip" data-placement="top" title="<?php echo META_EPOCH_ENDS_TOOLTIP; ?>"><b class="float-left"><?php echo META_EPOCH_ENDS; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getEndEpoch(); ?></a></li>
+          <li class="list-group-item list-group-item-dark" data-toggle="tooltip" data-placement="top" title="<?php echo META_DECOD_SOFTWARE_TOOLTIP; ?>"><b class="float-left"><?php echo META_DECOD_SOFTWARE; ?>:</b> <a class="float-right" id="alt"><?php echo $pass->getMetadata()->getDecodSoftware(); ?></a></li>
 
 
         </ul>
