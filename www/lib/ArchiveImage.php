@@ -108,31 +108,53 @@ class ArchiveImage{
     }
 
     /**
-     * @return mixed
+     * return a array with image src on #0 and tooltip text on #1
      */
     public function getImagesSrc(){
       $satellite = $this->metadata->getSatellite();
       $result = array();
       if($satellite == "NOAA 19" || $satellite == "NOAA 15" || $satellite == "NOAA 18") {
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MCIR.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MSA.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HVCT.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-THERM.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-NO.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MB.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HF.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HE.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-EC.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-CC.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MD.png";
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-ZA.png";
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MCIR.png", BUTTON_MSA_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MSA.png", BUTTON_MCIR_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HVCT.png", BUTTON_HVCT_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-THERM.png", BUTTON_THERM_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-NO.png", BUTTON_NO_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MB.png", BUTTON_MB_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HF.png", BUTTON_HF_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-HE.png", BUTTON_HE_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-EC.png", BUTTON_EC_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-CC.png", BUTTON_CC_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-MD.png", BUTTON_MD_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . "-ZA.png", BUTTON_ZA_FILE_TOOLTIP);
       }
       elseif ($satellite == "METEOR-M 2"){
-        $result[] = ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".png";
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".png", BUTTON_COMPOSITE_FILE_TOOLTIP);
       }
       return $result;
     }
 
+    /**
+     * @return Files in a array with file endpoint on #0 and tooltip text on #1
+     */
+    public function getFilesSrc(){
+      $satellite = $this->metadata->getSatellite();
+      $result = array();
+      if($satellite == "NOAA 19" || $satellite == "NOAA 15" || $satellite == "NOAA 18") {
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".wav", BUTTON_NOAA_WAV_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".iq", BUTTON_NOAA_IQ_FILE_TOOLTIP);
+      }
+      elseif ($satellite == "METEOR-M 2"){
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".wav", BUTTON_MET_WAV_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".qpsk", BUTTON_MET_QPSK_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".iq", BUTTON_MET_IQ_FILE_TOOLTIP);
+        $result[] = array(ARCHIVE_ENDPOINT . $this->path . $this->filekey . ".dec", BUTTON_MET_DEC_FILE_TOOLTIP);
+      }
+      return $result;
+    }
+
+    public function getDirectorySrc(){
+      return ARCHIVE_ENDPOINT . $this->path;
+    }
 
     /**
      * @return mixed

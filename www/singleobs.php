@@ -61,8 +61,8 @@
         <?php
         foreach ($pass->getImagesSrc() as $pic) {
           echo <<<END
-          <a href="{$pic}">
-            <img class="xzoom-gallery" width="80" src="{$pic}" xpreview="{$pic}">
+          <a href="{$pic[0]}">
+            <img class="xzoom-gallery" width="80" src="{$pic[0]}" xpreview="{$pic[0]}">
           </a>
 END;
         }
@@ -73,7 +73,27 @@ END;
         <div class="card-header">
           <a href="generatecsv.php?id=<?php echo $pass->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_CSV_TOOLTIP; ?>"><i class="fas fa-file-csv icon" style="color:#00a9e0"></i></a>
           <a href="generatejson.php?id=<?php echo $pass->getId(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_JSON_TOOLTIP; ?>"><i class="far fa-file-code icon" style="color:#00a9e0"></i></a>
-          <a href="<?php echo $pass->getExtSrc(); ?>" data-toggle="tooltip" data-placement="bottom" title="<?php echo BUTTON_THUMB_TOOLTIP; ?>"><i class="far fa-image icon" style="color:#00a9e0"></i></a>
+
+          <?php
+          $i = 0;
+          foreach ($pass->getFilesSrc() as $file) {
+            echo <<<END
+            <a href="{$file[0]}" data-toggle="tooltip" data-placement="bottom" title="{$file[1]}"><i class="far fa-file icon" style="color:#00a9e0"></i></a>
+END;
+            if($i == 5) break;
+          }
+
+          $i = 0; // Counter
+          foreach ($pass->getImagesSrc() as $file) {
+            echo <<<END
+            <a href="{$file[0]}" data-toggle="tooltip" data-placement="bottom" title="{$file[1]}"><i class="far fa-image icon" style="color:#00a9e0"></i></a>
+END;
+            $i++;
+            if($i == 5) break;
+          }
+
+          echo "<a href=\"" . $pass->getDirectorySrc() . "\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . BUTTON_DIR_TOOLTIP . "\"><i class=\"far fa-folder-open icon\" style=\"color:#00a9e0\"></i></a>";
+          ?>
         </div>
       </div>
 
