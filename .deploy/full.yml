@@ -188,8 +188,10 @@
   hosts: zulu
   become: true
   gather_facts: false
-  systemd:
-    name: docker.archive_webserver.service
-    state: reload
-    daemon_reload: yes
+  tasks:
+  - name: restart systemd service
+    systemd:
+      name: docker.archive_webserver.service
+      state: restarted
+      daemon_reload: yes
   tags: [ never, archive_webserver ]
