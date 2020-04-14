@@ -297,7 +297,7 @@ class ArchiveDatabase{
       $sqlDate = "AND `DATE_OBS` > '" . date( 'Y-m-d H:i:s', strtotime($since)) . "' ";
     } else {
       $sqlDate = "AND `DATE_OBS` BETWEEN '" . date( 'Y-m-d H:i:s', strtotime($since)) . "'
-      AND '" .  date( 'Y-m-d H:i:s', strtotime($until)) . "' ";
+      AND '" .  date( 'Y-m-d H:i:s', strtotime($until . '+24 hours')) . "' ";
     }
 
     $sqlPar .= $sqlDate;
