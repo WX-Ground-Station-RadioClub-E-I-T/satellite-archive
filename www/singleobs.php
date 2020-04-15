@@ -5,6 +5,8 @@
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "hammerjs/hammer.min.js"; ?>"></script>
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "xzoom/src/xzoom.js"; ?>"></script>
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "foundation-sites/dist/js/foundation.min.js"; ?>"></script>
+    <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "satellite.js/dist/satellite.min.js"; ?>"></script>
+
     <script type="text/javascript" src="lib/zoom.js"></script>
 
     <?php
@@ -185,5 +187,104 @@ END;
 
 <!-- Footer -->
 <?php include 'assets/partials/footer.php'?>
+
+
+<script>
+
+var tleLine1 = '<?php echo $pass->getMetadata()->getTleLine1(); ?>';
+var tleLine2 = '<?php echo $pass->getMetadata()->getTleLine2(); ?>';
+
+// Initialize a satellite record
+var satrec = satellite.twoline2satrec(tleLine1, tleLine2);
+/*
+//  Propagate satellite using time since epoch (in minutes).
+var positionAndVelocity = satellite.sgp4(satrec, 1000000);
+
+//  Or you can use a JavaScript Date
+var positionAndVelocity = satellite.propagate(satrec, new Date());
+
+// The position_velocity result is a key-value pair of ECI coordinates.
+// These are the base results from which all other coordinates are derived.
+var positionEci = positionAndVelocity.position,
+    velocityEci = positionAndVelocity.velocity;
+
+// Set the Observer at 122.03 West by 36.96 North, in RADIANS
+var observerGd = {
+    longitude: satellite.degreesToRadians(<?php echo $pass->getStation()->getLongitude(); ?>),
+    latitude: satellite.degreesToRadians(<?php echo $pass->getStation()->getLatitude(); ?>),
+    height: <?php echo $pass->getStation()->getElevation(); ?>
+};
+
+// You will need GMST for some of the coordinate transforms.
+// http://en.wikipedia.org/wiki/Sidereal_time#Definition
+var gmst = satellite.gstime(new Date());
+
+// You can get ECF, Geodetic, Look Angles, and Doppler Factor.
+var positionEcf   = satellite.eciToEcf(positionEci, gmst),
+    observerEcf   = satellite.geodeticToEcf(observerGd),
+    positionGd    = satellite.eciToGeodetic(positionEci, gmst),
+    lookAngles    = satellite.ecfToLookAngles(observerGd, positionEcf);
+    //dopplerFactor = satellite.dopplerFactor(observerCoordsEcf, positionEcf, velocityEcf);
+
+// The coordinates are all stored in key-value pairs.
+// ECI and ECF are accessed by `x`, `y`, `z` properties.
+var satelliteX = positionEci.x,
+    satelliteY = positionEci.y,
+    satelliteZ = positionEci.z;
+
+// Look Angles may be accessed by `azimuth`, `elevation`, `range_sat` properties.
+var azimuth   = lookAngles.azimuth,
+    elevation = lookAngles.elevation,
+    rangeSat  = lookAngles.rangeSat;
+
+// Geodetic coords are accessed via `longitude`, `latitude`, `height`.
+var longitude = positionGd.longitude,
+    latitude  = positionGd.latitude,
+    height    = positionGd.height;
+
+//  Convert the RADIANS to DEGREES for pretty printing (appends "N", "S", "E", "W", etc).
+var longitudeStr = satellite.degreesLong(longitude);
+var latitudeStr  = satellite.degreesLat(latitude);
+
+*/
+
+var tleLine1 = '<?php echo $pass->getMetadata()->getTleLine1(); ?>';
+var tleLine2 = '<?php echo $pass->getMetadata()->getTleLine2(); ?>';
+
+var satrec = satellite.twoline2satrec(tleLine1, tleLine2);
+
+var observerGd = {
+    longitude: satellite.degreesToRadians(<?php echo $pass->getStation()->getLongitude(); ?>),
+    latitude: satellite.degreesToRadians(<?php echo $pass->getStation()->getLatitude(); ?>),
+    height: <?php echo $pass->getStation()->getElevation(); ?>
+};
+
+var startEpoch = <?php echo $pass->getMetadata()->getStartEpoch(); ?>;
+var endEpoch = <?php echo $pass->getMetadata()->getEndEpoch(); ?>;
+
+var data = new Array();
+for(var i = startEpoch; i < endEpoch; i += 5){
+  var utcSeconds = i;
+  var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+  d.setUTCSeconds(utcSeconds);
+
+  console.log(d);
+  var gmst = satellite.gstime(d);
+  var positionAndVelocity = satellite.propagate(satrec, d);  //Start epoch in minutes
+  var positionEci = positionAndVelocity.position;
+  var velocityEci = positionAndVelocity.velocity;
+  var positionEcf   = satellite.eciToEcf(positionEci, gmst);
+  var velocityEcf = satellite.eciToEcf(velocityEci, gmst);
+  var lookAngles    = satellite.ecfToLookAngles(observerGd, positionEcf, velocityEcf);
+  data.push({
+    Azi: lookAngles.azimuth * satellite.constants.rad2deg,
+    Ele: lookAngles.elevation * satellite.constants.rad2deg
+  });
+}
+
+console.log(data);
+
+</script>
+
 </body>
 </html>

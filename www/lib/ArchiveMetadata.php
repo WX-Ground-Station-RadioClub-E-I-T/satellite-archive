@@ -152,6 +152,22 @@ class ArchiveMetadata{
     /**
      * @return mixed
      */
+    public function getTleLine1()
+    {
+        return preg_split("/\r\n|\n|\r/", $this->tle)[0];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTleLine2()
+    {
+        return preg_split("/\r\n|\n|\r/", $this->tle)[1];
+    }
+
+    /**
+     * @return mixed
+     */
     public function getTleDate()
     {
         return $this->tle_date;
