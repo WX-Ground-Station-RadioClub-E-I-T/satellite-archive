@@ -33,10 +33,10 @@ services:
     volumes:
       - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql
       - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql
-      - ./sample_database.sql:/home/sample_database.sql
+      - ./satellite_database.sql:/home/satellite_database.sql
     environment:
       MYSQL_ROOT_PASSWORD: tiger
-      MYSQL_DATABASE: sample_database
+      MYSQL_DATABASE: satellite_database
       MYSQL_USER: archive
       MYSQL_PASSWORD: archive
   phpmyadmin:
