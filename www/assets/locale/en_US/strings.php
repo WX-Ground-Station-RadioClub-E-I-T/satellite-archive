@@ -198,3 +198,4 @@ define("BUTTON_MET_WAV_FILE_TOOLTIP", "raw normilized WAV file");
 define("BUTTON_MET_QPSK_FILE_TOOLTIP", "demodulated qpsk file");
 define("BUTTON_MET_IQ_FILE_TOOLTIP", "raw IQ file");
 define("BUTTON_MET_DEC_FILE_TOOLTIP", "meteor dec file");
+define("CARD_POLAR_TITLE", "Polar graph");

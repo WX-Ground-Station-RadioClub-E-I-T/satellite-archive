@@ -2,10 +2,12 @@
 <html>
 <head>
     <?php include 'assets/partials/head.php' ?>
+    <link rel="stylesheet" href="assets/css/polarPlotStyle.css">
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "hammerjs/hammer.min.js"; ?>"></script>
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "xzoom/src/xzoom.js"; ?>"></script>
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "foundation-sites/dist/js/foundation.min.js"; ?>"></script>
     <script type="text/javascript" src="<?php echo DEPENDENCIES_ENDPOINT . "satellite.js/dist/satellite.min.js"; ?>"></script>
+    <script type="text/javascript" src="assets/js/d3.js"></script>
 
     <script type="text/javascript" src="lib/zoom.js"></script>
 
@@ -144,6 +146,15 @@ END;
             </div>
       		</div>
         </div>
+
+        <div class="col-sm-6 mt-0 mb-4 polar-block">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title"><?php echo CARD_POLAR_TITLE;?></h4>
+                <svg id="polar"></svg>
+            </div>
+      		</div>
+        </div>
       </div>
     </div>
 
@@ -191,62 +202,9 @@ END;
 
 <script>
 
-var tleLine1 = '<?php echo $pass->getMetadata()->getTleLine1(); ?>';
-var tleLine2 = '<?php echo $pass->getMetadata()->getTleLine2(); ?>';
-
-// Initialize a satellite record
-var satrec = satellite.twoline2satrec(tleLine1, tleLine2);
-/*
-//  Propagate satellite using time since epoch (in minutes).
-var positionAndVelocity = satellite.sgp4(satrec, 1000000);
-
-//  Or you can use a JavaScript Date
-var positionAndVelocity = satellite.propagate(satrec, new Date());
-
-// The position_velocity result is a key-value pair of ECI coordinates.
-// These are the base results from which all other coordinates are derived.
-var positionEci = positionAndVelocity.position,
-    velocityEci = positionAndVelocity.velocity;
-
-// Set the Observer at 122.03 West by 36.96 North, in RADIANS
-var observerGd = {
-    longitude: satellite.degreesToRadians(<?php echo $pass->getStation()->getLongitude(); ?>),
-    latitude: satellite.degreesToRadians(<?php echo $pass->getStation()->getLatitude(); ?>),
-    height: <?php echo $pass->getStation()->getElevation(); ?>
-};
-
-// You will need GMST for some of the coordinate transforms.
-// http://en.wikipedia.org/wiki/Sidereal_time#Definition
-var gmst = satellite.gstime(new Date());
-
-// You can get ECF, Geodetic, Look Angles, and Doppler Factor.
-var positionEcf   = satellite.eciToEcf(positionEci, gmst),
-    observerEcf   = satellite.geodeticToEcf(observerGd),
-    positionGd    = satellite.eciToGeodetic(positionEci, gmst),
-    lookAngles    = satellite.ecfToLookAngles(observerGd, positionEcf);
-    //dopplerFactor = satellite.dopplerFactor(observerCoordsEcf, positionEcf, velocityEcf);
-
-// The coordinates are all stored in key-value pairs.
-// ECI and ECF are accessed by `x`, `y`, `z` properties.
-var satelliteX = positionEci.x,
-    satelliteY = positionEci.y,
-    satelliteZ = positionEci.z;
-
-// Look Angles may be accessed by `azimuth`, `elevation`, `range_sat` properties.
-var azimuth   = lookAngles.azimuth,
-    elevation = lookAngles.elevation,
-    rangeSat  = lookAngles.rangeSat;
-
-// Geodetic coords are accessed via `longitude`, `latitude`, `height`.
-var longitude = positionGd.longitude,
-    latitude  = positionGd.latitude,
-    height    = positionGd.height;
-
-//  Convert the RADIANS to DEGREES for pretty printing (appends "N", "S", "E", "W", etc).
-var longitudeStr = satellite.degreesLong(longitude);
-var latitudeStr  = satellite.degreesLat(latitude);
-
-*/
+const polar = document.getElementById('polar');
+const rect = polar.getBoundingClientRect();
+const conv = (2 * Math.PI) / 360;
 
 var tleLine1 = '<?php echo $pass->getMetadata()->getTleLine1(); ?>';
 var tleLine2 = '<?php echo $pass->getMetadata()->getTleLine2(); ?>';
@@ -256,11 +214,13 @@ var satrec = satellite.twoline2satrec(tleLine1, tleLine2);
 var observerGd = {
     longitude: satellite.degreesToRadians(<?php echo $pass->getStation()->getLongitude(); ?>),
     latitude: satellite.degreesToRadians(<?php echo $pass->getStation()->getLatitude(); ?>),
-    height: <?php echo $pass->getStation()->getElevation(); ?>
+    height: 0           // Dont know why but is 0 height
 };
 
 var startEpoch = <?php echo $pass->getMetadata()->getStartEpoch(); ?>;
 var endEpoch = <?php echo $pass->getMetadata()->getEndEpoch(); ?>;
+
+var subpi = Math.PI / 2;
 
 var data = new Array();
 for(var i = startEpoch; i < endEpoch; i += 5){
@@ -268,7 +228,6 @@ for(var i = startEpoch; i < endEpoch; i += 5){
   var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
   d.setUTCSeconds(utcSeconds);
 
-  console.log(d);
   var gmst = satellite.gstime(d);
   var positionAndVelocity = satellite.propagate(satrec, d);  //Start epoch in minutes
   var positionEci = positionAndVelocity.position;
@@ -276,13 +235,142 @@ for(var i = startEpoch; i < endEpoch; i += 5){
   var positionEcf   = satellite.eciToEcf(positionEci, gmst);
   var velocityEcf = satellite.eciToEcf(velocityEci, gmst);
   var lookAngles    = satellite.ecfToLookAngles(observerGd, positionEcf, velocityEcf);
-  data.push({
-    Azi: lookAngles.azimuth * satellite.constants.rad2deg,
-    Ele: lookAngles.elevation * satellite.constants.rad2deg
-  });
+  data.push([lookAngles.azimuth, lookAngles.elevation]);
 }
 
-console.log(data);
+var polarData = new Array();
+data.forEach(function(elem) {
+  polarData.push([-(elem[0] + subpi), -0.5 + (elem[1]/Math.PI)])
+});
+
+var tLenght = (data.length/4);
+
+var startDate = new Date(0); // The 0 there is the key, which sets the date to the epoch
+startDate.setUTCSeconds(startEpoch);
+var selec = [];
+
+for(var i = 0; i < 5; i++){
+    selec.push({
+        data : data[Math.round(tLenght - 1) * i],
+        time : new Date(startDate.getTime() + (Math.round(tLenght - 1) * i * 5 * 1000))
+    })
+}
+
+var width = 300,
+    height = 300,
+    radius = Math.min(width, height) / 2 - 30;
+
+// Circle External line
+var r = d3.scale.linear()
+    .domain([0, .5])
+    .range([0, radius]);
+
+var line = d3.svg.line.radial()
+    .radius(function (d) {
+        return r(d[1]);
+    })
+    .angle(function (d) {
+        return -d[0] + Math.PI / 2;
+    });
+
+var svg = d3.select("#polar")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var gr = svg.append("g")
+    .attr("class", "r axis")
+    .selectAll("g")
+    .data(r.ticks(5).slice(1))
+    .enter().append("g");
+
+gr.append("circle")
+    .attr("r", r);
+
+//Elevation text
+gr.append("text")
+    .attr("y", function (d) {
+        return -r(d) - 4;
+    })
+    .attr("transform", "rotate(15)")
+    .style("text-anchor", "middle")
+    .text(function (d) {
+        return d;
+    });
+
+svg.append("g")
+    .selectAll("text")
+    .data(selec)
+    .enter()
+    .append("text")
+    .attr("x", function (d) {
+        return Math.sin(d.data[0]) * radius * (-d.data[1]*2/Math.PI + 1)
+    })
+    .attr("y", function (d) {
+        return - (Math.cos(d.data[0]) * radius * (-d.data[1]*2/Math.PI + 1))
+    })
+    .text(function (d) {
+        return d.time.getUTCHours() + ":" + ((d.time.getUTCMinutes() < 10)? "0" + d.time.getUTCMinutes(): d.time.getUTCMinutes());
+    });
+
+
+svg.append("text")
+    .attr("id", "azi")
+    .attr("x", -radius - 30)
+    .attr("y", radius-30);
+
+svg.append("text")
+    .attr("id", "ele")
+    .attr("x", -radius - 30)
+    .attr("y", radius - 15);
+
+/*
+
+polar.addEventListener('mousemove', e => {
+  var x = ((e.clientX - rect.left) - width / 2);
+  var y = (-(e.clientY - rect.top) + height / 2);
+
+  var hip = Math.sqrt(Math.pow(x, 2) + Math.pow(- y, 2));
+  var ele = Math.round((-0.75 * hip) + 90);
+
+
+  var azi = Math.atan(x / y) * Math.pow(conv, -1);
+
+  var fAzi = Math.round((y > 0 && x > 0)? (azi) : (y < 0)? (180 + azi) : (360 + azi));
+
+  svg.select("#azi")
+      .text((ele > 0)? "AZ " + fAzi + "º" : "");
+
+  svg.select("#ele")
+      .text((ele > 0)? "EL " + ele + "º" : "");
+});
+
+*/
+
+var ga = svg.append("g")
+    .attr("class", "a axis")
+    .selectAll("g")
+    .data(d3.range(0, 360, 30))
+    .enter().append("g")
+    .attr("transform", function (d) {
+        return "rotate(" + -d + ")";
+    });
+
+ga.append("line")
+    .attr("x2", radius);
+
+ga.append("text")
+    .attr("x", radius + 6)
+    .attr("dy", ".35em")
+    .attr("transform", function(d) { return d == 90 || d == 270 ? "rotate(90 " + (radius + 6) + ",0)" : null; })
+    .text(function(d) { return (d == 0)? 'E':(d == 90)? 'N':(d == 180)? 'O':(d == '270')? 'S': null;});
+
+
+svg.append("path")
+    .datum(polarData)
+    .attr("class", "line")
+    .attr("d", line);
 
 </script>
 

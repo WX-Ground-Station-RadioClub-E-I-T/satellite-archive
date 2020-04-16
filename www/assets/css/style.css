@@ -93,6 +93,11 @@ a {
   min-width: 230px !important;
 }
 
+.polar-block {
+  min-width: 400px !important;
+  min-height: 300px !important;
+}
+
 .video-block {
   min-width: 340px !important;
 }
