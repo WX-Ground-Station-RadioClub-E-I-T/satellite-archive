@@ -200,3 +200,4 @@ define("BUTTON_MET_WAV_FILE_TOOLTIP", "Fichero WAV raw normalizado");
 define("BUTTON_MET_QPSK_FILE_TOOLTIP", "Fichero QPSL demodulado");
 define("BUTTON_MET_IQ_FILE_TOOLTIP", "Fichero IQ raw");
 define("BUTTON_MET_DEC_FILE_TOOLTIP", "Fichero dec de meteor");
+define("CARD_POLAR_TITLE", "Gráfico polar");
