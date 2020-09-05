@@ -1,16 +1,16 @@
-# Archive Viewer
+# Satellite Archive
 
-![Home screen picture](./pics/screen.png)
+![Home screen picture](./pics/1.gif)
 
-Archive Viewer is a open source web tool for navigate the data of solar observations. And easily you can migrate it for other study cases.
+Satellite Archive is a open source web tool for browsing the data of satellite observations. Easy to migrate to other study cases such as astronomical data.
 
-Archive Viewer it's a was originally a web tool to navigate the data obtained in CESAR project. It's developed in `PHP` with `mySQL`, to filter and display the pictures obtained with the telescopes.
+Satellite Archive it's a was originally a web tool to navigate the data obtained in CESAR project. It's developed in `PHP` with `mySQL`, to filter and display the pictures obtained with the telescopes.
 
 ## Getting Started
 
 ### Prerequisites
 
-Archive Viewer is built with **Docker**. In order to start the web application, you must have installed:
+Satellite Archive is built with **Docker**. In order to start the web application, you must have installed:
 
 * [Docker](https://docs.docker.com/install/)
 * [Docker-compose](https://docs.docker.com/compose/install/)
@@ -63,7 +63,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## How it works
 
-Observations are uploaded [here](http://cesar.esa.int/sun_monitor/archive/helios/). When a observation is made, the pipeline insert into the database the information to be displayed on the Archive Viewer. See `sample_database` to see the structure followed.
+Satellite observations are uploaded [here](https://ftp.ea4rct.org/). When a observation is made, the pipeline insert into the database the information to be displayed on the Satellite Archive. See `sample_database` to see the structure followed.
 
 The whole project is configured by *Docker* in the **Dockerfile** on `./bin`.
 
